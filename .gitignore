@@ -14,6 +14,7 @@ env/
 # 编辑器相关
 .vscode/
 .idea/
+.trae/
 
 # 环境变量文件
 .env
