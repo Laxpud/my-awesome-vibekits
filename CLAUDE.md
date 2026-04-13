@@ -25,9 +25,13 @@ skills/<skill-name>/
 
 Rules should follow this structure:
 ```
-rules/<rule-name>/
-└── RULE.md
+rules/<rule-name>.md
 ```
+
+**Additional Requirements**:
+- Rule files must not exceed 1000 characters in length 
+- Keep rules concise and focused on specific guidance
+- Use clear, actionable language that can be easily understood and applied
 
 ## Contributing
 
