@@ -1,24 +1,29 @@
 {
-  "name": "my-awesome-vibekits",
-  "id": "my-awesome-vibekits",
+  "name": "laxpud-vibekits",
   "owner": {
     "name": "Laxpud"
   },
   "metadata": {
-    "description": "实用技能和规则集合，帮助提升代码质量和开发效率",
-    "version": "1.0.0"
+    "description": "实用技能和规则集合，包含代码注释标准、项目配置规范等各类开发工具"
   },
   "plugins": [
     {
-      "name": "my-awesome-vibekits",
-      "source": "./",
-      "description": "包含代码注释标准化、Python项目配置最佳实践等实用技能和规则",
+      "name": "code-comment-standard",
+      "description": "代码注释标准化技能，自动为多种语言代码生成符合规范的注释",
       "version": "1.0.0",
-      "author": {
-        "name": "Laxpud"
-      },
-      "keywords": ["vibekits", "code-quality", "standardization", "python", "documentation"],
-      "category": "workflow"
+      "author": { "name": "Laxpud" },
+      "source": "./skills/code-comment-standard",
+      "category": "code-quality",
+      "tags": ["comments", "documentation", "code-standard", "clean-code"]
+    },
+    {
+      "name": "pyproject-standard",
+      "description": "标准pyproject.toml配置生成技能，支持Python项目快速初始化",
+      "version": "1.0.0",
+      "author": { "name": "Laxpud" },
+      "source": "./skills/pyproject-standard",
+      "category": "project-setup",
+      "tags": ["python", "pyproject", "configuration", "boilerplate"]
     }
   ]
 }

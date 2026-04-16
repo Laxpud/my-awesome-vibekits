@@ -1,0 +1,11 @@
+{
+  "name": "pyproject-standard",
+  "version": "1.0.0",
+  "description": "标准pyproject.toml配置生成技能，支持Python项目快速初始化",
+  "author": {
+    "name": "Laxpud"
+  },
+  "license": "MIT",
+  "keywords": ["python", "pyproject", "configuration", "boilerplate"],
+  "skills": "./"
+}

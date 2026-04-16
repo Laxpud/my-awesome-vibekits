@@ -1,0 +1,11 @@
+{
+  "name": "code-comment-standard",
+  "version": "1.0.0",
+  "description": "代码注释标准化技能，自动为多种语言代码生成符合规范的注释",
+  "author": {
+    "name": "Laxpud"
+  },
+  "license": "MIT",
+  "keywords": ["comments", "documentation", "code-standard", "clean-code"],
+  "skills": "./"
+}
