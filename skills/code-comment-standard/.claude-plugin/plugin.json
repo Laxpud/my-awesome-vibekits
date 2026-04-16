@@ -7,5 +7,5 @@
   },
   "license": "MIT",
   "keywords": ["comments", "documentation", "code-standard", "clean-code"],
-  "skills": "./"
+  "skills": "./skills/code-comment-standard"
 }

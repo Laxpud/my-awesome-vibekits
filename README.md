@@ -25,11 +25,7 @@
 ### Claude Code 插件使用
 本项目已内置 Claude Code 插件支持，开箱即用：
 
-1. **项目内直接使用**：
-   在 Claude Code 中打开本项目，插件会自动加载
-   执行 `/skills` 命令即可查看所有可用技能
-
-2. **技能调用方式**：
+1. **技能调用方式**：
    ```bash
    # 使用代码注释标准化技能
    /skill code-comment-standard
@@ -38,7 +34,7 @@
    /skill pyproject-standard
    ```
 
-3. **全局安装（推荐）**：
+2. **全局安装（推荐）**：
    通过 Claude Code 插件市场安装，可在所有项目中使用：
    ```bash
    # 添加插件市场
@@ -48,7 +44,7 @@
    /plugin install my-awesome-vibekits@my-awesome-vibekits
    ```
 
-4. **单项目使用**：
+3. **单项目使用**：
    直接将 CLAUDE.md 下载到你的项目根目录即可使用规则：
    ```bash
    # 新项目

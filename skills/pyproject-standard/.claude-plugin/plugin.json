@@ -7,5 +7,5 @@
   },
   "license": "MIT",
   "keywords": ["python", "pyproject", "configuration", "boilerplate"],
-  "skills": "./"
+  "skills": "./skills/pyproject-standard"
 }
