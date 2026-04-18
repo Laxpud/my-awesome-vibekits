@@ -1,5 +1,5 @@
 {
-  "name": "laxpud-vibekits",
+  "name": "laxpud-vibekits-dev",
   "description": "Development marketplace for Laxpud's skills library",
   "owner": {
     "name": "Laxpud"
@@ -12,7 +12,7 @@
       "author": { "name": "Laxpud" },
       "source": "./",
       "category": "workflow",
-      "tags": ["vibekits", "code-quality", "standardization", "python", "documentation"]
+      "tags": ["vibe coding kits", "code-quality", "standardization", "python", "documentation"]
     }
   ]
 }

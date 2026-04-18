@@ -8,5 +8,6 @@
   "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
   "repository": "https://github.com/Laxpud/my-awesome-vibekits",
   "license": "MIT",
-  "keywords": ["vibekits", "code-quality", "standardization", "python", "documentation"]
+  "keywords": ["vibekits", "code-quality", "standardization", "python", "documentation"],
+  "skills": ["./skills/"]
 }

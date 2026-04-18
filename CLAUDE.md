@@ -1,41 +1,29 @@
-# Agent Guidelines
+# CLAUDE.md
 
-## Project Purpose
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-This repository (`my-awesome-vibekits`) is a **collection of skills and rules** intended for sharing on GitHub. Its purpose is to gather and organize useful skills and rules that can be reused across different projects.
+## 项目架构
+这是一个平台无关的技能和规则集合仓库，核心结构：
+- `skills/`：存储可复用的技能，每个技能对应一个独立子目录，包含技能的完整文档和使用说明
+- `rules/`：存储轻量可复用的规则，每个规则对应一个独立markdown文件
+- `.claude-plugin/`：Claude Code插件适配层，包含插件的配置文件和市场发布信息，与通用技能/规则完全解耦
 
-## When Creating Skills or Rules
+## 常用命令
+本项目是纯文档型仓库，无构建/测试/lint命令，常用操作命令：
+```bash
+# 添加本地开发插件市场
+/plugin marketplace add .
 
-**IMPORTANT**: When you are asked to create a skill or rule within this project, your goal is to **contribute to this collection** — not to create platform-specific skills or rules for any AI assistant platform (such as Trae IDE, Cursor, Claude, etc.).
+# 安装本地开发版本插件
+/plugin install laxpud-vibekits@laxpud-vibekits-dev
 
-### What This Means
-
-- **DO**: Create skill and rule files that will be added to this repository's `skills/` or `rules/` directories.
-- **DO NOT**: Attempt to create skills or rules that would be registered with or configured for any specific AI assistant platform's internal systems.
-
-### Skill Structure
-
-Skills should follow this structure:
-```
-skills/<skill-name>/
-└── SKILL.md
-```
-
-### Rule Structure
-
-Rules should follow this structure:
-```
-rules/<rule-name>.md
+# 重载插件
+/reload-plugins
 ```
 
-**Additional Requirements**:
-- Rule files must not exceed 1000 characters in length 
-- Keep rules concise and focused on specific guidance
-- Use clear, actionable language that can be easily understood and applied
-
-## Contributing
-
-When adding new skills or rules to this collection, ensure they are:
-- **Reusable**: Can be applied across multiple projects
-- **Well-documented**: Include clear descriptions and usage examples
-- **Platform-agnostic**: Not tied to any specific AI assistant or platform
+## 技能/规则开发规范（必须严格遵守）
+所有技能和规则必须保持平台无关性，禁止绑定到任何特定AI助手或IDE平台：
+1. **技能结构**：`skills/<skill-name>/SKILL.md`
+2. **规则结构**：`rules/<rule-name>.md`，规则文件长度不得超过1000字符
+3. **内容要求**：必须具备可复用性、清晰的使用说明，不包含平台特定的配置或逻辑
+4. **适配层隔离**：所有Claude Code平台的特定配置只能放在`.claude-plugin/`目录下，不得污染通用技能/规则内容
