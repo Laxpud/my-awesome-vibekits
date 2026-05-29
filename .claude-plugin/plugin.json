@@ -1,13 +1,23 @@
 {
   "name": "laxpud-vibekits",
-  "description": "Laxpud's skills library",
-  "version": "1.0.0",
+  "description": "Laxpud's reusable skills library for code quality, project standards, and academic literature classification.",
+  "version": "1.1.0",
   "author": {
     "name": "Laxpud"
   },
   "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
   "repository": "https://github.com/Laxpud/my-awesome-vibekits",
   "license": "MIT",
-  "keywords": ["vibekits", "code-quality", "standardization", "python", "documentation"],
+  "keywords": [
+    "vibekits",
+    "skills",
+    "code-quality",
+    "standardization",
+    "python",
+    "documentation",
+    "zotero",
+    "literature-classification",
+    "research-workflow"
+  ],
   "skills": ["./skills/"]
 }

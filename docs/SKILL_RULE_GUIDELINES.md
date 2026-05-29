@@ -12,6 +12,7 @@ This repository (`my-awesome-vibekits`) is a **collection of skills and rules** 
 
 - **DO**: Create skill and rule files that will be added to this repository's `skills/` or `rules/` directories.
 - **DO NOT**: Attempt to create skills or rules that would be registered with or configured for any specific AI assistant platform's internal systems.
+- **DO**: Keep platform-specific adapter metadata in the matching adapter folder, such as `.claude-plugin/` or `.codex-plugin/`.
 
 ### Skill Structure
 

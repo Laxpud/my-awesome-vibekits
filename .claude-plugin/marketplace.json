@@ -1,18 +1,27 @@
 {
   "name": "laxpud-vibekits-dev",
-  "description": "Development marketplace for Laxpud's skills library",
+  "description": "Development marketplace for Laxpud's reusable skills library",
   "owner": {
     "name": "Laxpud"
   },
   "plugins": [
     {
       "name": "laxpud-vibekits",
-      "description": "Laxpud's skills library",
-      "version": "1.0.0",
+      "description": "Reusable skills for code quality, project standards, and academic literature classification.",
+      "version": "1.1.0",
       "author": { "name": "Laxpud" },
       "source": "./",
       "category": "workflow",
-      "tags": ["vibe coding kits", "code-quality", "standardization", "python", "documentation"]
+      "tags": [
+        "vibe coding kits",
+        "code-quality",
+        "standardization",
+        "python",
+        "documentation",
+        "zotero",
+        "literature-classification",
+        "research-workflow"
+      ]
     }
   ]
 }
