@@ -17,6 +17,9 @@ env/
 .trae/
 .claude/
 
+# 本地参考资料
+ref/
+
 # 环境变量文件
 .env
 .env.local
