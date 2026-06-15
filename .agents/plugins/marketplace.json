@@ -1,0 +1,20 @@
+{
+  "name": "laxpud-vibekits",
+  "interface": {
+    "displayName": "Laxpud Vibekits"
+  },
+  "plugins": [
+    {
+      "name": "laxpud-vibekits",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
