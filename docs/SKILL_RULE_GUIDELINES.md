@@ -2,7 +2,7 @@
 
 ## Project Purpose
 
-This repository (`my-awesome-vibekits`) is a **collection of skills and rules** intended for sharing on GitHub. Its purpose is to gather and organize useful skills and rules that can be reused across different projects.
+This repository (`my-awesome-vibekits`) is a **collection of skills and rules** intended for sharing on GitHub. Its purpose is to gather and organize useful skills and rules that can be reused across different projects. It may also keep clearly labeled personal global-rule backups when the maintainer explicitly wants GitHub-based backup.
 
 ## When Creating Skills or Rules
 
@@ -10,9 +10,10 @@ This repository (`my-awesome-vibekits`) is a **collection of skills and rules** 
 
 ### What This Means
 
-- **DO**: Create skill and rule files that will be added to this repository's `skills/` or `rules/` directories.
+- **DO**: Create reusable skill and rule files that will be added to this repository's `skills/` or `rules/` directories.
 - **DO NOT**: Attempt to create skills or rules that would be registered with or configured for any specific AI assistant platform's internal systems.
 - **DO**: Keep platform-specific adapter metadata in the matching adapter folder, such as `.claude-plugin/` or `.codex-plugin/`.
+- **DO**: Keep personal global-rule backups clearly named and labeled when they intentionally live under `rules/`.
 
 ### Skill Structure
 
@@ -22,7 +23,7 @@ skills/<skill-name>/
 └── SKILL.md
 ```
 
-### Rule Structure
+### Reusable Rule Structure
 
 Rules should follow this structure:
 ```
@@ -30,13 +31,14 @@ rules/<rule-name>.md
 ```
 
 **Additional Requirements**:
-- Rule files must not exceed 1000 characters in length 
-- Keep rules concise and focused on specific guidance
+- Reusable rule files should not exceed 1000 characters in length
+- Keep reusable rules concise and focused on specific guidance
 - Use clear, actionable language that can be easily understood and applied
+- Personal global-rule backups are exempt from the length and platform-neutrality expectations, but must say they are backups rather than reusable rules.
 
 ## Contributing
 
-When adding new skills or rules to this collection, ensure they are:
+When adding new reusable skills or rules to this collection, ensure they are:
 - **Reusable**: Can be applied across multiple projects
 - **Well-documented**: Include clear descriptions and usage examples
 - **Platform-agnostic**: Not tied to any specific AI assistant or platform

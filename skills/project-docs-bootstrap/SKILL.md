@@ -67,7 +67,7 @@ Use this workflow when the project is new, empty, or early-stage.
 
 4. Create or update `TODO.md`.
    - Use Markdown checkboxes.
-   - Write tasks in Chinese by default unless the project already uses another language.
+   - Write tasks in the user's communication language by default unless the project already has a stronger language convention.
    - Group work by phases or milestones.
    - Add acceptance criteria for nontrivial tasks so "done" is testable.
    - Preserve completed items unless the user asks to archive history.
@@ -89,7 +89,8 @@ Use this workflow when the project is new, empty, or early-stage.
    - Keep only project-specific rules and user preferences.
    - Include rules that prevent likely mistakes, such as source-of-truth boundaries, language conventions, TODO rules, dependency limits, data format constraints, or commit message policy.
    - Do not include generic agent behavior such as "read files before editing" or "check Git status"; those are baseline work habits, not project rules.
-   - When initializing `AGENTS.md`, use the default preferences below as a starting point, then remove anything that does not fit the specific project.
+   - Do not copy personal global defaults into project guidance unless they materially change how this project should be maintained.
+   - When initializing `AGENTS.md`, use the default preferences below as a review checklist, then keep only items that are project-specific, requested by the user, or needed to prevent concrete mistakes.
 
 8. Archive or remove planning leftovers.
    - If a rough plan has been absorbed into README, TODO, and `docs/`, remove it or move it under `docs/archive/` with a short archive note.
@@ -125,7 +126,7 @@ Prefer consistent placement over ad hoc exceptions. If one detailed explanation 
 - Technical docs should explain durable decisions, data formats, architecture, methodology, results, and implementation notes.
 - Bilingual docs should stay structurally aligned: when `README.md` changes, update `docs/README.cn.md` in the same turn unless the user says not to.
 - Code identifiers, commands, config keys, paths, terminal output, log messages, and exception names stay in English.
-- User-facing Chinese documentation is acceptable and often preferred for TODOs, planning notes, and project guidance when the project uses Chinese.
+- User-facing documentation should follow the user's communication language unless the project already has a stronger language convention.
 - Comments or prose added by an assistant should explain purpose, data flow, assumptions, and edge cases; avoid comments that simply restate obvious content.
 
 ## Directory README Rules
@@ -161,10 +162,10 @@ When initializing `AGENTS.md`, start from these user preferences and adapt them 
 - Write `AGENTS.md` primarily as an entry index, routing guide, and behavior boundary. Long architecture, configuration, usage, troubleshooting, and tutorial content should live in `docs/`.
 - Keep README concise. Put implementation details, file responsibilities, data flow, conversion chains, benchmark design, and troubleshooting notes in `docs/`.
 - Maintain clear documentation ownership: root README for public entry, `TODO.md` for active work, `docs/` for technical details, and `docs/archive/` for completed planning history when traceability matters.
-- Use checkbox TODOs. Write new TODO items in Chinese by default, include goal/current state/acceptance criteria when useful, update progress in the same change that completes or partially completes the work, and preserve completed history unless deliberately archiving.
+- Use checkbox TODOs. Write new TODO items in the user's communication language by default, include goal/current state/acceptance criteria when useful, update progress in the same change that completes or partially completes the work, and preserve completed history unless deliberately archiving.
 - Keep code identifiers, module names, commands, terminal output, logs, exception messages, and config keys in English.
-- Prefer Chinese for user-facing planning docs when the project already uses Chinese.
-- When an assistant adds or edits comments, docstrings, function descriptions, or complex logic explanations, prefer Chinese and write enough explanation for less experienced readers to follow the purpose, data flow, assumptions, edge cases, and reasons for non-obvious choices.
+- Prefer the user's communication language for user-facing planning docs unless the project already has a stronger language convention.
+- When an assistant adds or edits comments, docstrings, function descriptions, or complex logic explanations, follow the user's communication language and write enough explanation for less experienced readers to follow the purpose, data flow, assumptions, edge cases, and reasons for non-obvious choices.
 - Add more explanatory comments around meaningful steps, branches, loops, data transformations, geometry/math, validation, configuration handling, process boundaries, timing boundaries, and file or result output.
 - Avoid noisy line-by-line comments that merely repeat an assignment or function call.
 - If a code change makes a file harder to understand, update nearby comments or docstrings in the same turn instead of leaving "working but unreadable" code.
@@ -204,8 +205,8 @@ Use these defaults unless the user or existing repository says otherwise:
 
 - English root `README.md`.
 - Chinese `docs/README.cn.md` as a translation of the root README when bilingual docs are desired.
-- Chinese user-facing docs under `docs/` when the project already uses Chinese.
-- Chinese `TODO.md` with checkbox tasks and acceptance criteria.
+- User-facing docs under `docs/` follow the user's communication language unless the project already has a stronger language convention.
+- `TODO.md` follows the user's communication language, with checkbox tasks and acceptance criteria.
 - `docs/` instead of `doc/` for general project documentation.
 - `docs/README.md` as the technical docs index when `docs/README.cn.md` is reserved for the translated root README.
 - Remove obsolete planning drafts after their useful content is migrated.

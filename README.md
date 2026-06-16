@@ -2,7 +2,9 @@
 
 实用技能（skills）和规则（rules）集合，用于沉淀、复用和分享跨项目工作流。
 
-本仓库的核心内容保持平台无关：`skills/` 和 `rules/` 存放通用资产，`.claude-plugin/`、`.codex-plugin/` 与 `.agents/plugins/marketplace.json` 仅作为不同平台的适配层。
+本仓库的核心内容保持平台无关：`skills/` 存放通用技能，`rules/` 优先存放通用规则；`.claude-plugin/`、`.codex-plugin/` 与 `.agents/plugins/marketplace.json` 仅作为不同平台的适配层。
+
+按维护者个人备份需求，`rules/` 也可以保存明确标注用途的个人全局规则备份。这类文件用于 GitHub 备份和人工迁移，不作为平台无关通用规则对外分发。
 
 ## 如何使用
 
@@ -48,6 +50,10 @@ codex
 - `pyproject-standard`：标准 `pyproject.toml` 配置生成与检查。
 - `zotero-tag-classifier`：Zotero 文献库标签优先分类、Collections 迁移与论文标签建议。
 
+### 已收录规则
+
+- `codex-user-global-rules`：Codex 用户全局规则备份，用于个人迁移和版本留档。
+
 ## 目录结构
 
 ```
@@ -56,8 +62,8 @@ codex
 │   ├── project-docs-bootstrap/ # 项目文档初始化与重组技能
 │   ├── pyproject-standard/     # 标准pyproject.toml配置技能           
 │   └── zotero-tag-classifier/  # Zotero文献标签分类技能               
-├── rules/                 # 规则目录                                  
-│   └── code-comment-standard.md  # 代码注释标准规则                   
+├── rules/                 # 规则目录与个人全局规则备份
+│   └── codex-user-global-rules.md # Codex用户全局规则备份
 ├── .agents/               # Codex通用代理配置                         
 │   └── plugins/marketplace.json  # Codex插件市场索引                  
 ├── .claude-plugin/        # Claude Code插件适配层                     
@@ -75,8 +81,9 @@ codex
 欢迎添加新的技能或改进现有内容。贡献时请保持以下边界：
 
 - 技能结构：`skills/<skill-name>/SKILL.md`
-- 规则结构：`rules/<rule-name>.md`
-- 规则文件长度不超过 1000 字符
-- 通用技能和规则不得绑定特定 AI 助手或 IDE 平台
+- 可复用规则结构：`rules/<rule-name>.md`
+- 可复用规则文件建议不超过 1000 字符
+- 通用技能和可复用规则不得绑定特定 AI 助手或 IDE 平台
+- 个人全局规则备份可以放在 `rules/`，但文件名和开头说明必须明确标注备份用途，避免被误认为通用规则
 - Claude Code 专属配置放在 `.claude-plugin/`
 - Codex 专属配置放在 `.codex-plugin/` 和 `.agents/plugins/marketplace.json`
