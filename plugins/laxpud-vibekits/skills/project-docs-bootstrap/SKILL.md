@@ -100,6 +100,7 @@ Use this workflow when the project is new, empty, or early-stage.
    - Write the root README in English by default, even when other project docs use the user's communication language.
    - Keep it short and useful on the first screen.
    - Include purpose, non-goals, current status, first practical milestone, and setup or usage notes that actually exist.
+   - When maintaining a bilingual README pair, add the language switch link in the opening badge or link area so readers can switch language before reading the body.
    - Link only top-level entry files or named technical documents, such as `TODO.md`, `docs/README.cn.md`, `docs/index.md`, or `docs/architecture.md`.
    - Do not link directory-level README files from the root README, including `src/README.md`, `packages/README.md`, or links that resolve to directory READMEs such as `docs/` or `src/`.
    - Avoid dumping full file trees, speculative architecture, or long implementation notes into README.
@@ -116,6 +117,7 @@ Use this workflow when the project is new, empty, or early-stage.
    - Add only documents that reduce future ambiguity, such as `architecture.md`, `design.md`, `data_layout.md`, `implementation_notes.md`, or `results_notes.md`.
    - Put long-form explanations, feasibility notes, historical plans, and design rationale under `docs/`, not in the root README.
    - Maintain `docs/README.cn.md` as the Chinese translation of the English root README.
+   - Add a link back to the English root README in the opening badge or link area of `docs/README.cn.md`.
    - Do not create `docs/README.md` as the technical docs index; use `docs/index.md` so directory README semantics stay separate from the bilingual README contract.
    - Do not link directory-level README files from `docs/README.cn.md`; keep it structurally aligned with the root README and link named top-level or technical documents directly.
 
@@ -158,6 +160,7 @@ When existing docs are scattered, duplicated, stale, or misplaced, read [`refere
 - `TODO.md` is active work; archived plans belong under `docs/archive/` when historical traceability matters.
 - Technical docs should explain durable decisions, data formats, architecture, methodology, results, and implementation notes.
 - Bilingual docs should stay structurally aligned: when `README.md` changes, update `docs/README.cn.md` in the same turn unless the user says not to.
+- Bilingual README pairs should include visible language-switch links in the opening badge or link area: root `README.md` links to `docs/README.cn.md`, and `docs/README.cn.md` links back to `../README.md`.
 - `README.md` and `docs/README.cn.md` should not link directory-level README files. Directory READMEs are navigation aids for maintainers inside a folder, and linking them from public entry documents can confuse entry docs with directory maps.
 - Code identifiers, commands, config keys, paths, terminal output, log messages, and exception names stay in English.
 - User-facing documentation should follow the user's communication language unless the project already has a stronger language convention.
@@ -169,6 +172,7 @@ Before reporting completion, verify the output against this checklist:
 
 - Root `README.md` is English.
 - `docs/README.cn.md` exists as the Chinese translation when the documentation baseline is being created or rewritten.
+- `README.md` and `docs/README.cn.md` have visible language-switch links in their opening badge or link area.
 - `docs/index.md` is used as the technical docs index when multiple technical docs need navigation.
 - `README.md` and `docs/README.cn.md` do not link directory-level README files or directory paths that resolve to README files.
 - Technical details, design rationale, long troubleshooting notes, and historical plans live under `docs/`, not in the root README.
@@ -221,6 +225,7 @@ Use these defaults unless the user or existing repository says otherwise:
 
 - English root `README.md`.
 - Chinese `docs/README.cn.md` as the translation of the root README.
+- Top-of-file language switch links for bilingual README pairs.
 - User-facing docs under `docs/` follow the user's communication language unless the project already has a stronger language convention.
 - `TODO.md` follows the user's communication language, with checkbox tasks and acceptance criteria.
 - `docs/` instead of `doc/` for general project documentation.

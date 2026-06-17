@@ -6,6 +6,7 @@
 [![Codex Plugin](https://img.shields.io/badge/Codex-Plugin-111827)](../.agents/plugins/marketplace.json)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-Plugin-D97706)](../.claude-plugin/marketplace.json)
 [![Platform Neutral](https://img.shields.io/badge/platform-neutral-0F766E)](SKILL_RULE_GUIDELINES.md)
+[![English](https://img.shields.io/badge/README-English-C026D3)](../README.md)
 
 Vibekits 是一组平台无关的可复用 agent skills 和 rules，适用于 Codex、Claude Code 以及兼容 `SKILL.md` 的工作流。
 

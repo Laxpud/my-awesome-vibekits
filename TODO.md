@@ -12,6 +12,8 @@
   - 验收标准：根 README 使用英文，中文翻译位于 `docs/README.cn.md`，技术文档索引位于 `docs/index.md`。
 - [ ] 基于真实仓库使用反馈继续改进 `project-docs-bootstrap`。
   - 验收标准：至少用 2 个不同规模的真实仓库验证后，再决定是否补充大仓库扫描策略、旧路径 redirect note 模板、双语 README 同步检查细则，以及最终报告中的澄清/假设摘要格式。
+- [ ] 建立技能更新测试自动化。
+  - 验收标准：自动检查技能 frontmatter、plugin manifest、marketplace JSON、README 技能表、双语 README 顶部互链和 Markdown 相对链接，能在提交前发现常见同步遗漏。
 
 ## 维护原则
 
