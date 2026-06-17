@@ -1,7 +1,7 @@
 {
   "name": "laxpud-vibekits",
   "description": "Laxpud's reusable skills library for code quality, project standards, and documentation workflows.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Laxpud"
   },
