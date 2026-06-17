@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `.claude-plugin/`：Claude Code插件市场索引，指向统一插件包
 - `plugins/laxpud-vibekits/`：Claude Code 与 Codex 共用的可安装插件包，内部包含各平台插件清单和唯一 `skills/` 目录
 - `.agents/plugins/marketplace.json`：Codex插件市场索引，用于让 `codex plugin marketplace add` 发现本仓库插件
+- `docs/index.md`：技术文档索引；根目录 `README.md` 使用英文，`docs/README.cn.md` 是中文翻译
 
 ## 常用命令
 本项目是纯文档型仓库，无构建/测试/lint命令，常用操作命令：
@@ -38,3 +39,4 @@ codex
 4. **个人备份例外**：个人全局规则备份可以放在 `rules/`，但文件名和开头说明必须明确标注备份用途，避免被误认为通用规则
 5. **适配层隔离**：平台特定配置必须放在对应平台的官方适配位置，例如 Claude Code 使用根 `.claude-plugin/marketplace.json` 与 `plugins/laxpud-vibekits/.claude-plugin/`，Codex 使用 `.agents/plugins/marketplace.json` 与 `plugins/laxpud-vibekits/.codex-plugin/`，不得污染通用技能/规则内容
 6. **单一技能来源**：`plugins/laxpud-vibekits/skills/` 是唯一技能来源，禁止再创建根目录 `skills/` 副本
+7. **文档入口边界**：根目录 `README.md` 保持英文公开入口；中文翻译放在 `docs/README.cn.md`；技术文档索引用 `docs/index.md`，不要重新创建 `docs/README.md` 作为索引

@@ -2,6 +2,8 @@
 
 本规范用于维护 Vibekits 的通用技能、可复用规则和平台适配层。目标是让仓库既能被 Claude Code、Codex 等工具安装，又不把任何平台的专属逻辑污染到共享技能来源中。
 
+文档入口约定：根目录 `README.md` 使用英文，`docs/README.cn.md` 是根 README 的中文翻译，`docs/index.md` 是技术文档索引。不要用 `docs/README.md` 作为技术索引，避免与目录 README 语义混淆。
+
 ## Source of Truth
 
 | 内容 | 权威位置 |
@@ -54,7 +56,7 @@ rules/<rule-name>.md
 - `plugins/laxpud-vibekits/.claude-plugin/plugin.json` 的 `description`、`keywords` 和 `skills` 路径是否同步。
 - `.agents/plugins/marketplace.json` 是否保留 Codex 必需的 `policy.installation`、`policy.authentication` 和 `category`。
 - `.claude-plugin/marketplace.json` 的插件描述、版本、标签和 `source` 是否指向统一插件包。
-- `README.md` 的技能表、安装说明和贡献边界是否仍匹配。
+- `README.md`、`docs/README.cn.md`、`docs/index.md` 的技能表、安装说明、贡献边界和文档入口是否仍匹配。
 
 ## Validation
 
@@ -63,4 +65,5 @@ rules/<rule-name>.md
 - JSON 文件能被解析。
 - 技能 frontmatter 只有 `name` 和 `description`，且目录名与技能名一致。
 - README 和 docs 中的相对链接指向真实文件。
+- 根 README 保持英文，`docs/README.cn.md` 与其结构对齐，`docs/index.md` 作为技术索引存在。
 - `git diff` 中不包含缓存、虚拟环境、本地测试输出或无关改动。
