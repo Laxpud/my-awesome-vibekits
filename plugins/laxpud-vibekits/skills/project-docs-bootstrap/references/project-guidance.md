@@ -31,6 +31,7 @@ When initializing or revising `AGENTS.md`, `CLAUDE.md`, contributor guidance, or
 - Put long architecture, configuration, usage, troubleshooting, and tutorial content in `docs/`.
 - Keep root `README.md` concise and English unless the project or user explicitly sets another public-documentation language.
 - Keep `docs/README.cn.md` structurally aligned with root `README.md` when the bilingual baseline is present.
+- Use `docs/index.md` as the technical docs index when one is needed; avoid `docs/README.md` for that role.
 - Keep implementation details, file responsibilities, data flow, evaluation design, process chains, and troubleshooting notes in named technical docs.
 - Maintain clear documentation ownership: root README for public entry, `TODO.md` for active work, `docs/` for technical details, and `docs/archive/` for completed planning history when traceability matters.
 - Use checkbox TODOs with acceptance criteria for nontrivial work.
@@ -38,6 +39,7 @@ When initializing or revising `AGENTS.md`, `CLAUDE.md`, contributor guidance, or
 - Prefer the user's communication language for user-facing planning docs unless the project already has a stronger language convention.
 - Do not copy personal global preferences into project guidance unless they define a real project-level constraint.
 - When multiple guidance files exist, keep shared project facts consistent and put platform-specific instructions only in the file for that platform.
+- If guidance files disagree about project facts or platform boundaries and repository evidence cannot resolve the conflict, use the Clarification Gate from `SKILL.md` before rewriting them.
 - Keep generated files, caches, virtual environments, local real-data test inputs, and build outputs out of commits unless the project explicitly tracks them.
 - Prefer focused changes. Do not mix unrelated refactors, generated outputs, or user-owned worktree changes into the same commit.
 - Record the repository's existing commit convention when one exists; if none exists and the user asks for a commit, default to Conventional Commits.

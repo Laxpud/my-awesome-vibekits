@@ -10,6 +10,8 @@
   - 验收标准：清单覆盖 Claude marketplace、Codex marketplace、两端 plugin manifest、技能 frontmatter、README 技能表和 JSON 解析验证。
 - [ ] 评估是否需要英文根 README 或 `README.en.md`。
   - 验收标准：明确选择一种双语策略，并保证中文维护者说明仍可从根 README 或 `docs/` 发现。
+- [ ] 基于真实仓库使用反馈继续改进 `project-docs-bootstrap`。
+  - 验收标准：至少用 2 个不同规模的真实仓库验证后，再决定是否补充大仓库扫描策略、旧路径 redirect note 模板、双语 README 同步检查细则，以及最终报告中的澄清/假设摘要格式。
 
 ## 维护原则
 

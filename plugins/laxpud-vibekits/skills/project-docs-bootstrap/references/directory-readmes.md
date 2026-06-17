@@ -8,7 +8,7 @@ Directory READMEs are maps of stable folder boundaries. They should help maintai
 
 They are not public entry documents, generated file catalogs, or substitutes for root README/docs.
 
-`docs/README.md` is a special case: it may exist as the technical docs index, but root `README.md` and `docs/README.cn.md` should still link named technical documents directly instead of treating `docs/README.md` as a public entry target.
+Use `docs/index.md` for the technical docs index when one is needed. Avoid `docs/README.md` for that role so directory README behavior stays separate from the bilingual README contract.
 
 ## When To Add One
 
@@ -20,6 +20,8 @@ Prefer a directory README for:
 
 Do not add one for empty, obvious, or volatile folders.
 
+If the repository evidence does not clearly show whether a directory owns enough behavior to deserve a README, use the Clarification Gate from `SKILL.md` before creating one. For low-impact uncertainty, skip the README and record the possible follow-up in TODO.
+
 ## When Updating Existing Ones
 
 - Read the existing directory README, nearby manifests, entry files, package files, and relevant technical docs before changing content.
@@ -27,6 +29,7 @@ Do not add one for empty, obvious, or volatile folders.
 - Replace stale file catalogs with stable responsibilities, entry points, and links to named docs.
 - Remove or merge obsolete directory READMEs when the folder is empty, obvious, moved, or no longer owns distinct behavior.
 - If deleting or moving a directory README, update nearby links and leave unresolved decisions in TODO or a named technical doc.
+- If existing directory docs disagree with manifests, entry files, or technical docs about ownership, use the Clarification Gate before rewriting the boundary.
 
 ## What To Include
 
@@ -44,6 +47,7 @@ Ground each responsibility in actual repository evidence: directory structure, m
 - Do not repeat long architecture, troubleshooting, or tutorial content; put that in named files under `docs/`.
 - Do not make directory READMEs discoverable from root `README.md` or `docs/README.cn.md`.
 - Do not use links such as `docs/`, `src/`, or `packages/` from public entry documents when those paths resolve to directory README files.
+- Do not create `docs/README.md` as a workaround for a technical docs index; use `docs/index.md`.
 
 Keep directory READMEs discoverable from their owning directory, owning package docs, or a technical docs index when maintainer navigation needs it.
 
