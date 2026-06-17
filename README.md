@@ -48,7 +48,6 @@ codex
 - `code-comment-standard`：代码注释生成与规范化标准。
 - `project-docs-bootstrap`：项目文档初始化、重组与文档契约维护流程。
 - `pyproject-standard`：标准 `pyproject.toml` 配置生成与检查。
-- `zotero-tag-classifier`：Zotero 文献库标签优先分类、Collections 迁移与论文标签建议。
 
 ### 已收录规则
 
@@ -60,8 +59,7 @@ codex
 ├── skills/                # 技能目录                                  
 │   ├── code-comment-standard/  # 代码注释标准技能                     
 │   ├── project-docs-bootstrap/ # 项目文档初始化与重组技能
-│   ├── pyproject-standard/     # 标准pyproject.toml配置技能           
-│   └── zotero-tag-classifier/  # Zotero文献标签分类技能               
+│   └── pyproject-standard/     # 标准pyproject.toml配置技能           
 ├── rules/                 # 规则目录与个人全局规则备份
 │   └── codex-user-global-rules.md # Codex用户全局规则备份
 ├── .agents/               # Codex通用代理配置                         
