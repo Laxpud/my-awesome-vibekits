@@ -8,7 +8,7 @@
       "name": "laxpud-vibekits",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/laxpud-vibekits"
       },
       "policy": {
         "installation": "AVAILABLE",

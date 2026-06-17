@@ -1,0 +1,41 @@
+{
+  "name": "laxpud-vibekits",
+  "version": "1.1.0",
+  "description": "Laxpud's reusable skills library for code quality, project standards, and academic literature classification.",
+  "author": {
+    "name": "Laxpud",
+    "url": "https://github.com/Laxpud"
+  },
+  "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+  "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+  "license": "MIT",
+  "keywords": [
+    "vibekits",
+    "skills",
+    "code-quality",
+    "standardization",
+    "python",
+    "documentation",
+    "zotero",
+    "literature-classification",
+    "research-workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Laxpud Vibekits",
+    "shortDescription": "Reusable skills for code and research work",
+    "longDescription": "A platform-neutral skill collection covering code comment standards, Python project configuration, and Zotero-oriented academic literature classification. The Codex adapter exposes the shared skills without adding platform-specific logic to the skill files.",
+    "developerName": "Laxpud",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
+    "defaultPrompt": [
+      "Use the Zotero tag classifier skill to classify this paper.",
+      "Apply the code comment standard skill to review comments.",
+      "Use the pyproject standard skill to draft project metadata."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
