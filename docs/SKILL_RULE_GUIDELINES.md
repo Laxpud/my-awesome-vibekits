@@ -10,16 +10,16 @@ This repository (`my-awesome-vibekits`) is a **collection of skills and rules** 
 
 ### What This Means
 
-- **DO**: Create reusable skill and rule files that will be added to this repository's `skills/` or `rules/` directories.
+- **DO**: Create reusable skill and rule files that will be added to this repository's `plugins/laxpud-vibekits/skills/` or `rules/` directories.
 - **DO NOT**: Attempt to create skills or rules that would be registered with or configured for any specific AI assistant platform's internal systems.
-- **DO**: Keep platform-specific adapter metadata in the matching adapter folder, such as `.claude-plugin/` or `.codex-plugin/`.
+- **DO**: Keep platform-specific adapter metadata in the matching adapter folder, such as `plugins/laxpud-vibekits/.claude-plugin/` or `plugins/laxpud-vibekits/.codex-plugin/`.
 - **DO**: Keep personal global-rule backups clearly named and labeled when they intentionally live under `rules/`.
 
 ### Skill Structure
 
 Skills should follow this structure:
 ```
-skills/<skill-name>/
+plugins/laxpud-vibekits/skills/<skill-name>/
 └── SKILL.md
 ```
 

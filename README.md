@@ -2,7 +2,7 @@
 
 实用技能（skills）和规则（rules）集合，用于沉淀、复用和分享跨项目工作流。
 
-本仓库的核心内容保持平台无关：`skills/` 存放通用技能，`rules/` 优先存放通用规则；`.claude-plugin/`、`.codex-plugin/`、`plugins/laxpud-vibekits/` 与 `.agents/plugins/marketplace.json` 仅作为不同平台的适配层。
+本仓库的核心内容保持平台无关：`plugins/laxpud-vibekits/skills/` 存放通用技能，`rules/` 优先存放通用规则；`plugins/laxpud-vibekits/.claude-plugin/`、`plugins/laxpud-vibekits/.codex-plugin/`、`.claude-plugin/marketplace.json` 与 `.agents/plugins/marketplace.json` 仅作为不同平台的适配层。
 
 按维护者个人备份需求，`rules/` 也可以保存明确标注用途的个人全局规则备份。这类文件用于 GitHub 备份和人工迁移，不作为平台无关通用规则对外分发。
 
@@ -11,7 +11,7 @@
 ### 通用方式
 
 1. 克隆仓库到本地
-2. 浏览 `skills/` 或 `rules/` 目录查看可用内容
+2. 浏览 `plugins/laxpud-vibekits/skills/` 或 `rules/` 目录查看可用内容
 3. 按照各目录中的说明文件使用
 
 ### Claude Code 插件使用
@@ -28,7 +28,7 @@
 
 ### Codex 插件使用
 
-Codex 推荐通过插件（plugin）分发可复用 skills。本仓库提供 `.agents/plugins/marketplace.json` 作为插件市场索引，并通过 `plugins/laxpud-vibekits/.codex-plugin/plugin.json` 暴露随插件打包的 `skills/` 目录；根目录 `skills/` 仍是平台无关源内容。
+Codex 推荐通过插件（plugin）分发可复用 skills。本仓库提供 `.agents/plugins/marketplace.json` 作为插件市场索引，并通过 `plugins/laxpud-vibekits/.codex-plugin/plugin.json` 暴露统一插件包内的 `skills/` 目录。
 
 添加插件市场后，在 Codex 的插件目录中安装：
 
@@ -56,18 +56,19 @@ codex
 ## 目录结构
 
 ```
-├── skills/                # 技能目录                                  
-│   ├── code-comment-standard/  # 代码注释标准技能                     
-│   ├── project-docs-bootstrap/ # 项目文档初始化与重组技能
-│   └── pyproject-standard/     # 标准pyproject.toml配置技能           
 ├── rules/                 # 规则目录与个人全局规则备份
 │   └── codex-user-global-rules.md # Codex用户全局规则备份
 ├── .agents/               # Codex通用代理配置                         
 │   └── plugins/marketplace.json  # Codex插件市场索引                  
-├── .claude-plugin/        # Claude Code插件适配层                     
-├── .codex-plugin/         # Codex插件清单                             
-├── plugins/               # Codex marketplace 可安装插件包            
-│   └── laxpud-vibekits/   # laxpud-vibekits 插件包                    
+├── .claude-plugin/        # Claude Code插件市场索引                   
+├── plugins/               # 可安装插件包                              
+│   └── laxpud-vibekits/   # laxpud-vibekits 统一插件包                
+│       ├── .claude-plugin/    # Claude Code插件清单                   
+│       ├── .codex-plugin/     # Codex插件清单                         
+│       └── skills/            # 通用技能唯一来源                      
+│           ├── code-comment-standard/  # 代码注释标准技能             
+│           ├── project-docs-bootstrap/ # 项目文档初始化与重组技能     
+│           └── pyproject-standard/     # 标准pyproject.toml配置技能   
 ├── docs/                  # 项目文档                                  
 ├── .gitignore             # Git忽略文件                               
 ├── CLAUDE.md              # Claude Code Guidelines                    
@@ -80,11 +81,11 @@ codex
 
 欢迎添加新的技能或改进现有内容。贡献时请保持以下边界：
 
-- 技能结构：`skills/<skill-name>/SKILL.md`
+- 技能结构：`plugins/laxpud-vibekits/skills/<skill-name>/SKILL.md`
 - 可复用规则结构：`rules/<rule-name>.md`
 - 可复用规则文件建议不超过 1000 字符
 - 通用技能和可复用规则不得绑定特定 AI 助手或 IDE 平台
 - 个人全局规则备份可以放在 `rules/`，但文件名和开头说明必须明确标注备份用途，避免被误认为通用规则
-- Claude Code 专属配置放在 `.claude-plugin/`
-- Codex 专属配置放在 `.codex-plugin/`、`plugins/laxpud-vibekits/` 和 `.agents/plugins/marketplace.json`
-- 更新根目录 `skills/` 后，同步更新 `plugins/laxpud-vibekits/skills/`，确保 GitHub marketplace 安装包包含最新技能内容
+- Claude Code 专属配置放在根 `.claude-plugin/marketplace.json` 和 `plugins/laxpud-vibekits/.claude-plugin/`
+- Codex 专属配置放在 `.agents/plugins/marketplace.json` 和 `plugins/laxpud-vibekits/.codex-plugin/`
+- `plugins/laxpud-vibekits/skills/` 是唯一技能来源，禁止再创建根目录 `skills/` 副本
