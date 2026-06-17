@@ -1,6 +1,6 @@
 ---
 name: "code-comment-standard"
-description: "代码注释标准化技能，约束代码注释生成行为，明确不同编程语言的注释规范、执行流程与质量标准。适用于代码注释生成、补全、规范化整改场景。"
+description: "规范代码注释生成、补全、审查和整改；standardize comments, docstrings, TODOs, and public API documentation across programming languages. Use when improving code comments while preserving code behavior and existing style."
 ---
 
 # 代码标准化注释生成 Skill

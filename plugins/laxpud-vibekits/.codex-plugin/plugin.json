@@ -1,7 +1,7 @@
 {
   "name": "laxpud-vibekits",
   "version": "1.1.1",
-  "description": "Laxpud's reusable skills library for code quality, project standards, and documentation workflows.",
+  "description": "Laxpud's platform-neutral reusable skills for code comments, Python project standards, and documentation workflows.",
   "author": {
     "name": "Laxpud",
     "url": "https://github.com/Laxpud"
@@ -11,18 +11,23 @@
   "license": "MIT",
   "keywords": [
     "vibekits",
+    "agent-skills",
     "skills",
+    "claude-code",
+    "codex",
     "code-quality",
-    "standardization",
+    "comments",
     "python",
+    "project-standards",
     "documentation",
-    "project-docs"
+    "project-docs",
+    "rules"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Laxpud Vibekits",
-    "shortDescription": "Reusable skills for code and docs work",
-    "longDescription": "A platform-neutral skill collection covering code comment standards, Python project configuration, and project documentation workflows. The Codex adapter exposes the shared skills without adding platform-specific logic to the skill files.",
+    "shortDescription": "Reusable skills for comments, pyproject, and docs",
+    "longDescription": "A platform-neutral skill collection for code comment standards, Python pyproject.toml configuration, and project documentation workflows. The Codex adapter exposes the shared skills without adding platform-specific logic to the skill files.",
     "developerName": "Laxpud",
     "category": "Productivity",
     "capabilities": [
@@ -30,9 +35,9 @@
     ],
     "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
     "defaultPrompt": [
-      "Apply the code comment standard skill to review comments.",
-      "Use the pyproject standard skill to draft project metadata.",
-      "Use the project docs bootstrap skill to organize docs."
+      "Use code-comment-standard to review and improve comments in this codebase.",
+      "Use pyproject-standard when creating or editing pyproject.toml.",
+      "Use project-docs-bootstrap to organize README, TODO, docs, and project guidance."
     ],
     "brandColor": "#2563EB"
   }

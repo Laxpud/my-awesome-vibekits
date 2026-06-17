@@ -1,6 +1,6 @@
 ---
 name: "pyproject-standard"
-description: "Enforces standard configuration for pyproject.toml. Invoke when creating or modifying pyproject.toml to ensure compliance with project standards."
+description: "Standardize Python pyproject.toml configuration for uv and hatchling projects. Use when creating or editing pyproject.toml, checking project metadata, dynamic versioning, dependencies, license, classifiers, scripts, or uv index settings."
 ---
 
 # Pyproject Standard
