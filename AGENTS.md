@@ -62,10 +62,13 @@ Vibekits 是一个平台无关的 reusable skills 和 rules 仓库。它的核�
 本项目是文档型仓库，无构建、测试或 lint 流程。文档或插件元数据变更后，优先执行：
 
 ```bash
+.venv\Scripts\python.exe -X utf8 scripts\sync_plugin_metadata.py
 .venv\Scripts\python.exe -X utf8 C:\Users\YangFan\.codex\skills\.system\skill-creator\scripts\quick_validate.py plugins\laxpud-vibekits\skills\project-docs-bootstrap
 .venv\Scripts\python.exe -X utf8 C:\Users\YangFan\.codex\skills\.system\plugin-creator\scripts\validate_plugin.py plugins\laxpud-vibekits
 git diff --check
 ```
+
+发布 bump 使用 `scripts\sync_plugin_metadata.py --set-version <semver>`，不要分别手工修改 manifest、marketplace 和 README 中的版本。
 
 还应按变更范围检查 JSON 是否可解析、Markdown 相对链接是否存在、根 README 是否仍为英文，以及 `docs/README.cn.md` 是否与根 README 结构对齐。
 

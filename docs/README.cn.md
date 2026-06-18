@@ -62,6 +62,8 @@ git clone https://github.com/Laxpud/my-awesome-vibekits.git
 - [`docs/index.md`](index.md)：技术文档索引。
 - [`docs/README.cn.md`](README.cn.md)：根 README 的中文翻译。
 - [`docs/SKILL_RULE_GUIDELINES.md`](SKILL_RULE_GUIDELINES.md)：技能、规则和适配层维护规范。
+- [`docs/PLUGIN_UPDATE.md`](PLUGIN_UPDATE.md)：Codex 与 Claude Code 的插件发布和更新流程。
+- [`docs/CODEX_INSTALL_SMOKE_TEST.md`](CODEX_INSTALL_SMOKE_TEST.md)：可重复执行的 Codex 本地与 GitHub 远端安装链路检查。
 - [`TODO.md`](../TODO.md)：当前活跃维护事项。
 
 ## 已收录技能
@@ -106,6 +108,8 @@ docs/                  # technical docs, Chinese README, and maintenance notes
 - 可复用规则放在 `rules/<rule-name>.md`，并保持短小、清晰、平台无关。
 - 技能能力或描述变化时，同步技能表、Claude/Codex plugin manifest 和 marketplace 元数据。
 - 平台专属行为不要写进共享 `SKILL.md`。
+- 发布时运行 `python scripts/sync_plugin_metadata.py --set-version <semver>`；只读一致性检查则省略 `--set-version`。
+- 修改 Codex marketplace、manifest 或安装说明后，运行 `python scripts/check_codex_install.py`；发布后追加 `--remote`。
 - 发布前验证 JSON 清单、Markdown 链接、技能 frontmatter 和 Git diff。
 
 ## 许可证

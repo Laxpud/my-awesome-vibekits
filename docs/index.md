@@ -8,6 +8,8 @@
 | --- | --- |
 | [README.cn.md](README.cn.md) | 根 README 的中文翻译。 |
 | [SKILL_RULE_GUIDELINES.md](SKILL_RULE_GUIDELINES.md) | 维护通用技能、可复用规则和平台适配层时使用的结构规范、同步清单和验证要求。 |
+| [PLUGIN_UPDATE.md](PLUGIN_UPDATE.md) | 发布插件后，在 Codex App/CLI 与 Claude Code Desktop/CLI 中刷新和重新加载插件。 |
+| [CODEX_INSTALL_SMOKE_TEST.md](CODEX_INSTALL_SMOKE_TEST.md) | 修改 Codex marketplace、manifest 或安装说明后，验证本地与 GitHub 远端安装链路。 |
 | [../TODO.md](../TODO.md) | 当前活跃维护事项、验收标准和后续改进候选。 |
 | [../AGENTS.md](../AGENTS.md) | Codex 在本仓库工作时使用的项目级约束。 |
 | [../CLAUDE.md](../CLAUDE.md) | Claude Code 在本仓库工作时使用的项目级约束。 |
@@ -29,4 +31,4 @@
 - 修改技能能力、名称或触发描述时，同步检查 README 技能表、Claude/Codex plugin manifest 和 marketplace 描述。
 - 新增平台适配信息时，只写入对应平台适配目录，不写进共享技能正文。
 - 可复用规则保持短小、清晰、平台无关；个人全局规则备份必须在文件名和开头说明中标注备份用途。
-- 文档调整完成后，验证 JSON 解析、Markdown 链接、技能元数据和 `git diff`。
+- 文档调整完成后，验证 JSON 解析、Markdown 链接、技能元数据和 `git diff`；涉及 Codex 安装元数据时运行 `python scripts/check_codex_install.py`。

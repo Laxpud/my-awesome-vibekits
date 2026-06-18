@@ -62,6 +62,8 @@ Useful entry points:
 - [`docs/index.md`](docs/index.md): technical documentation index.
 - [`docs/README.cn.md`](docs/README.cn.md): Chinese translation of this README.
 - [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md): skill, rule, and adapter maintenance rules.
+- [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md): release and update workflows for Codex and Claude Code plugins.
+- [`docs/CODEX_INSTALL_SMOKE_TEST.md`](docs/CODEX_INSTALL_SMOKE_TEST.md): repeatable local and published-GitHub checks for the Codex installation path.
 - [`TODO.md`](TODO.md): active maintenance work.
 
 ## Included Skills
@@ -106,6 +108,8 @@ When adding or changing skills and rules:
 - Put reusable rules in `rules/<rule-name>.md`, and keep them short, clear, and platform-neutral.
 - Update the skill table, Claude/Codex plugin manifests, and marketplace metadata when a skill's capability or description changes.
 - Keep platform-specific behavior out of shared `SKILL.md` files.
+- Run `python scripts/sync_plugin_metadata.py --set-version <semver>` for releases; use the same command without `--set-version` for a read-only consistency check.
+- After changing the Codex marketplace, manifest, or install instructions, run `python scripts/check_codex_install.py`; after publishing, add `--remote`.
 - Validate JSON manifests, Markdown links, skill frontmatter, and Git diff before publishing.
 
 ## License

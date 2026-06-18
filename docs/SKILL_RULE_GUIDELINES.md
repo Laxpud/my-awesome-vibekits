@@ -60,6 +60,18 @@ rules/<rule-name>.md
 
 ## Validation
 
+插件版本以 `plugins/laxpud-vibekits/.codex-plugin/plugin.json` 为权威源。发布前不要逐个文件手工修改版本；使用：
+
+```bash
+python scripts/sync_plugin_metadata.py --set-version <semver>
+```
+
+该命令同步 Codex/Claude manifest、Claude marketplace 以及中英文 README 的版本展示，并立即校验两套 marketplace 的插件名、插件路径和共享 `skills` 路径。只检查而不写入时运行：
+
+```bash
+python scripts/sync_plugin_metadata.py
+```
+
 文档型变更至少执行以下检查：
 
 - JSON 文件能被解析。
@@ -67,3 +79,11 @@ rules/<rule-name>.md
 - README 和 docs 中的相对链接指向真实文件。
 - 根 README 保持英文，`docs/README.cn.md` 与其结构对齐，`docs/index.md` 作为技术索引存在。
 - `git diff` 中不包含缓存、虚拟环境、本地测试输出或无关改动。
+
+修改 `.agents/plugins/marketplace.json`、Codex plugin manifest 或 README 安装说明后，还必须运行：
+
+```bash
+python scripts/check_codex_install.py
+```
+
+变更推送到 GitHub 后，用 `python scripts/check_codex_install.py --remote` 检查已发布 checkout。详细契约和边界见 [Codex GitHub 安装 Smoke Test](CODEX_INSTALL_SMOKE_TEST.md)。
