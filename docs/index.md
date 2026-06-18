@@ -8,7 +8,7 @@
 | --- | --- |
 | [README.cn.md](README.cn.md) | 根 README 的中文翻译。 |
 | [SKILL_RULE_GUIDELINES.md](SKILL_RULE_GUIDELINES.md) | 维护通用技能、可复用规则和平台适配层时使用的结构规范、同步清单和验证要求。 |
-| [PLUGIN_UPDATE.md](PLUGIN_UPDATE.md) | 发布插件后，在 Codex App/CLI 与 Claude Code Desktop/CLI 中刷新和重新加载插件。 |
+| [PLUGIN_UPDATE.md](PLUGIN_UPDATE.md) | Codex/Claude Code 手工更新方式，以及隔离 E2E、自动晋级、回滚和报告说明。 |
 | [CODEX_INSTALL_SMOKE_TEST.md](CODEX_INSTALL_SMOKE_TEST.md) | 修改 Codex marketplace、manifest 或安装说明后，验证本地与 GitHub 远端安装链路。 |
 | [../TODO.md](../TODO.md) | 当前活跃维护事项、验收标准和后续改进候选。 |
 | [../AGENTS.md](../AGENTS.md) | Codex 在本仓库工作时使用的项目级约束。 |

@@ -12,8 +12,14 @@
   - 验收标准：根 README 使用英文，中文翻译位于 `docs/README.cn.md`，技术文档索引位于 `docs/index.md`。
 - [ ] 基于真实仓库使用反馈继续改进 `project-docs-bootstrap`。
   - 验收标准：至少用 2 个不同规模的真实仓库验证后，再决定是否补充大仓库扫描策略、旧路径 redirect note 模板、双语 README 同步检查细则，以及最终报告中的澄清/假设摘要格式。
-- [ ] 建立技能更新测试自动化。
-  - 验收标准：自动检查技能 frontmatter、plugin manifest、marketplace JSON、README 技能表、双语 README 顶部互链和 Markdown 相对链接，能在提交前发现常见同步遗漏。
+- [ ] 建立插件更新端到端测试自动化。
+  - 验收标准：
+    - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。
+    - 更新后校验实际安装版本、插件来源、payload digest 和 `pyproject-standard/SKILL.md` 路径；默认不得调用模型或消耗 token，可用 `--skill-smoke` 额外验证新会话中的 skill 发现与调用。
+    - 只有两端隔离测试及临时远端分支清理全部成功，并显式传入 `--promote` 时，才更新日常用户配置；任一门禁失败不得修改日常安装。
+    - 晋级覆盖 Codex 实例与 Claude Code 的全部 `user`、`project`、`local` 实例，保持原 scope、projectPath 和 enabled 状态；任一失败必须恢复两端快照。
+    - 晋级后再次校验两端 version、source 和 digest，并提示新建会话或重新加载插件；隔离测试产生的 marketplace、缓存、配置和凭据副本必须清理。
+    - 仅在 Windows Live E2E 完成真实 `1.1.0 → 1.1.1` 测试，并验证一次幂等 `--promote` 后勾选本项。
 
 ## 维护原则
 

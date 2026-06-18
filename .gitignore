@@ -29,3 +29,6 @@ ref/
 build/
 dist/
 *.egg-info/
+
+# 插件更新端到端测试报告
+artifacts/plugin-update-e2e/

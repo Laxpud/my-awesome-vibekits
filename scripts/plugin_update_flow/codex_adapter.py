@@ -1,0 +1,159 @@
+"""Codex plugin CLI 的窄适配层。"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Mapping, Protocol, Sequence
+
+from .git_channel import digest_directory
+from .models import Artifact, Installation
+from .runtime import CommandResult, RetryPolicy
+from .smoke import SMOKE_PROMPT, parse_codex_smoke
+
+
+PLUGIN_NAME = "laxpud-vibekits"
+MARKETPLACE_NAME = "laxpud-vibekits"
+PLUGIN_ID = f"{PLUGIN_NAME}@{MARKETPLACE_NAME}"
+EXPECTED_REPOSITORY = "github.com/laxpud/my-awesome-vibekits"
+REQUIRED_SKILL = Path("skills/pyproject-standard/SKILL.md")
+
+
+class Runner(Protocol):
+    def run(self, args: list[str], **kwargs: object) -> CommandResult: ...
+
+
+class CodexAdapter:
+    """构造 Codex 命令，并把输出归一化为平台无关安装实例。"""
+
+    def __init__(
+        self,
+        runner: Runner,
+        *,
+        env: Mapping[str, str] | None = None,
+        command: Sequence[str] = ("codex",),
+    ) -> None:
+        self.runner = runner
+        self.env = dict(env or {})
+        self.command = tuple(command)
+
+    def add_marketplace(self, source: str, branch: str) -> None:
+        self.runner.run(
+            [
+                *self.command,
+                "plugin",
+                "marketplace",
+                "add",
+                source,
+                "--ref",
+                branch,
+                "--json",
+            ],
+            env=self.env,
+            retry=RetryPolicy(),
+        )
+
+    def install_plugin(self) -> None:
+        self.runner.run(
+            [*self.command, "plugin", "add", PLUGIN_ID, "--json"],
+            env=self.env,
+            retry=RetryPolicy(),
+        )
+
+    def update_plugin(self) -> None:
+        self.runner.run(
+            [
+                *self.command,
+                "plugin",
+                "marketplace",
+                "upgrade",
+                MARKETPLACE_NAME,
+                "--json",
+            ],
+            env=self.env,
+            retry=RetryPolicy(),
+        )
+        self.install_plugin()
+
+    def list_instances(self) -> list[Installation]:
+        result = self.runner.run(
+            [*self.command, "plugin", "list", "--json"], env=self.env
+        )
+        value = json.loads(result.stdout)
+        installed = value.get("installed") if isinstance(value, dict) else None
+        if not isinstance(installed, list):
+            raise ValueError("Codex plugin list has no installed array")
+        instances: list[Installation] = []
+        for item in installed:
+            if not isinstance(item, dict) or item.get("pluginId") != PLUGIN_ID:
+                continue
+            source = item.get("source")
+            marketplace_source = item.get("marketplaceSource")
+            path = source.get("path") if isinstance(source, dict) else None
+            remote = (
+                marketplace_source.get("source")
+                if isinstance(marketplace_source, dict)
+                else None
+            )
+            if not isinstance(path, str):
+                raise ValueError("Codex target plugin has no source.path")
+            instances.append(
+                Installation(
+                    platform="codex",
+                    plugin_id=PLUGIN_ID,
+                    marketplace=MARKETPLACE_NAME,
+                    version=str(item.get("version", "")),
+                    enabled=bool(item.get("enabled", False)),
+                    install_path=Path(path),
+                    source=remote if isinstance(remote, str) else None,
+                )
+            )
+        return instances
+
+    def verify_target(self, artifact: Artifact) -> Installation:
+        instances = self.list_instances()
+        if len(instances) != 1:
+            raise ValueError(f"expected one Codex installation, found {len(instances)}")
+        instance = instances[0]
+        source = (instance.source or "").strip().lower()
+        source = source.removeprefix("https://").removeprefix("http://")
+        source = source.removeprefix("git@github.com:")
+        source = source.removesuffix(".git").rstrip("/")
+        if source != EXPECTED_REPOSITORY:
+            raise ValueError(
+                f"Codex marketplace source mismatch: {instance.source!r}"
+            )
+        if not (instance.install_path / REQUIRED_SKILL).is_file():
+            raise ValueError(
+                f"Codex installation is missing pyproject-standard: {REQUIRED_SKILL}"
+            )
+        digest = digest_directory(instance.install_path)
+        if instance.version != artifact.version:
+            raise ValueError(
+                f"Codex version mismatch: {instance.version!r} != {artifact.version!r}"
+            )
+        if digest != artifact.plugin_digest:
+            raise ValueError(f"Codex plugin digest mismatch: {digest} != {artifact.plugin_digest}")
+        return Installation(**{**instance.__dict__, "plugin_digest": digest})
+
+    def run_smoke(self, cwd: Path, schema_path: Path) -> dict[str, str]:
+        result = self.runner.run(
+            [
+                *self.command,
+                "exec",
+                "--ephemeral",
+                "--skip-git-repo-check",
+                "--sandbox",
+                "read-only",
+                "--output-schema",
+                str(schema_path),
+                "--json",
+                "--cd",
+                str(cwd),
+                SMOKE_PROMPT,
+            ],
+            cwd=cwd,
+            env=self.env,
+            retry=RetryPolicy(),
+        )
+        return parse_codex_smoke(result.stdout)

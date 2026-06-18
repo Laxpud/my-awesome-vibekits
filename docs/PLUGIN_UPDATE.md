@@ -17,6 +17,101 @@ python scripts/check_codex_install.py
 python scripts/check_codex_install.py --remote
 ```
 
+## 自动化升级门禁
+
+`scripts/plugin_update_e2e.py` 会通过真实 Codex CLI 与 Claude Code CLI 验证“旧版安装 → marketplace 刷新 → 目标版更新”的完整链路。默认只检查 version、marketplace/source、payload digest 和已安装的 `skills/pyproject-standard/SKILL.md`，不调用模型、不消耗 token，也不修改日常安装：
+
+```bash
+python scripts/plugin_update_e2e.py
+python scripts/plugin_update_e2e.py --from-ref <commit-or-tag>
+```
+
+未指定 `--from-ref` 时，脚本从目标提交向后查找最近一个 manifest 版本不同的祖先。目标默认是 `origin/main`，也可显式设置报告和超时：
+
+```bash
+python scripts/plugin_update_e2e.py \
+  --target-ref origin/main \
+  --report artifacts/plugin-update-e2e/result.json \
+  --timeout 300
+```
+
+每次运行会创建唯一的远端分支 `automation/plugin-e2e/<run-id>`，先指向旧提交，再以 `--force-with-lease` 推进到目标提交。两端都从该分支安装旧版和更新目标版；退出、失败、超时或中断时均尝试删除分支。远端分支未清理成功时，日常晋级不会开始。
+
+隔离环境只复制 Codex `auth.json` 和 Claude `.credentials.json`，不会复制日常 `config.toml`、插件、skills、sessions 或 rules。凭据副本位于当前用户的私有临时目录，正常和异常退出都会删除；JSON 报告不会记录凭据内容、环境变量值或未脱敏配置。
+
+### 可选的模型 smoke test
+
+只有需要额外验证“客户端能够发现并调用 skill”时才添加 `--skill-smoke`：
+
+```bash
+python scripts/plugin_update_e2e.py --skill-smoke
+```
+
+该选项会调用 Codex 与 Claude 模型并消耗 token，不是安装或更新验收的默认条件。脚本在无 Git 仓库、无 Vibekits 源码的空目录中启动两端的新会话，并显式调用已安装的 `pyproject-standard`；两端必须分别返回以下固定值：
+
+```json
+{
+  "buildBackend": "hatchling.build",
+  "packageManager": "uv",
+  "versionPath": "src/__init__.py",
+  "licenseFile": "LICENSE",
+  "indexName": "tsinghua",
+  "indexUrl": "https://pypi.tuna.tsinghua.edu.cn/simple"
+}
+```
+
+启用后，JSON Schema 和固定值必须同时通过。版本、正式来源、skill 路径和 payload digest 始终先验证；确定性契约错误不会重试，只有 Git/network、rate limit 和 transport timeout 最多重试三次。
+
+payload digest 覆盖两端实际安装的共享内容，不包含只用于运输的 `.codex-plugin/`、`.claude-plugin/` manifest；UTF-8 文本在哈希前统一换行，因此同一 payload 在 Windows CRLF 与 Git LF checkout 中结果一致，二进制资源仍逐字节校验。
+
+### 更新日常安装
+
+只有测试通过后确实要更新当前用户安装时，才显式添加 `--promote`：
+
+```bash
+python scripts/plugin_update_e2e.py --promote
+```
+
+晋级模式额外要求：
+
+- Git 工作区干净，并且 `HEAD`、`origin/main`、`--target-ref` 指向同一提交。
+- Codex 与 Claude Code 至少各有一个已安装实例。
+- Codex App、Claude Desktop 和交互式 CLI 已完全退出。
+- 没有另一个 `--promote` 进程持有互斥锁。
+
+脚本会更新 Codex 日常实例以及 Claude Code 的全部 `user`、`project`、`local` 实例，保持每个实例原有的 `scope`、`projectPath` 和 `enabled` 状态。已经达到目标 version 和 digest 的实例按幂等成功处理，不刷新 marketplace，也不创建快照。
+
+更新前只备份以下状态：
+
+- Codex：`config.toml`、`.tmp/marketplaces/laxpud-vibekits/`。
+- Claude Code：`plugins/installed_plugins.json`、`plugins/known_marketplaces.json`、`plugins/marketplaces/laxpud-vibekits-dev/`、`plugins/cache/laxpud-vibekits-dev/`。
+
+任一平台更新或最终校验失败时，两端都恢复到晋级前状态。回滚成功返回退出码 `2`；回滚失败返回 `3`，保留快照，并在报告中记录 `recoveryPath` 和逐实例 `manualCommands`。成功后 Codex 需要新建线程；Claude Code 运行 `/reload-plugins` 或重启会话。
+
+### 报告和退出码
+
+默认报告位于 `artifacts/plugin-update-e2e/<run-id>.json`，该目录不会提交到 Git。报告使用 `schemaVersion: 1`，包含固定的 baseline/target commit、version、digest，两端独立结果、promotion/rollback 和 cleanup 状态。
+
+| 退出码 | 含义 |
+| --- | --- |
+| `0` | 隔离测试成功；若请求晋级，则晋级也成功。 |
+| `1` | 隔离安装、更新、校验、可选 smoke 或清理失败。 |
+| `2` | 日常晋级失败，但两端自动回滚成功。 |
+| `3` | 自动回滚失败，需要按报告人工修复。 |
+| `4` | 参数、Git 状态、客户端进程、认证、安装状态或运行环境不满足要求。 |
+
+### 首次 Windows Live E2E
+
+真实 E2E 会写入临时远端分支，因此不在 GitHub Actions 中运行。首次发布此工具时采用两阶段 bootstrap：
+
+```bash
+python -m unittest discover -s tests -p "test_plugin_update_*.py" -v
+python scripts/plugin_update_e2e.py --from-ref b20b9c2
+python scripts/plugin_update_e2e.py --from-ref b20b9c2 --promote
+```
+
+第一步和静态 validator 通过后，先把工具推送到 `origin/main`，再关闭 Codex App、Claude Desktop 和交互式 CLI，运行后两步。预期验证真实 `1.1.0 → 1.1.1`，且第二次 `--promote` 验证幂等行为。完成前不要勾选 `TODO.md` 中的端到端自动化事项。
+
 ## Codex
 
 ### Codex CLI
