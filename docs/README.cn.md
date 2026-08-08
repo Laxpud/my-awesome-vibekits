@@ -1,6 +1,6 @@
 # Vibekits
 
-[![Version](https://img.shields.io/badge/version-1.1.1-2563EB)](../plugins/laxpud-vibekits/.codex-plugin/plugin.json)
+[![Version](https://img.shields.io/badge/version-1.1.2-2563EB)](../plugins/laxpud-vibekits/.codex-plugin/plugin.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 [![Skills](https://img.shields.io/badge/skills-3-brightgreen)](#已收录技能)
 [![Codex Plugin](https://img.shields.io/badge/Codex-Plugin-111827)](../.agents/plugins/marketplace.json)
@@ -10,13 +10,13 @@
 
 Vibekits 是一组平台无关的可复用 agent skills 和 rules，适用于 Codex、Claude Code 以及兼容 `SKILL.md` 的工作流。
 
-这个仓库有意保持文档优先：共享技能来源只放在一个插件包中，Codex 和 Claude Code 的适配层都指向同一份来源，不把平台专属逻辑写进通用技能。
+这个仓库有意保持文档优先：共享插件包是可复用技能的唯一来源，Codex 和 Claude Code 适配层暴露同一份来源，不把平台专属逻辑写入通用技能。
 
 ## 当前状态
 
-- 当前插件版本：`1.1.1`。
-- 已收录技能：代码注释标准、Python `pyproject.toml` 标准、项目文档引导。
-- 本仓库没有构建步骤；验证重点是 JSON 清单、技能元数据、Markdown 链接和仓库结构。
+- 当前插件版本：`1.1.2`。
+- 已收录技能覆盖代码注释、Python `pyproject.toml`，以及项目文档所有权和维护工作流。
+- 本仓库以文档形式分发，没有构建步骤；验证重点是插件元数据、技能结构、Markdown 链接和更新工具。
 
 ## 从这里开始
 
@@ -38,7 +38,7 @@ Vibekits 是一组平台无关的可复用 agent skills 和 rules，适用于 Co
 安装后开启新会话，可以直接描述任务，也可以显式要求使用某个 skill：
 
 ```text
-Use project-docs-bootstrap to reorganize this repository docs.
+使用 project-docs-bootstrap 按文档所有权规则整理这个仓库。
 ```
 
 ### Codex
@@ -49,7 +49,7 @@ codex
 /plugins
 ```
 
-在插件列表中选择 `laxpud-vibekits`。开启新线程后，可以直接描述任务，或显式引用插件/技能。
+在插件列表中选择 `laxpud-vibekits`。开启新线程后，可以直接描述任务，或显式引用插件或技能。
 
 ### 手动浏览
 
@@ -57,21 +57,14 @@ codex
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
-常用入口：
-
-- [`docs/index.md`](index.md)：技术文档索引。
-- [`docs/README.cn.md`](README.cn.md)：根 README 的中文翻译。
-- [`docs/SKILL_RULE_GUIDELINES.md`](SKILL_RULE_GUIDELINES.md)：技能、规则和适配层维护规范。
-- [`docs/PLUGIN_UPDATE.md`](PLUGIN_UPDATE.md)：Codex 与 Claude Code 的插件发布和更新流程。
-- [`docs/CODEX_INSTALL_SMOKE_TEST.md`](CODEX_INSTALL_SMOKE_TEST.md)：可重复执行的 Codex 本地与 GitHub 远端安装链路检查。
-- [`TODO.md`](../TODO.md)：当前活跃维护事项。
+克隆后，从 [技术文档索引](index.md) 或 [当前里程碑](../TODO.md) 开始。
 
 ## 已收录技能
 
 | Skill | 适用场景 | 提供内容 |
 | --- | --- | --- |
-| [`code-comment-standard`](../plugins/laxpud-vibekits/skills/code-comment-standard/SKILL.md) | 需要生成、审查、补全或规范代码注释、docstring、TODO、公共 API 文档时。 | 跨语言注释层级、质量标准、反模式和维护者视角的注释流程。 |
-| [`project-docs-bootstrap`](../plugins/laxpud-vibekits/skills/project-docs-bootstrap/SKILL.md) | 新项目、早期项目或文档混乱的仓库需要明确 README、TODO、docs 和项目 guidance 边界时。 | 公开入口文档、活跃 TODO、技术文档、归档边界和协作说明的整理流程。 |
+| [`code-comment-standard`](../plugins/laxpud-vibekits/skills/code-comment-standard/SKILL.md) | 需要生成、审查、补全或规范代码注释、docstring、TODO 或公共 API 文档时。 | 跨语言注释层级、质量标准、反模式和维护者视角的注释流程。 |
+| [`project-docs-bootstrap`](../plugins/laxpud-vibekits/skills/project-docs-bootstrap/SKILL.md) | 仓库需要明确文档所有权、里程碑式 TODO 工作流或简短的项目指导路由时。 | README/TODO/docs 所有权、里程碑验收规则、项目指导文件审查，以及归档和目录 README 边界。 |
 | [`pyproject-standard`](../plugins/laxpud-vibekits/skills/pyproject-standard/SKILL.md) | 创建或修改 Python 项目的 `pyproject.toml` 时。 | `uv`、`hatchling`、动态版本、许可证、依赖、分类器、脚本入口和包索引配置标准。 |
 
 ## 已收录规则
@@ -80,38 +73,14 @@ git clone https://github.com/Laxpud/my-awesome-vibekits.git
 | --- | --- |
 | [`codex-user-global-rules`](../rules/codex-user-global-rules.md) | Codex 用户全局规则备份，用于个人迁移和版本留档；它不是平台无关通用规则。 |
 
-## 仓库原则
+## 维护
 
-- **平台无关核心**：共享技能和可复用规则不得依赖特定 AI 助手、IDE 或运行时。
-- **适配层隔离**：Claude Code 配置放在 `.claude-plugin/` 和 `plugins/laxpud-vibekits/.claude-plugin/`；Codex 配置放在 `.agents/` 和 `plugins/laxpud-vibekits/.codex-plugin/`。
-- **单一技能来源**：`plugins/laxpud-vibekits/skills/` 是唯一技能来源，禁止创建根目录 `skills/` 副本。
-- **明确标注备份**：个人全局规则备份可以放在 `rules/`，但文件名和开头说明必须标注备份用途。
-
-## 仓库结构
-
-```text
-plugins/laxpud-vibekits/
-  .claude-plugin/      # Claude Code plugin manifest
-  .codex-plugin/       # Codex plugin manifest
-  skills/              # shared skill source of truth
-.claude-plugin/        # Claude Code marketplace index
-.agents/plugins/       # Codex marketplace index
-rules/                 # reusable rules and clearly labeled backups
-docs/                  # technical docs, Chinese README, and maintenance notes
-```
-
-## 贡献
-
-新增或修改技能和规则时：
-
-- 新技能放在 `plugins/laxpud-vibekits/skills/<skill-name>/SKILL.md`。
-- 可复用规则放在 `rules/<rule-name>.md`，并保持短小、清晰、平台无关。
-- 技能能力或描述变化时，同步技能表、Claude/Codex plugin manifest 和 marketplace 元数据。
-- 平台专属行为不要写进共享 `SKILL.md`。
-- 发布时运行 `python scripts/sync_plugin_metadata.py --set-version <semver>`；只读一致性检查则省略 `--set-version`。
-- 修改 Codex marketplace、manifest 或安装说明后，运行 `python scripts/check_codex_install.py`；发布后追加 `--remote`。
-- 发布前验证 JSON 清单、Markdown 链接、技能 frontmatter 和 Git diff。
+- 使用 [`docs/index.md`](index.md) 查找某类改动的权威技术文档。
+- 修改技能、规则或适配层元数据前，先读 [`docs/SKILL_RULE_GUIDELINES.md`](SKILL_RULE_GUIDELINES.md)。
+- 插件发布和客户端更新遵循 [`docs/PLUGIN_UPDATE.md`](PLUGIN_UPDATE.md)。
+- 修改 Codex 安装元数据或说明后，遵循 [`docs/CODEX_INSTALL_SMOKE_TEST.md`](CODEX_INSTALL_SMOKE_TEST.md)。
+- 在 [`TODO.md`](../TODO.md) 中维护活动工作、验收条件和完成证据。
 
 ## 许可证
 
-MIT License. See [LICENSE](../LICENSE).
+MIT License. 参见 [LICENSE](../LICENSE)。

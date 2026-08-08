@@ -1,10 +1,10 @@
-# Skill and Rule Guidelines
+# 技能与规则维护规范
 
 本规范用于维护 Vibekits 的通用技能、可复用规则和平台适配层。目标是让仓库既能被 Claude Code、Codex 等工具安装，又不把任何平台的专属逻辑污染到共享技能来源中。
 
-文档入口约定：根目录 `README.md` 使用英文，`docs/README.cn.md` 是根 README 的中文翻译，`docs/index.md` 是技术文档索引。不要用 `docs/README.md` 作为技术索引，避免与目录 README 语义混淆。
+项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护技能、规则、平台适配层及其验证契约。
 
-## Source of Truth
+## 权威位置
 
 | 内容 | 权威位置 |
 | --- | --- |
@@ -17,13 +17,16 @@
 
 `plugins/laxpud-vibekits/skills/` 是唯一技能来源。不要在根目录创建 `skills/` 副本，也不要把某个平台的私有路径、命令或安装假设写进通用技能正文。
 
-## Skill Requirements
+## 技能要求
 
 每个技能目录必须采用以下结构：
 
 ```text
 plugins/laxpud-vibekits/skills/<skill-name>/
-└── SKILL.md
+├── SKILL.md
+├── references/  # 可选：按需加载的详细参考资料
+├── scripts/     # 可选：可复用的确定性脚本
+└── assets/      # 可选：输出所需模板或静态资源
 ```
 
 `SKILL.md` 的 frontmatter 只保留 `name` 和 `description`。其中 `description` 是触发技能的主要元数据，应同时说明能力范围和适用场景，例如“创建或编辑 pyproject.toml 时使用”。
@@ -35,7 +38,7 @@ plugins/laxpud-vibekits/skills/<skill-name>/
 - 需要脚本、参考资料或模板时，可在技能目录下添加 `scripts/`、`references/` 或 `assets/`，并在 `SKILL.md` 中说明何时读取或使用。
 - 新增或大改技能后，检查 README 技能表、两端 plugin manifest 的描述/关键词是否需要同步。
 
-## Rule Requirements
+## 规则要求
 
 可复用规则使用以下结构：
 
@@ -47,7 +50,7 @@ rules/<rule-name>.md
 
 个人全局规则备份可以放在 `rules/`，但文件名和开头说明必须明确标注“备份”用途。这类文件不视为平台无关通用规则。
 
-## Adapter Sync Checklist
+## 适配层同步清单
 
 当技能能力、插件定位或对外描述发生变化时，按顺序检查：
 
@@ -56,9 +59,9 @@ rules/<rule-name>.md
 - `plugins/laxpud-vibekits/.claude-plugin/plugin.json` 的 `description`、`keywords` 和 `skills` 路径是否同步。
 - `.agents/plugins/marketplace.json` 是否保留 Codex 必需的 `policy.installation`、`policy.authentication` 和 `category`。
 - `.claude-plugin/marketplace.json` 的插件描述、版本、标签和 `source` 是否指向统一插件包。
-- `README.md`、`docs/README.cn.md`、`docs/index.md` 的技能表、安装说明、贡献边界和文档入口是否仍匹配。
+- `README.md` 与 `docs/README.cn.md` 的技能表、安装说明和章节结构是否仍匹配；`docs/index.md` 的权威文档路由是否仍准确。
 
-## Validation
+## 验证
 
 插件版本以 `plugins/laxpud-vibekits/.codex-plugin/plugin.json` 为权威源。发布前不要逐个文件手工修改版本；使用：
 

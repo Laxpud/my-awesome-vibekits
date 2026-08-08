@@ -1,58 +1,58 @@
-# Reorganizing Existing Docs
+# 整理现有文档
 
-Use this reference when the repository already has scattered, duplicated, stale, or misplaced documentation.
+当仓库已有分散、重复、过期或位置不当的文档时，使用本参考资料。
 
-## Workflow
+## 流程
 
-1. Inventory the current docs and read their content, not only filenames.
-2. Identify the source of truth for each topic before moving files.
-3. Separate entry docs, technical docs, active TODOs, archives, and component-local READMEs.
-4. Check Git status and identify user-owned or unrelated changes before moving files.
-5. Use the Clarification Gate from `SKILL.md` if source-of-truth conflicts or structural choices would affect the public entry docs.
-6. Move files with history-preserving commands when possible.
-7. Rewrite moved content for its destination instead of leaving stale phase language in place.
-8. Replace duplicated definitions with summaries and links to the authoritative document.
-9. Update root `README.md`, `docs/README.cn.md`, `docs/index.md` when present, named technical docs, guidance files, and component-local READMEs so the new structure is discoverable.
-10. Validate that old paths are gone, redirected, or intentionally preserved.
+1. 盘点现有文档并阅读其内容，不要只看文件名。
+2. 移动文件前，先确定每个主题的权威来源。
+3. 区分入口文档、技术文档、活动 TODO、归档和组件本地 README。
+4. 移动文件前检查 Git 状态，识别用户拥有的改动和无关改动。
+5. 如果权威来源存在冲突，或结构选择会影响面向用户的入口文档，使用 `SKILL.md` 中的“澄清门槛”。
+6. 尽可能使用能保留历史记录的命令移动文件。
+7. 根据目标位置改写迁移后的内容，不要保留过期的阶段性措辞。
+8. 用简短说明和指向权威文档的链接替代重复定义。
+9. 更新根 `README.md`、存在时的 `docs/README.cn.md` 和 `docs/index.md`、具名技术文档、项目指导文件及组件本地 README，确保新结构可被发现。
+10. 验证旧路径已经删除、重定向或被有意保留。
 
-## Source-of-Truth Rules
+## 权威来源规则
 
-- Root `README.md` is the English public entry point unless the project or user explicitly sets another public-documentation language.
-- `docs/README.cn.md` is the Chinese translation of the root README when the bilingual baseline is present.
-- `docs/index.md` is the technical docs index when multiple technical docs need navigation.
-- `TODO.md` tracks active work and acceptance criteria.
-- `docs/` holds durable technical details, design rationale, troubleshooting, and archived plans.
-- Directory-level README files explain local folder ownership and navigation only.
+- 除非项目或用户明确指定其他公共文档语言，根 `README.md` 是英文的面向用户入口。
+- 存在双语基线时，`docs/README.cn.md` 是根 README 的中文翻译。
+- 多份技术文档需要导航时，`docs/index.md` 是技术文档索引。
+- `TODO.md` 跟踪活动工作和验收条件。
+- `docs/` 保存持久技术细节、设计依据、故障排查和归档计划。
+- 目录级 README 只说明本地目录的所有权与导航。
 
-Prefer consistent placement over ad hoc exceptions. If one detailed explanation belongs in `docs/`, similar explanations should also live in `docs/` unless the user intentionally chose a different rule.
+优先采用一致放置规则，不要随意制造例外。如果某项详细说明属于 `docs/`，同类说明也应放入 `docs/`，除非用户有意选择了其他规则。
 
-## Link Rules
+## 链接规则
 
-- Do not link directory-level README files from root `README.md` or `docs/README.cn.md`.
-- Avoid links such as `docs/`, `src/`, or `packages/` from public entry documents when those links resolve to directory README files.
-- Link named technical documents directly, such as `docs/architecture.md`, `docs/design.md`, or `docs/troubleshooting.md`.
-- Link `docs/index.md` when exposing a technical docs index from public entry documents.
-- Technical docs indexes may link directory READMEs when doing so helps maintainers navigate ownership boundaries.
-- If an old path is likely externally referenced, preserve it with a short redirect note instead of deleting it outright.
+- 不要从根 `README.md` 或 `docs/README.cn.md` 链接目录级 README。
+- 如果 `docs/`、`src/` 或 `packages/` 等路径会解析到目录 README，不要从面向用户的入口文档链接这些路径。
+- 直接链接具名技术文档，例如 `docs/architecture.md`、`docs/design.md` 或 `docs/troubleshooting.md`。
+- 从面向用户的入口文档公开技术文档索引时，链接 `docs/index.md`。
+- 当目录 README 有助于维护者理解所有权边界时，技术文档索引可以链接它。
+- 如果旧路径很可能被外部引用，应使用简短的重定向说明保留它，不要直接删除。
 
-## Conflict Handling
+## 冲突处理
 
-- If duplicated docs agree, consolidate the content into the authoritative destination and replace duplicates with short summaries or links.
-- If duplicated docs conflict, do not silently choose one. Prefer the newer or more authoritative source only when repository evidence supports it.
-- Record unresolved conflicts in `TODO.md` or a named technical note with the source files and decision needed.
-- If a conflict changes the immediate README, TODO, docs index, or archive structure, ask the user through the Clarification Gate before editing those files.
+- 如果重复文档内容一致，将内容合并到权威位置，并用简短摘要或链接替换副本。
+- 如果重复文档相互冲突，不要静默选择其中一个。只有仓库证据足够时，才优先采用更新或更权威的来源。
+- 把未解决冲突记录到 `TODO.md` 或具名技术文档中，并注明来源文件和待决问题。
+- 如果冲突会改变当前 README、TODO、文档索引或归档结构，编辑前通过“澄清门槛”询问用户。
 
-## Archive Rules
+## 归档规则
 
-- Move completed plans, superseded proposals, and historical milestone notes into `docs/archive/` when traceability matters.
-- Keep active work, open decisions, and acceptance criteria in `TODO.md`.
-- Keep durable design rationale, current architecture, data formats, and troubleshooting in named technical docs under `docs/`.
-- Do not archive content merely because it is long; archive only when it is historical or superseded.
+- 当项目重视可追溯性时，将已完成计划、已取代提案和历史里程碑说明移入 `docs/archive/`。
+- 将活动工作、未决问题和验收条件保留在 `TODO.md`。
+- 将持久设计依据、当前架构、数据格式和故障排查保留在 `docs/` 下的具名技术文档中。
+- 不要仅因为内容很长就归档；只有内容已经成为历史或被取代时才归档。
 
-## Validation
+## 验证
 
-- Re-read changed Markdown files after moving content.
-- Search for old paths, obsolete filenames, and references to removed drafts.
-- Check that every active decision is visible from root `README.md`, `TODO.md`, or a named technical doc.
-- Do not delete unresolved decisions; move them into TODO or a technical note first.
-- Review `git diff` to confirm only the intended documentation files moved or changed.
+- 移动内容后回读全部已修改 Markdown 文件。
+- 搜索旧路径、过期文件名和对已删除草稿的引用。
+- 检查每个活动决策是否可从根 `README.md`、`TODO.md` 或具名技术文档发现。
+- 不要删除未解决决策；先将其移入 TODO 或技术文档。
+- 检查 `git diff`，确认只有预期文档被移动或修改。

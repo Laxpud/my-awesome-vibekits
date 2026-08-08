@@ -1,236 +1,245 @@
 ---
 name: project-docs-bootstrap
-description: Initialize or reorganize maintainable project documentation structure. Use when creating or cleaning README, TODO, docs indexes, Chinese README translations, project guidance, documentation ownership, or archive boundaries for new or messy repositories. Do not use for small copy edits to a single document unless structure or ownership must change.
+description: 初始化或重组可维护的项目文档结构。适用于为新项目或文档混乱的仓库创建或清理 README、里程碑式 TODO 工作流、文档索引、中文 README 翻译、项目指导路由、文档所有权和归档边界。不适用于仅修改单个文档的少量文字，除非同时涉及结构或所有权变更。
 ---
 
-# Project Docs Bootstrap
+# 项目文档初始化
 
-## Goal
+## 目标
 
-Create a practical documentation baseline for a project that is just starting, still fuzzy, or missing durable entry points.
+为刚起步、定位仍模糊或缺少持久入口的项目建立实用的文档基线。
 
-Prefer a small, useful v1 over a large documentation system. The first pass should help a future contributor understand:
+优先构建小而实用的 v1，而不是庞大的文档体系。第一版应帮助后续贡献者理解：
 
-- what the project is for and what it is not for;
-- what exists now and what the first practical milestone is;
-- where active work is tracked;
-- where technical details belong;
-- which collaboration rules prevent likely mistakes.
+- 项目的目标与非目标；
+- 用户能做什么，以及完成这些操作的最短已验证路径；
+- 活动任务、里程碑和验收证据在哪里维护；
+- 稳定技术细节应放在哪里；
+- 后续工作应遵循哪些入口、工作流触发器和高风险边界。
 
-The usual baseline is:
+## 文档所有权契约
 
-- root `README.md` as the concise English public entry;
-- root `TODO.md` as the active milestone and acceptance checklist;
-- `docs/` as the home for technical notes, design details, and archived plans;
-- `docs/index.md` as the technical docs index when multiple technical docs need navigation;
-- `docs/README.cn.md` as the Chinese translation of the root README;
-- an agent or contributor guidance file, such as `AGENTS.md`, only when the repository uses one.
+除非用户或仓库既有契约明确指定了其他权威位置，否则必须遵守以下所有权边界：
 
-## When To Use
+- 根 `README.md` 负责面向用户的项目介绍、能力、支持环境和最短已验证使用路径。
+- 根 `TODO.md` 负责活动任务、里程碑、验收条件及其状态维护流程。
+- `docs/` 负责架构、数据契约、配置、测试和其他稳定技术细节。多份技术文档需要导航时使用 `docs/index.md`；符合条件的历史记录放入 `docs/archive/`。
+- 项目指导文件负责 AI 工作的快速入口、文档和代码路由、工作流触发器，以及少量高风险边界；遗漏这些边界可能导致破坏性操作、外部副作用、安全问题或仓库级严重回归。
 
-Use this skill when the user says things like:
+如果某项信息已经在 `README.md`、`TODO.md` 或 `docs/` 中有明确权威位置，应从项目指导文件链接到该位置，而不是再次复述。信息“属于项目特定规则”本身不足以成为内联规则或说明的理由。
 
-- "initialize the docs for this new project";
-- "bootstrap README, TODO, docs, and project guidance";
-- "I only have a rough project idea, turn it into project docs";
-- "set up a documentation structure for this repository";
-- "clean up this messy docs tree and make the entry points clear".
+## 里程碑式 TODO 契约
 
-Also use it after a completed planning session when the useful decisions should become durable project documentation instead of staying in chat or temporary notes.
+当 `TODO.md` 采用里程碑式工作流时，必须在文件顶部完整写明执行与维护规则。这些规则必须落实以下要求：
 
-## When Not To Use
+1. 除非用户明确指定其他任务，否则默认执行当前里程碑中第一个未完成任务。
+2. 只有全部验收条件通过后才能将任务标记为 `[x]`；随后记录完成日期和验证证据。
+3. 部分完成的任务必须保持 `[ ]`，并记录仍未满足的条件。
+4. 不得通过删除、弱化或降低验收条件来制造完成状态。
+5. 只有当前里程碑的全部任务和全部里程碑级完成条件都通过后，才能将完成记录归档到 `docs/archive/` 并把下一里程碑提升为当前里程碑。
 
-Do not turn this into a language, framework, or package scaffold. This skill can document a project structure, but it should not generate application source code, install dependencies, create build systems, or add platform-specific adapter metadata unless the user separately asks for that work.
+项目指导文件只保留简短的 TODO 路由：开始或继续里程碑任务前读取 `TODO.md`，交付前按其顶部规则同步状态。不得把完整 TODO 生命周期复制到项目指导文件中。
 
-Keep the skill platform-neutral. Generic project docs and reusable collaboration guidance belong in normal project files. Platform-specific configuration belongs in that platform's adapter directory, not in shared docs or shared skills.
+## 适用场景
 
-Do not use this skill for small copy edits, typo fixes, badge updates, or isolated changes to a single document unless the user is also changing documentation structure, ownership, language policy, or discoverability.
+当用户提出以下需求时使用本技能：
 
-## Reference Routing
+- “为这个新项目初始化文档”；
+- “建立 README、TODO、docs 和项目指导文件”；
+- “我只有一份粗略的项目想法，请把它整理成项目文档”；
+- “为这个仓库建立文档结构”；
+- “清理混乱的文档目录并明确入口”。
 
-Keep the main workflow lightweight. Read these references only when the task needs them:
+规划会话完成后，如果有价值的决策应沉淀为持久项目文档，而不是停留在聊天或临时笔记中，也应使用本技能。
 
-- [`references/reorganizing-docs.md`](references/reorganizing-docs.md): use when an existing repository has scattered, duplicated, stale, or misplaced docs.
-- [`references/directory-readmes.md`](references/directory-readmes.md): use when creating, deleting, linking, or updating directory-level README files.
-- [`references/project-guidance.md`](references/project-guidance.md): use when creating or revising `AGENTS.md`, `CLAUDE.md`, contributor guidance, or other project-specific collaboration rules.
+## 不适用场景
 
-Do not load all references by default. Start with the core workflow, then read only the reference whose condition is met.
+不要把本技能变成语言、框架或包的脚手架。本技能可以记录项目结构，但不得生成应用源码、安装依赖、创建构建系统或添加平台专属适配元数据，除非用户另外明确要求这些工作。
 
-## Clarification Gate
+保持技能平台无关。通用项目文档和可复用协作指导应放在普通项目文件中；平台专属配置应放在对应平台的适配目录中，不得写入共享文档或共享技能。
 
-Ask the user before editing when repository evidence is contradictory, insufficient, or would force a high-impact documentation decision.
+不要将本技能用于少量文案修改、拼写修正、徽章更新或单个文档的孤立改动，除非用户同时要求调整文档结构、所有权、语言策略或可发现性。
 
-Use this gate when:
+## 参考资料路由
 
-- Existing docs disagree about project purpose, audience, current status, architecture, or documentation ownership.
-- README, manifests, source layout, and existing docs are not enough to infer the project purpose or main entry points.
-- The user request conflicts with repository guidance, existing docs, or this skill's documentation contract.
-- A planned move, deletion, archive, or rename could break external links, hide active decisions, or discard user-owned work.
-- Multiple documentation structures are reasonable and would create different long-term maintenance paths.
-- The default contract would produce a clearly awkward or misleading result for this repository.
+保持主流程轻量。仅在任务需要时读取对应参考资料：
 
-When asking, prefer one to three concise questions. For each question, offer two or three concrete options, recommend one when the evidence points that way, and explain the tradeoff in one sentence. If the uncertainty is non-blocking, proceed with a stated assumption and record the unresolved decision in `TODO.md` or a named technical note instead of stopping.
+- [`references/reorganizing-docs.md`](references/reorganizing-docs.md)：用于现有仓库的文档分散、重复、过期或位置不当时。
+- [`references/directory-readmes.md`](references/directory-readmes.md)：用于创建、删除、链接或更新目录级 README 时。
+- [`references/project-guidance.md`](references/project-guidance.md)：用于创建或修订项目指导文件时，例如 `AGENTS.md` 或 `CLAUDE.md`；其中包含详细的路由与重复内容审查清单。
 
-## Practical V1 Stop Rule
+不要默认加载全部参考资料。先执行核心流程，再只读取满足触发条件的参考资料。
 
-This skill should make documentation usable quickly, not refine structure forever. Once the root README, TODO, Chinese README translation, needed technical docs index, needed guidance file, and validation checklist are good enough for the next contributor to start work, stop.
+## 澄清门槛
 
-Do not invent extra docs, alternate structures, or additional references without repository evidence or a user request. Record future improvements in `TODO.md` or a named technical note instead of expanding the first pass.
+当仓库证据相互矛盾、信息不足或需要作出高影响文档决策时，先向用户澄清再编辑。
 
-## Initialization Workflow
+以下情况应触发澄清：
 
-Use this workflow when the project is new, empty, or early-stage.
+- 现有文档对项目目的、受众、当前状态、架构或文档所有权的说法不一致。
+- 无法从 README、manifest、源码布局和现有文档中推断项目目的或主要入口。
+- 用户请求与仓库指导、现有文档或本技能的文档契约冲突。
+- 计划中的移动、删除、归档或重命名可能破坏外部链接、隐藏活动决策或丢弃用户拥有的工作。
+- 存在多个合理但会形成不同长期维护路径的文档结构。
+- 默认契约会为当前仓库产生明显别扭或误导性的结果。
 
-1. Inspect the starting point.
-   - Read existing `README*`, `TODO.md`, `docs/`, guidance files, planning drafts, manifests, and Git status.
-   - If the project has source files or config files, infer the project purpose from them before asking the user.
-   - Identify temporary notes or rough plans whose decisions should be migrated into durable docs.
-   - Use the Clarification Gate before editing if the inspection finds blocking contradictions, missing project identity, or high-impact structural choices.
-   - Apply the Practical V1 Stop Rule so the task produces a usable documentation baseline instead of an open-ended documentation redesign.
+提问时优先使用一至三个简短问题。每个问题提供两至三个具体选项；证据指向明确时推荐其中一个，并用一句话说明取舍。如果不确定性不阻塞工作，应在说明假设后继续，并把未解决的决策记录到 `TODO.md` 或具名技术文档中，而不是停下来等待。
 
-2. Establish the minimum documentation contract.
-   - Choose the files that should exist now, not every file that might be useful someday.
-   - Default contract: English `README.md`, `TODO.md`, `docs/`, and Chinese `docs/README.cn.md`.
-   - Create `docs/index.md` only when multiple technical docs need a navigation index.
-   - Add or refine a contributor or agent guidance file only when project-specific rules will prevent concrete future mistakes.
-   - Add directory-level READMEs only where they explain stable responsibilities and boundaries.
-   - Make clear where each topic belongs: README for entry, TODO for active work, `docs/` for details, archive for completed planning history.
+## 实用 V1 停止规则
 
-3. Create or update `README.md`.
-   - Write the root README in English by default, even when other project docs use the user's communication language.
-   - Keep it short and useful on the first screen.
-   - Include purpose, non-goals, current status, first practical milestone, and setup or usage notes that actually exist.
-   - When maintaining a bilingual README pair, add the language switch link in the opening badge or link area so readers can switch language before reading the body.
-   - Link only top-level entry files or named technical documents, such as `TODO.md`, `docs/README.cn.md`, `docs/index.md`, or `docs/architecture.md`.
-   - Do not link directory-level README files from the root README, including `src/README.md`, `packages/README.md`, or links that resolve to directory READMEs such as `docs/` or `src/`.
-   - Avoid dumping full file trees, speculative architecture, or long implementation notes into README.
+本技能的目标是快速让文档可用，而不是无限打磨结构。当根 README、TODO、中文 README 翻译、必要的技术文档索引、必要的项目指导文件和验证清单已经足以让下一位贡献者开始工作时，应停止扩展。
 
-4. Create or update `TODO.md`.
-   - Use Markdown checkboxes.
-   - Write tasks in the user's communication language by default unless the project already has a stronger language convention.
-   - Group work by phases or milestones.
-   - Add acceptance criteria for nontrivial tasks so "done" is testable.
-   - Preserve completed items unless the user asks to archive history.
+没有仓库证据或用户请求时，不要发明额外文档、替代结构或其他参考资料。把后续改进记录到 `TODO.md` 或具名技术文档中，不要继续扩大第一版范围。
 
-5. Create or update `docs/`.
-   - Start with the smallest useful technical index, usually `docs/index.md` if there will be multiple technical docs.
-   - Add only documents that reduce future ambiguity, such as `architecture.md`, `design.md`, `data_layout.md`, `implementation_notes.md`, or `results_notes.md`.
-   - Put long-form explanations, feasibility notes, historical plans, and design rationale under `docs/`, not in the root README.
-   - Maintain `docs/README.cn.md` as the Chinese translation of the English root README.
-   - Add a link back to the English root README in the opening badge or link area of `docs/README.cn.md`.
-   - Do not create `docs/README.md` as the technical docs index; use `docs/index.md` so directory README semantics stay separate from the bilingual README contract.
-   - Do not link directory-level README files from `docs/README.cn.md`; keep it structurally aligned with the root README and link named top-level or technical documents directly.
+## 初始化流程
 
-6. Create or update directory READMEs only where useful.
-   - High-level source directories such as `src/`, `packages/`, `apps/`, or `services/` may get a short navigation README that explains top-level packages, responsibilities, boundaries, and main entry points.
-   - Important package directories may get a `README.md` when the package has non-obvious responsibilities, multiple cooperating modules, public APIs, data flow, extension points, or common modification hazards.
-   - Do not default to a README in every directory. Empty or obvious directories should stay quiet.
-   - Do not default to per-file explanation lists. File responsibilities should usually live in file names, module docstrings, public API docs, and code comments.
-   - Use per-file lists only for small stable utility directories, teaching-oriented projects, or when the user explicitly asks for file-by-file documentation.
+项目全新、为空或仍处于早期阶段时，使用以下流程。
 
-7. Create or refine project guidance.
-   - Keep only project-specific rules and user preferences.
-   - Include rules that prevent likely mistakes, such as source-of-truth boundaries, language conventions, TODO rules, dependency limits, data format constraints, or commit message policy.
-   - Do not include generic agent behavior such as "read files before editing" or "check Git status"; those are baseline work habits, not project rules.
-   - Do not copy personal global defaults into project guidance unless they materially change how this project should be maintained.
-   - When creating or revising guidance files, use [`references/project-guidance.md`](references/project-guidance.md) as the review checklist, then keep only items that are project-specific, requested by the user, or needed to prevent concrete mistakes.
+1. 检查起点。
+   - 读取现有 `README*`、`TODO.md`、`docs/`、项目指导文件、规划草稿、manifest 和 Git 状态。
+   - 如果项目已有源码或配置文件，先从中推断项目目的，再决定是否询问用户。
+   - 找出应从临时笔记或粗略计划迁移到持久文档的决策。
+   - 如果检查发现阻塞性冲突、缺少项目定位或存在高影响结构选择，编辑前应用“澄清门槛”。
+   - 应用“实用 V1 停止规则”，产出可用文档基线，不要演变为开放式文档重构。
 
-8. Archive or remove planning leftovers.
-   - If a rough plan has been absorbed into README, TODO, and `docs/`, remove it or move it under `docs/archive/` with a short archive note.
-   - Do not delete unresolved decisions. Move them into TODO or a technical note first.
-   - Keep active work visible from the root README.
+2. 建立最小文档契约。
+   - 选择或移动文件前先应用“文档所有权契约”。
+   - 只选择当前应存在的文件，不要一次创建未来可能有用的所有文件。
+   - 默认契约：英文 `README.md`、`TODO.md`、`docs/` 和中文 `docs/README.cn.md`。
+   - 仅在多份技术文档需要导航时创建 `docs/index.md`。
+   - 仅当仓库使用项目指导文件，且其中确实存在有用的路由、触发器或高风险边界时，才创建或完善它。
+   - 仅在目录级 README 能说明稳定职责和边界时添加它。
 
-9. Validate the baseline.
-   - Read back changed Markdown files.
-   - Search for stale links, old paths, and references to removed drafts.
-   - Check that every important document is discoverable from README, a named technical doc, or a docs index without linking public entry docs to directory README targets.
-   - Confirm blocking contradictions were resolved with the user, or that non-blocking assumptions were stated and tracked.
-   - For documentation-only work, run whitespace and path checks instead of unrelated heavy tests.
-   - Check Git status and diff before reporting the result.
+3. 创建或更新 `README.md`。
+   - 即使其他项目文档使用用户的交流语言，根 README 默认仍使用英文。
+   - 保持首屏简短而实用。
+   - 包含项目目的、面向用户的能力、支持环境或前置条件，以及最短已验证使用路径。
+   - 链接到 `TODO.md` 以展示活动里程碑，不要把任务状态或验收条件复制到 README。
+   - 维护双语 README 时，在开头的徽章或链接区域添加语言切换链接，让读者在阅读正文前即可切换语言。
+   - 只链接顶层入口文件或具名技术文档，例如 `TODO.md`、`docs/README.cn.md`、`docs/index.md` 或 `docs/architecture.md`。
+   - 不要从根 README 链接目录级 README，包括 `src/README.md`、`packages/README.md`，以及会解析到目录 README 的 `docs/` 或 `src/`。
+   - 不要在 README 中堆放完整文件树、推测性架构或冗长实现说明。
 
-## Reorganizing Existing Docs
+4. 创建或更新 `TODO.md`。
+   - 使用 Markdown 复选框。
+   - 除非项目已有更强的语言约定，任务默认使用用户的交流语言。
+   - 当项目适合分阶段交付时，按阶段或里程碑组织工作。
+   - 为非简单任务添加验收条件，使“完成”可验证。
+   - 当里程碑控制执行、完成、归档或提升流程时，应用“里程碑式 TODO 契约”。
+   - 在适用的归档门槛通过前，将完成项保留在原处；不得通过归档隐藏未完成工作。
 
-When existing docs are scattered, duplicated, stale, or misplaced, read [`references/reorganizing-docs.md`](references/reorganizing-docs.md) before editing. That reference contains the detailed inventory, source-of-truth, move, rewrite, and validation sequence.
+5. 创建或更新 `docs/`。
+   - 从最小实用技术索引开始；存在多份技术文档时通常使用 `docs/index.md`。
+   - 只添加能减少未来歧义的文档，例如架构、数据契约、配置、测试、设计、实现或结果说明。
+   - 把长篇说明、可行性笔记、历史计划和设计依据放在 `docs/` 中，而不是根 README。
+   - 将 `docs/README.cn.md` 维护为英文根 README 的中文翻译。
+   - 在 `docs/README.cn.md` 开头的徽章或链接区域添加返回英文根 README 的链接。
+   - 不要创建 `docs/README.md` 作为技术文档索引；使用 `docs/index.md` 区分目录 README 语义与双语 README 契约。
+   - 不要从 `docs/README.cn.md` 链接目录级 README；应与根 README 保持结构一致，并直接链接具名顶层文件或技术文档。
 
-## Content Rules
+6. 仅在有价值时创建或更新目录级 README。
+   - `src/`、`packages/`、`apps/` 或 `services/` 等高层源码目录可以使用简短导航 README，说明顶层包、职责、边界和主要入口。
+   - 当重要包目录具有不直观的职责、多个协作模块、公共 API、数据流、扩展点或常见修改风险时，可以添加 `README.md`。
+   - 不要默认在每个目录创建 README。空目录或含义显然的目录应保持简洁。
+   - 不要默认创建逐文件说明列表。文件职责通常应由文件名、模块 docstring、公共 API 文档和代码注释表达。
+   - 仅在小型稳定工具目录、教学型项目或用户明确要求时使用逐文件列表。
 
-- Root README is an entry point, not a design archive.
-- Root README is English by default. Put its Chinese translation in `docs/README.cn.md`.
-- Use `docs/index.md` for a technical docs index when one is needed. Do not use `docs/README.md` for that role.
-- `TODO.md` is active work; archived plans belong under `docs/archive/` when historical traceability matters.
-- Technical docs should explain durable decisions, data formats, architecture, methodology, results, and implementation notes.
-- Bilingual docs should stay structurally aligned: when `README.md` changes, update `docs/README.cn.md` in the same turn unless the user says not to.
-- Bilingual README pairs should include visible language-switch links in the opening badge or link area: root `README.md` links to `docs/README.cn.md`, and `docs/README.cn.md` links back to `../README.md`.
-- `README.md` and `docs/README.cn.md` should not link directory-level README files. Directory READMEs are navigation aids for maintainers inside a folder, and linking them from public entry documents can confuse entry docs with directory maps.
-- Code identifiers, commands, config keys, paths, terminal output, log messages, and exception names stay in English.
-- User-facing documentation should follow the user's communication language unless the project already has a stronger language convention.
-- Comments or prose added by an assistant should explain purpose, data flow, assumptions, and edge cases; avoid comments that simply restate obvious content.
+7. 创建或完善项目指导文件。
+   - 应用“文档所有权契约”，不要把项目指导文件写成项目手册。
+   - 读取 [`references/project-guidance.md`](references/project-guidance.md)，把每个详细主题路由到其权威文档，并删除复制的说明。
+   - 里程碑式 TODO 的集成仅保留“里程碑式 TODO 契约”要求的简短路由。
 
-## Output Checklist
+8. 归档或移除遗留规划材料。
+   - 如果粗略计划的有效内容已经吸收到 README、TODO 和 `docs/` 中，应删除该计划，或将其移入 `docs/archive/` 并添加简短归档说明。
+   - 不要删除未解决决策；先把它们移入 TODO 或技术文档。
+   - 在“里程碑式 TODO 契约”允许之前，不得归档当前里程碑记录或提升下一里程碑。
+   - 保证活动工作可从根 README 发现。
 
-Before reporting completion, verify the output against this checklist:
+9. 验证文档基线。
+   - 回读全部已修改 Markdown 文件。
+   - 搜索过期链接、旧路径和对已删除草稿的引用。
+   - 检查每份重要文档是否可从 README、具名技术文档或文档索引发现，同时避免让面向用户的入口文档链接到目录 README 目标。
+   - 检查项目指导文件是否路由到权威文档而不是重复内容，并确认里程碑状态符合 `TODO.md` 顶部规则。
+   - 确认阻塞性冲突已经与用户解决，或非阻塞假设已经说明并被跟踪。
+   - 对纯文档工作运行空白和路径检查，不要执行无关的重型测试。
+   - 报告结果前检查 Git 状态和 diff。
 
-- Root `README.md` is English.
-- `docs/README.cn.md` exists as the Chinese translation when the documentation baseline is being created or rewritten.
-- `README.md` and `docs/README.cn.md` have visible language-switch links in their opening badge or link area.
-- `docs/index.md` is used as the technical docs index when multiple technical docs need navigation.
-- `README.md` and `docs/README.cn.md` do not link directory-level README files or directory paths that resolve to README files.
-- Technical details, design rationale, long troubleshooting notes, and historical plans live under `docs/`, not in the root README.
-- `TODO.md` uses Markdown checkboxes and gives acceptance criteria for nontrivial work.
-- Directory READMEs are created only when they explain stable folder ownership or navigation boundaries.
-- Blocking contradictions are resolved through the Clarification Gate, or non-blocking assumptions are stated and tracked.
-- The final report mentions validation performed and any checks that could not run.
+## 整理现有文档
 
-## Directory README Rules
+当现有文档分散、重复、过期或位置不当时，编辑前读取 [`references/reorganizing-docs.md`](references/reorganizing-docs.md)。该参考资料包含详细的盘点、权威来源、移动、改写和验证流程。
 
-Directory READMEs are optional folder maps, not public entry points. When the task involves directory-level README files, read [`references/directory-readmes.md`](references/directory-readmes.md) before editing.
+## 内容规则
 
-## Guidance File Rules
+- 根 README 默认使用英文，中文翻译放在 `docs/README.cn.md`。
+- 需要技术文档索引时使用 `docs/index.md`；不要让 `docs/README.md` 承担这一角色。
+- 双语文档应保持结构一致：修改 `README.md` 时，同一轮同步更新 `docs/README.cn.md`，除非用户明确要求不同步。
+- 双语 README 应在开头的徽章或链接区域提供醒目的语言切换链接：根 `README.md` 链接到 `docs/README.cn.md`；`docs/README.cn.md` 链接回 `../README.md`。
+- `README.md` 和 `docs/README.cn.md` 不应链接目录级 README。目录 README 是目录内部的维护者导航工具；从面向用户的入口文档链接它们会混淆入口文档与目录地图。
+- 代码标识符、命令、配置键、路径、终端输出、日志消息和异常名称保持英文。
+- 除非项目已有更强的语言约定，面向用户的文档使用用户的交流语言。
+- 助手新增的注释或说明应解释目的、数据流、假设和边界情况，避免复述显而易见的内容。
 
-Project guidance files should prevent concrete future mistakes, not collect generic agent behavior. When the task involves `AGENTS.md`, `CLAUDE.md`, contributor docs, or collaboration rules, read [`references/project-guidance.md`](references/project-guidance.md) before editing.
+## 输出检查清单
 
-## AGENTS.md Defaults
+报告完成前，逐项验证：
 
-When initializing `AGENTS.md`, use the checklist in [`references/project-guidance.md`](references/project-guidance.md). Keep only project-specific facts, paths, commands, and module names grounded in the actual repository.
+- 根 `README.md` 使用英文。
+- 创建或重写文档基线时，`docs/README.cn.md` 作为中文翻译存在。
+- `README.md` 和 `docs/README.cn.md` 在开头的徽章或链接区域提供醒目的语言切换链接。
+- 多份技术文档需要导航时使用 `docs/index.md` 作为索引。
+- `README.md` 和 `docs/README.cn.md` 不链接目录级 README，也不链接会解析到 README 的目录路径。
+- 技术细节、设计依据、长篇故障排查和历史计划位于 `docs/`，不在根 README 中。
+- `TODO.md` 使用 Markdown 复选框，并为非简单工作提供验收条件。
+- 里程碑式 `TODO.md` 在顶部定义完整的执行与维护规则。
+- 项目指导文件主要承担文档和代码入口路由作用。
+- 项目指导文件链接到 `README.md`、`TODO.md` 或具名技术文档，而不是重复其内容。
+- 除入口路由外，每条内联规则都属于工作流触发器或高风险边界。
+- 项目指导文件中的里程碑式 TODO 集成仅保留“工作前读取、交付前同步”的简短路由，不复制完整生命周期。
+- 仅在目录级 README 能说明稳定目录所有权或导航边界时创建它。
+- 阻塞性矛盾已通过“澄清门槛”解决，或非阻塞假设已说明并跟踪。
+- 最终报告说明已执行的验证，以及无法执行的检查。
 
-## Examples
+## 目录 README 规则
 
-User prompt:
+目录级 README 是可选的目录地图，不是面向用户的入口文档。任务涉及目录级 README 时，编辑前读取 [`references/directory-readmes.md`](references/directory-readmes.md)。
 
-```text
-Help me initialize documentation for this new project.
-```
+## 示例
 
-Expected behavior: inspect the repository, infer the project purpose, create or update `README.md`, `TODO.md`, and `docs/` with a small useful baseline, then report the changed files and validation checks.
-
-User prompt:
-
-```text
-I only have a rough plan in notes.md. Turn it into project docs.
-```
-
-Expected behavior: extract durable decisions from the rough plan, put entry-level content in README, active work in TODO, technical details in `docs/`, and archive or remove the temporary note only after its useful content is preserved.
-
-User prompt:
+用户请求：
 
 ```text
-This project's docs are messy. Make the entry points clear.
+请帮我为这个新项目初始化文档。
 ```
 
-Expected behavior: inventory the existing docs, decide source-of-truth ownership, reorganize and rewrite content, update links and indexes, and validate that stale references are gone.
+预期行为：检查仓库，推断项目目的，创建或更新 `README.md`、`TODO.md` 和 `docs/`，建立小而实用的基线，然后报告已修改文件和验证结果。
 
-## Reusable Defaults
+用户请求：
 
-Use these defaults unless the user or existing repository says otherwise:
+```text
+我只有一份粗略计划 notes.md，请把它整理成项目文档。
+```
 
-- English root `README.md`.
-- Chinese `docs/README.cn.md` as the translation of the root README.
-- Top-of-file language switch links for bilingual README pairs.
-- User-facing docs under `docs/` follow the user's communication language unless the project already has a stronger language convention.
-- `TODO.md` follows the user's communication language, with checkbox tasks and acceptance criteria.
-- `docs/` instead of `doc/` for general project documentation.
-- `docs/index.md` as the technical docs index when multiple technical docs need navigation.
-- Avoid creating `docs/README.md`; it is too easy to confuse with directory README behavior and the Chinese README translation contract.
-- Do not link directory-level README files from root `README.md` or `docs/README.cn.md`.
-- Remove obsolete planning drafts after their useful content is migrated.
-- Archive completed milestone TODOs under `docs/archive/` when the project values traceability.
+预期行为：从粗略计划中提取持久决策，把入口级内容放入 README、活动工作放入 TODO、技术细节放入 `docs/`；仅在有效内容得到保留后，才归档或删除临时笔记。
+
+用户请求：
+
+```text
+这个项目的文档很混乱，请理清文档入口。
+```
+
+预期行为：盘点现有文档，确定每类内容的权威位置，重组并改写内容，更新链接和索引，并验证过期引用已清除。
+
+## 可复用默认值
+
+除非用户或现有仓库另有约定，否则使用以下默认值：
+
+- 根 `README.md` 使用英文。
+- `docs/README.cn.md` 作为根 README 的中文翻译。
+- 双语 README 在文件顶部提供语言切换链接。
+- 除非项目已有更强的语言约定，`docs/` 下的用户可见文档使用用户的交流语言。
+- `TODO.md` 使用用户的交流语言、复选框和验收条件；里程碑式工作遵循“里程碑式 TODO 契约”。
+- 通用项目文档使用 `docs/` 而不是 `doc/`。
+- 多份技术文档需要导航时使用 `docs/index.md`。
+- 避免创建 `docs/README.md`；它容易与目录 README 行为及中文 README 翻译契约混淆。
+- 不要从根 `README.md` 或 `docs/README.cn.md` 链接目录级 README。
+- 在有效内容迁移后删除过期规划草稿。

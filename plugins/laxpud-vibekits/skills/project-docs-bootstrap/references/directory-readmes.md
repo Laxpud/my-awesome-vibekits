@@ -1,56 +1,56 @@
-# Directory README Rules
+# 目录 README 规则
 
-Use this reference when creating, removing, linking, or editing directory-level README files.
+创建、删除、链接或编辑目录级 README 时，使用本参考资料。
 
-## Purpose
+## 职责
 
-Directory READMEs are maps of stable folder boundaries. They should help maintainers understand ownership, responsibilities, entry points, and local modification hazards inside that folder.
+目录级 README 是稳定目录边界的地图。它应帮助维护者理解该目录内部的所有权、职责、入口和本地修改风险。
 
-They are not public entry documents, generated file catalogs, or substitutes for root README/docs.
+目录级 README 不是面向用户的入口文档、生成文件清单或根 README 与技术文档的替代品。
 
-Use `docs/index.md` for the technical docs index when one is needed. Avoid `docs/README.md` for that role so directory README behavior stays separate from the bilingual README contract.
+需要技术文档索引时使用 `docs/index.md`。避免让 `docs/README.md` 承担这一角色，使目录 README 行为与双语 README 契约保持分离。
 
-## When To Add One
+## 何时添加
 
-Prefer a directory README for:
+以下情况适合添加目录 README：
 
-- high-level source directories such as `src/`, `packages/`, `apps/`, or `services/` when they contain multiple packages or application areas;
-- important package directories with non-obvious public APIs, data flow, extension points, or common modification risks;
-- stable utility directories in teaching-oriented projects where a short file map genuinely helps.
+- `src/`、`packages/`、`apps/` 或 `services/` 等高层源码目录包含多个包或应用区域；
+- 重要包目录具有不直观的公共 API、数据流、扩展点或常见修改风险；
+- 教学型项目中的稳定工具目录确实能从简短文件地图中受益。
 
-Do not add one for empty, obvious, or volatile folders.
+不要为空目录、含义显然的目录或频繁变化的目录添加 README。
 
-If the repository evidence does not clearly show whether a directory owns enough behavior to deserve a README, use the Clarification Gate from `SKILL.md` before creating one. For low-impact uncertainty, skip the README and record the possible follow-up in TODO.
+如果仓库证据不足以判断某个目录是否拥有足够职责，不应直接创建 README，而应使用 `SKILL.md` 中的“澄清门槛”。对于低影响的不确定性，跳过 README，并把可能的后续事项记录到 TODO。
 
-## When Updating Existing Ones
+## 更新现有目录 README
 
-- Read the existing directory README, nearby manifests, entry files, package files, and relevant technical docs before changing content.
-- Preserve useful local constraints, ownership notes, and migration warnings.
-- Replace stale file catalogs with stable responsibilities, entry points, and links to named docs.
-- Remove or merge obsolete directory READMEs when the folder is empty, obvious, moved, or no longer owns distinct behavior.
-- If deleting or moving a directory README, update nearby links and leave unresolved decisions in TODO or a named technical doc.
-- If existing directory docs disagree with manifests, entry files, or technical docs about ownership, use the Clarification Gate before rewriting the boundary.
+- 修改前读取现有目录 README、附近的 manifest、入口文件、包文件和相关技术文档。
+- 保留有价值的本地约束、所有权说明和迁移警告。
+- 用稳定职责、入口和具名文档链接替换过期文件清单。
+- 当目录为空、含义显然、已移动或不再拥有独立职责时，删除或合并过期的目录 README。
+- 删除或移动目录 README 时，更新附近链接，并把未解决决策留在 TODO 或具名技术文档中。
+- 如果现有目录文档与 manifest、入口文件或技术文档对所有权的描述不一致，重写边界前使用“澄清门槛”。
 
-## What To Include
+## 应包含的内容
 
-- The directory's responsibility and non-goals.
-- Major packages or subareas and their relationships.
-- Public entry points and extension points.
-- Local conventions, generated-file boundaries, or migration hazards that prevent mistakes.
-- Links to named technical docs when details belong elsewhere.
+- 目录职责和非目标。
+- 主要包或子区域及其关系。
+- 公共入口和扩展点。
+- 能防止错误的本地约定、生成文件边界或迁移风险。
+- 细节属于其他位置时，链接到具名技术文档。
 
-Ground each responsibility in actual repository evidence: directory structure, manifests, entry files, public APIs, existing docs, or observed generated artifacts. If the evidence is weak, describe the uncertainty or leave the decision for TODO instead of inventing ownership.
+每项职责都必须有真实仓库证据支撑，例如目录结构、manifest、入口文件、公共 API、现有文档或观察到的生成产物。证据不足时，应说明不确定性或把决策留给 TODO，不要编造所有权。
 
-## What To Avoid
+## 应避免的内容
 
-- Do not list every file by default; file catalogs become stale after renames, splits, and merges.
-- Do not repeat long architecture, troubleshooting, or tutorial content; put that in named files under `docs/`.
-- Do not make directory READMEs discoverable from root `README.md` or `docs/README.cn.md`.
-- Do not use links such as `docs/`, `src/`, or `packages/` from public entry documents when those paths resolve to directory README files.
-- Do not create `docs/README.md` as a workaround for a technical docs index; use `docs/index.md`.
+- 默认不要列出每个文件；文件重命名、拆分或合并后，文件清单很快会过期。
+- 不要重复长篇架构、故障排查或教程内容；把它们放在 `docs/` 下的具名文件中。
+- 不要让根 `README.md` 或 `docs/README.cn.md` 链接目录级 README。
+- 如果 `docs/`、`src/` 或 `packages/` 等链接会解析到目录 README，不要从面向用户的入口文档使用这些链接。
+- 不要创建 `docs/README.md` 来替代技术文档索引；使用 `docs/index.md`。
 
-Keep directory READMEs discoverable from their owning directory, owning package docs, or a technical docs index when maintainer navigation needs it.
+目录级 README 应通过其所在目录、所属包文档或技术文档索引被发现，但仅在维护者导航确实需要时添加这些入口。
 
-## Language
+## 语言
 
-Follow the repository's existing language convention for directory README prose. Keep code identifiers, paths, commands, config keys, logs, and protocol fields in English.
+目录 README 的说明文字遵循仓库既有语言约定。代码标识符、路径、命令、配置键、日志和协议字段保持英文。

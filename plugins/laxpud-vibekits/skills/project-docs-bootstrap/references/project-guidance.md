@@ -1,57 +1,113 @@
-# Project Guidance Files
+# 项目指导文件
 
-Use this reference when creating or revising `AGENTS.md`, `CLAUDE.md`, contributor guidance, or other project-specific collaboration rules.
+创建或修订项目指导文件时使用本参考资料，例如 `AGENTS.md`、`CLAUDE.md`、贡献者指导或类似的仓库级说明。
 
-## Purpose
+## 目录
 
-Project guidance files should prevent concrete future mistakes. They should route agents and contributors to the right entry points, document project-specific boundaries, and keep repeated decisions out of chat.
+- [职责](#职责)
+- [所有权映射](#所有权映射)
+- [审查流程](#审查流程)
+- [重复内容审查](#重复内容审查)
+- [内联规则判定](#内联规则判定)
+- [审查清单](#审查清单)
+- [示例](#示例)
 
-Do not use them as long architecture manuals, general agent behavior lists, or personal global preference dumps.
+## 职责
 
-## Useful Sections
+把项目指导文件视为 AI 工作的路由层。它应让读者快速回答：
 
-Include only sections that matter for this repository:
+- 当前任务适用哪些文档和代码入口？
+- 修改某个区域前应先读取哪份权威文档？
+- 计划中的改动会触发哪项工作流？
+- 哪些少量但关键的边界必须保持醒目，因为遗漏它们可能造成严重后果？
 
-- project purpose and non-goals;
-- common entry points;
-- README versus docs ownership;
-- language conventions;
-- TODO and acceptance criteria rules;
-- dependency or scaffold limits;
-- data, API, or file format constraints;
-- generated-file, cache, or artifact boundaries;
-- Git, release, or commit conventions.
+不要把项目指导文件写成 README、架构文档或维护手册的副本。某项细节仅仅“属于项目特定内容”，并不足以成为内联理由。
 
-## Defaults To Adapt
+## 所有权映射
 
-When initializing or revising `AGENTS.md`, `CLAUDE.md`, contributor guidance, or similar files, start from these defaults and keep only what is project-specific, requested by the user, or needed to prevent concrete mistakes:
+仓库已有明确所有权时应沿用既有约定，否则使用以下映射：
 
-- Read existing guidance files before editing so local constraints are preserved instead of overwritten.
-- Write guidance primarily as an entry index, routing guide, and behavior boundary.
-- Put long architecture, configuration, usage, troubleshooting, and tutorial content in `docs/`.
-- Keep root `README.md` concise and English unless the project or user explicitly sets another public-documentation language.
-- Keep `docs/README.cn.md` structurally aligned with root `README.md` when the bilingual baseline is present.
-- Use `docs/index.md` as the technical docs index when one is needed; avoid `docs/README.md` for that role.
-- Keep implementation details, file responsibilities, data flow, evaluation design, process chains, and troubleshooting notes in named technical docs.
-- Maintain clear documentation ownership: root README for public entry, `TODO.md` for active work, `docs/` for technical details, and `docs/archive/` for completed planning history when traceability matters.
-- Use checkbox TODOs with acceptance criteria for nontrivial work.
-- Keep code identifiers, module names, commands, terminal output, logs, exception messages, and config keys in English.
-- Prefer the user's communication language for user-facing planning docs unless the project already has a stronger language convention.
-- Do not copy personal global preferences into project guidance unless they define a real project-level constraint.
-- When multiple guidance files exist, keep shared project facts consistent and put platform-specific instructions only in the file for that platform.
-- If guidance files disagree about project facts or platform boundaries and repository evidence cannot resolve the conflict, use the Clarification Gate from `SKILL.md` before rewriting them.
-- Keep generated files, caches, virtual environments, local real-data test inputs, and build outputs out of commits unless the project explicitly tracks them.
-- Prefer focused changes. Do not mix unrelated refactors, generated outputs, or user-owned worktree changes into the same commit.
-- Record the repository's existing commit convention when one exists; if none exists and the user asks for a commit, default to Conventional Commits.
+| 内容 | 权威位置 | 项目指导文件处理方式 |
+| --- | --- | --- |
+| 面向用户的介绍、能力、环境、最短使用路径 | `README.md` | 任务需要了解公开项目背景时链接该文件。 |
+| 活动任务、里程碑、验收条件、状态维护 | `TODO.md` | 添加工作流路由，不重复任务状态或生命周期规则。 |
+| 架构、数据契约、配置、测试和稳定技术细节 | `docs/` 下的具名文件 | 按改动类型路由到具体文档。 |
+| 文档或代码入口路由、工作流触发器、高风险边界 | 项目指导文件 | 保持简短、可执行。 |
 
-## Quality Bar
+如果仓库使用其他权威文件，应保留既有结构并路由到这些文件，不要创建并行事实来源。
 
-- Keep guidance short enough that future contributors will read it.
-- Ground every project-specific fact in actual repository files.
-- Remove generic reminders such as "read files before editing" unless they encode a real local constraint.
-- When guidance changes, check whether root README, TODO, or technical docs need matching updates.
+## 审查流程
 
-## Examples
+1. 盘点权威位置和入口。
+   - 读取现有项目指导文件、`README.md`、`TODO.md`、相关 `docs/`，以及仓库指明的代码或配置入口。
+   - 如果仓库证据不足以解决所有权冲突，使用 `SKILL.md` 中的“澄清门槛”。
 
-- Avoid generic guidance such as "Always read files before editing." That is normal agent behavior, not a project rule.
-- Prefer concrete local constraints such as "`plugins/laxpud-vibekits/skills/` is the only skill source; do not create a root `skills/` copy."
+2. 对现有章节逐一分类。
+   - 将每个章节标记为入口路由、工作流触发器、高风险边界或由其他文档负责的内容。
+   - 移动或链接由其他文档负责的内容；除非需要用少量文字标识路由，否则不要再次摘要。
+
+3. 围绕未来改动组织路由。
+   - 优先使用“修改 `<area>` 前，先读取 `<authoritative-document>`”形式的指令。
+   - 只有代码入口确实能显著减少导航歧义时才列出它。
+   - 条件允许时，链接范围最小的权威文档，不要只链接宽泛目录。
+
+4. 筛选内联规则。
+   - 当具体操作会触发必要的配套步骤、验证或协调流程时，保留对应工作流触发器。
+   - 只有遗漏规则可能导致破坏性操作、外部副作用、安全问题或仓库级严重回归时，才保留高风险边界。
+   - 删除通用工作习惯、低影响偏好，以及既非触发器也非高风险边界的项目事实。
+
+5. 保持里程碑路由简短。
+   - 对采用里程碑式 `TODO.md` 的项目，只保留一条简短路由：开始或继续里程碑任务前读取 `TODO.md`，交付前按其顶部规则同步状态。
+   - 不得在项目指导文件中复述 TODO 的执行、完成、验收、归档或里程碑提升生命周期。
+
+6. 协调多份项目指导文件。
+   - 保持共享的仓库路由和事实一致。
+   - 仅在确有必要区分时保留文件专属说明；共享细节应链接到共同权威位置，不要复制。
+
+## 重复内容审查
+
+删除或迁移以下常见的项目指导文件膨胀内容：
+
+| 重复内容 | 首选权威位置 |
+| --- | --- |
+| 完整架构或流程 | `docs/` 下的具名架构或设计文档 |
+| 模块职责表或逐文件地图 | 具名技术文档、包文档或代码本身 |
+| CLI 使用说明和教程 | 最短路径放在 `README.md`；详细内容放在具名使用文档 |
+| schema 字段、协议细节和数据布局 | `docs/` 下的具名数据契约或格式文档 |
+| 长篇配置和故障排查说明 | `docs/` 下的具名配置与故障排查文档 |
+| 测试文件映射和详细测试流程 | `docs/` 下的具名测试文档 |
+| 已在面向用户文档中介绍的项目状态、功能和环境细节 | `README.md` |
+| 活动任务、验收清单、里程碑状态和 TODO 维护规则 | `TODO.md` |
+
+只有链接到所选权威位置有助于未来任务导航时，才在项目指导文件中保留该链接。
+
+## 内联规则判定
+
+保留非路由型内联规则前，确认以下条件全部成立：
+
+- 某项具体改动或操作会触发该规则，或者该规则能防止已明确识别的高风险后果。
+- 规则有仓库证据或用户明确要求作为依据。
+- 仅提供链接不足以让必要的触发器或边界在关键时刻保持可见。
+- 措辞简短、可执行，且没有把支撑性说明从权威文档中抽离出来。
+
+个人默认偏好和“编辑前先读文件”等通用建议无法通过此判定，除非仓库把它们转化为具体工作流触发器或高风险边界。
+
+## 审查清单
+
+- 项目指导文件是否主要承担快速路由作用，而不是项目介绍或维护手册？
+- 是否把各类改动路由到具体文档和代码入口？
+- 每个详细主题是否只有一个明确权威位置？
+- 是否避免重复 README、TODO、架构、schema、配置、测试和故障排查内容？
+- 除入口路由外，每条内联规则是否属于工作流触发器或高风险边界？
+- 高风险边界是否仅限于破坏性操作、外部副作用、安全问题或仓库级严重回归？
+- 如果 `TODO.md` 采用里程碑式工作流，项目指导文件是否只保留“工作前读取、交付前同步”的简短路由？
+- 多份项目指导文件是否保持一致且没有复制共享细节？
+- 最终文件是否足够简短，适合在每次任务开始时快速阅读？
+
+## 示例
+
+- 优先使用此类路由：“修改数据格式前，先读取 `docs/data-contract.md`。”
+- 优先使用此类工作流触发器：“修改公共 README 时，在同一改动中更新其受维护的翻译。”
+- 保留此类高风险边界：“不得从仓库验证脚本运行生产环境迁移。”
+- 不要把模块表、CLI 参考、schema、测试矩阵或完整 TODO 生命周期复制到 `AGENTS.md`；应链接其权威文档。
+- 避免“编辑前始终先读文件”等通用指导。这是正常工作习惯，不是仓库工作流触发器。

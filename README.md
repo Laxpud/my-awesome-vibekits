@@ -1,6 +1,6 @@
 # Vibekits
 
-[![Version](https://img.shields.io/badge/version-1.1.1-2563EB)](plugins/laxpud-vibekits/.codex-plugin/plugin.json)
+[![Version](https://img.shields.io/badge/version-1.1.2-2563EB)](plugins/laxpud-vibekits/.codex-plugin/plugin.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-3-brightgreen)](#included-skills)
 [![Codex Plugin](https://img.shields.io/badge/Codex-Plugin-111827)](.agents/plugins/marketplace.json)
@@ -10,13 +10,13 @@
 
 Vibekits is a platform-neutral collection of reusable agent skills and rules for Codex, Claude Code, and `SKILL.md`-compatible workflows.
 
-The repository is intentionally documentation-first: the shared skill source lives in one plugin package, while Codex and Claude Code adapters point to that same source without adding platform-specific logic to the skills.
+The repository is intentionally documentation-first: one shared plugin package owns the reusable skills, while Codex and Claude Code adapters expose that same source without adding platform-specific logic to the skills.
 
 ## Current Status
 
-- Current plugin version: `1.1.1`.
-- Included skills: code comment standards, Python `pyproject.toml` standards, and project documentation bootstrapping.
-- No build step is required; validation focuses on JSON manifests, skill metadata, Markdown links, and repository structure.
+- Current plugin version: `1.1.2`.
+- Included skills cover code comments, Python `pyproject.toml`, and project documentation ownership and maintenance workflows.
+- Distribution is documentation-only; there is no build step, and repository validation focuses on plugin metadata, skill structure, Markdown links, and update tooling.
 
 ## Start Here
 
@@ -38,7 +38,7 @@ If you want to try one capability first:
 After installation, start a new session and describe the task directly, or explicitly ask for a skill:
 
 ```text
-Use project-docs-bootstrap to reorganize this repository docs.
+Use project-docs-bootstrap to reorganize this repository documentation.
 ```
 
 ### Codex
@@ -57,21 +57,14 @@ Choose `laxpud-vibekits` from the plugin list. In a new thread, describe the tas
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
-Useful entry points:
-
-- [`docs/index.md`](docs/index.md): technical documentation index.
-- [`docs/README.cn.md`](docs/README.cn.md): Chinese translation of this README.
-- [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md): skill, rule, and adapter maintenance rules.
-- [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md): release and update workflows for Codex and Claude Code plugins.
-- [`docs/CODEX_INSTALL_SMOKE_TEST.md`](docs/CODEX_INSTALL_SMOKE_TEST.md): repeatable local and published-GitHub checks for the Codex installation path.
-- [`TODO.md`](TODO.md): active maintenance work.
+After cloning, start with the [technical documentation index](docs/index.md) or the [active milestone](TODO.md).
 
 ## Included Skills
 
 | Skill | Use when | What it provides |
 | --- | --- | --- |
 | [`code-comment-standard`](plugins/laxpud-vibekits/skills/code-comment-standard/SKILL.md) | You need to generate, review, complete, or standardize comments, docstrings, TODOs, or public API documentation. | Cross-language comment levels, quality standards, anti-patterns, and a maintainer-oriented commenting workflow. |
-| [`project-docs-bootstrap`](plugins/laxpud-vibekits/skills/project-docs-bootstrap/SKILL.md) | A new, early-stage, or messy repository needs clear README, TODO, docs, and project guidance boundaries. | A workflow for public entry docs, active TODOs, technical docs, archive boundaries, and collaboration guidance. |
+| [`project-docs-bootstrap`](plugins/laxpud-vibekits/skills/project-docs-bootstrap/SKILL.md) | A repository needs clear documentation ownership, milestone-driven TODO workflows, or concise project-guidance routes. | README/TODO/docs ownership, milestone acceptance rules, project-guidance review, and archive and directory-README boundaries. |
 | [`pyproject-standard`](plugins/laxpud-vibekits/skills/pyproject-standard/SKILL.md) | You are creating or editing a Python project's `pyproject.toml`. | Standards for `uv`, `hatchling`, dynamic versions, licenses, dependencies, classifiers, scripts, and package index configuration. |
 
 ## Included Rules
@@ -80,37 +73,13 @@ Useful entry points:
 | --- | --- |
 | [`codex-user-global-rules`](rules/codex-user-global-rules.md) | A personal Codex global-rules backup for migration and version history. It is not a platform-neutral shared rule. |
 
-## Repository Principles
+## Maintenance
 
-- **Platform-neutral core**: shared skills and reusable rules must not depend on a specific AI assistant, IDE, or runtime.
-- **Adapter isolation**: Claude Code configuration lives in `.claude-plugin/` and `plugins/laxpud-vibekits/.claude-plugin/`; Codex configuration lives in `.agents/` and `plugins/laxpud-vibekits/.codex-plugin/`.
-- **Single skill source**: `plugins/laxpud-vibekits/skills/` is the only skill source. Do not create a root `skills/` copy.
-- **Explicit backups**: personal global-rule backups may live in `rules/`, but their filenames and opening notes must mark them as backups.
-
-## Repository Layout
-
-```text
-plugins/laxpud-vibekits/
-  .claude-plugin/      # Claude Code plugin manifest
-  .codex-plugin/       # Codex plugin manifest
-  skills/              # shared skill source of truth
-.claude-plugin/        # Claude Code marketplace index
-.agents/plugins/       # Codex marketplace index
-rules/                 # reusable rules and clearly labeled backups
-docs/                  # technical docs, Chinese README, and maintenance notes
-```
-
-## Contributing
-
-When adding or changing skills and rules:
-
-- Put new skills in `plugins/laxpud-vibekits/skills/<skill-name>/SKILL.md`.
-- Put reusable rules in `rules/<rule-name>.md`, and keep them short, clear, and platform-neutral.
-- Update the skill table, Claude/Codex plugin manifests, and marketplace metadata when a skill's capability or description changes.
-- Keep platform-specific behavior out of shared `SKILL.md` files.
-- Run `python scripts/sync_plugin_metadata.py --set-version <semver>` for releases; use the same command without `--set-version` for a read-only consistency check.
-- After changing the Codex marketplace, manifest, or install instructions, run `python scripts/check_codex_install.py`; after publishing, add `--remote`.
-- Validate JSON manifests, Markdown links, skill frontmatter, and Git diff before publishing.
+- Use [`docs/index.md`](docs/index.md) to find the authoritative technical document for a change.
+- Read [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md) before changing skills, rules, or adapter metadata.
+- Follow [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md) for release and client-update workflows.
+- Follow [`docs/CODEX_INSTALL_SMOKE_TEST.md`](docs/CODEX_INSTALL_SMOKE_TEST.md) after changing Codex installation metadata or instructions.
+- Track active work, acceptance conditions, and completion evidence in [`TODO.md`](TODO.md).
 
 ## License
 
