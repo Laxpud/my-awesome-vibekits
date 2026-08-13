@@ -157,16 +157,35 @@ class PreflightTests(unittest.TestCase):
             self.assertEqual(repository.target, result.releases[0].target)
             self.assertEqual("Laxpud/my-awesome-vibekits", result.repository_slug)
             self.assertEqual([("origin/main", "old-tag")], repository.resolve_calls)
+            # Windows runner 可能以 8.3 短路径创建临时目录，而预检会将其解析为
+            # 规范长路径；断言必须复用生产代码的规范化边界，不能比较路径拼写。
+            canonical_root = root.resolve()
+            canonical_validator = validator.resolve()
             expected = [
-                ("python-test", str(root / "scripts/sync_plugin_metadata.py")),
-                ("python-test", str(root / "scripts/check_codex_install.py")),
-                ("python-test", str(validator), str(root / "plugins/python-project")),
-                ("claude", "plugin", "validate", str(root / "plugins/python-project")),
+                (
+                    "python-test",
+                    str(canonical_root / "scripts/sync_plugin_metadata.py"),
+                ),
+                (
+                    "python-test",
+                    str(canonical_root / "scripts/check_codex_install.py"),
+                ),
+                (
+                    "python-test",
+                    str(canonical_validator),
+                    str(canonical_root / "plugins/python-project"),
+                ),
                 (
                     "claude",
                     "plugin",
                     "validate",
-                    str(root / ".claude-plugin/marketplace.json"),
+                    str(canonical_root / "plugins/python-project"),
+                ),
+                (
+                    "claude",
+                    "plugin",
+                    "validate",
+                    str(canonical_root / ".claude-plugin/marketplace.json"),
                 ),
             ]
             for command in expected:
