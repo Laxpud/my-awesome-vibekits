@@ -52,7 +52,7 @@ class FakeCodex:
         self.events.append(f"verify:{artifact.version}")
         return Installation(
             "codex",
-            "laxpud-vibekits@laxpud-vibekits",
+            "python-project@laxpud-vibekits",
             "laxpud-vibekits",
             artifact.version,
             True,
@@ -81,8 +81,8 @@ class FakeClaude:
         return [
             Installation(
                 "claude",
-                "laxpud-vibekits@laxpud-vibekits-dev",
-                "laxpud-vibekits-dev",
+                "python-project@laxpud-vibekits",
+                "laxpud-vibekits",
                 artifact.version,
                 True,
                 Path("/plugin"),
@@ -153,7 +153,7 @@ class IsolatedHomesTests(unittest.TestCase):
                 settings = json.loads(
                     (homes.claude_home / "settings.json").read_text(encoding="utf-8")
                 )
-                source = settings["extraKnownMarketplaces"]["laxpud-vibekits-dev"]["source"]
+                source = settings["extraKnownMarketplaces"]["laxpud-vibekits"]["source"]
                 self.assertEqual("automation/plugin-e2e/run-1", source["ref"])
                 self.assertFalse((homes.claude_home / "plugins").exists())
                 temporary_root = homes.root
@@ -346,7 +346,7 @@ class PromotionTests(unittest.TestCase):
         self.codex_before = [
             Installation(
                 "codex",
-                "laxpud-vibekits@laxpud-vibekits",
+                "python-project@laxpud-vibekits",
                 "laxpud-vibekits",
                 "1.0.0",
                 True,
@@ -366,8 +366,8 @@ class PromotionTests(unittest.TestCase):
         self.claude_before = [
             Installation(
                 "claude",
-                "laxpud-vibekits@laxpud-vibekits-dev",
-                "laxpud-vibekits-dev",
+                "python-project@laxpud-vibekits",
+                "laxpud-vibekits",
                 "1.0.0",
                 True,
                 Path("/claude-a"),
@@ -377,8 +377,8 @@ class PromotionTests(unittest.TestCase):
             ),
             Installation(
                 "claude",
-                "laxpud-vibekits@laxpud-vibekits-dev",
-                "laxpud-vibekits-dev",
+                "python-project@laxpud-vibekits",
+                "laxpud-vibekits",
                 "1.0.0",
                 False,
                 Path("/claude-b"),

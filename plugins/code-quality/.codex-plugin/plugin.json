@@ -1,0 +1,33 @@
+{
+  "name": "code-quality",
+  "version": "1.1.2",
+  "description": "Standards for maintainable code comments, docstrings, TODOs, and public API documentation.",
+  "author": {
+    "name": "Laxpud",
+    "url": "https://github.com/Laxpud"
+  },
+  "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+  "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+  "license": "MIT",
+  "keywords": [
+    "code-quality",
+    "comments",
+    "documentation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Quality",
+    "shortDescription": "Maintainable code-comment standards",
+    "longDescription": "Generate, review, and improve comments, docstrings, TODOs, and public API documentation while preserving code behavior and repository style.",
+    "developerName": "Laxpud",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
+    "defaultPrompt": [
+      "Use code-comment-standard to review and improve comments in this codebase."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

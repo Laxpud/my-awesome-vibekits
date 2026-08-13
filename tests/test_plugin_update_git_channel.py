@@ -41,7 +41,7 @@ class GitRepositoryTests(unittest.TestCase):
         self.manifest = (
             self.root
             / "plugins"
-            / "laxpud-vibekits"
+            / "python-project"
             / ".codex-plugin"
             / "plugin.json"
         )
@@ -72,7 +72,7 @@ class GitRepositoryTests(unittest.TestCase):
 
     def _write_version(self, version: str, skill_marker: str) -> None:
         self.manifest.write_text(
-            json.dumps({"name": "laxpud-vibekits", "version": version}),
+            json.dumps({"name": "python-project", "version": version}),
             encoding="utf-8",
         )
         self.skill.write_text(skill_marker, encoding="utf-8")
@@ -126,7 +126,7 @@ class GitRepositoryTests(unittest.TestCase):
         (cache / "ignored.pyc").write_bytes(b"ignored")
         second = digest_directory(plugin_root)
         self.manifest.write_text(
-            json.dumps({"name": "laxpud-vibekits", "version": "9.9.9"}),
+            json.dumps({"name": "python-project", "version": "9.9.9"}),
             encoding="utf-8",
         )
         manifest_only = digest_directory(plugin_root)

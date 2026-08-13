@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "marketplace": {
+    "id": "fixture-marketplace",
+    "displayName": "Fixture Marketplace",
+    "description": "Invalid path fixture.",
+    "owner": "Tests"
+  },
+  "publisher": {
+    "name": "Tests",
+    "url": "https://github.com/example",
+    "homepage": "https://github.com/example/plugins",
+    "repository": "https://github.com/example/plugins",
+    "license": "MIT"
+  },
+  "plugins": [
+    {
+      "id": "bad-plugin",
+      "directory": "../bad-plugin",
+      "version": "1.0.0",
+      "description": "Invalid fixture plugin.",
+      "category": "Productivity",
+      "keywords": ["fixture"],
+      "skills": [{"id": "bad-skill", "path": "skills/bad-skill"}],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Bad",
+          "shortDescription": "Bad fixture",
+          "longDescription": "Invalid fixture plugin.",
+          "defaultPrompt": ["Use the invalid fixture."]
+        },
+        "claude": {"category": "workflow", "tags": ["fixture"]}
+      }
+    }
+  ]
+}

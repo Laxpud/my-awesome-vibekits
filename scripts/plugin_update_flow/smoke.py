@@ -26,7 +26,7 @@ SMOKE_SCHEMA: dict[str, Any] = {
 }
 
 SMOKE_PROMPT = """\
-Explicitly use the installed laxpud-vibekits pyproject-standard skill.
+Explicitly use the installed pyproject-standard skill.
 This is a read-only conformance probe: do not inspect files, use tools, ask questions,
 or create a project. Return only the JSON object required by the supplied schema,
 summarizing the skill's fixed build backend, package manager, dynamic version path,

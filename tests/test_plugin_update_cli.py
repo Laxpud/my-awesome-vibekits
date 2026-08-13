@@ -18,8 +18,8 @@ from scripts.plugin_update_e2e import (
     promotion_state_paths,
     write_report,
 )
-from scripts.plugin_update_flow.models import Artifact, ExitCode
-from scripts.plugin_update_flow.preflight import PreflightError, PreflightResult
+from scripts.plugin_update_flow.models import Artifact, ExitCode, PluginTarget
+from scripts.plugin_update_flow.preflight import PluginRelease, PreflightError, PreflightResult
 from scripts.plugin_update_flow.workflow import PromotionError
 
 
@@ -91,8 +91,8 @@ class CliContractTests(unittest.TestCase):
                 codex_home / ".tmp/marketplaces/laxpud-vibekits",
                 claude_home / "plugins/installed_plugins.json",
                 claude_home / "plugins/known_marketplaces.json",
-                claude_home / "plugins/marketplaces/laxpud-vibekits-dev",
-                claude_home / "plugins/cache/laxpud-vibekits-dev",
+                claude_home / "plugins/marketplaces/laxpud-vibekits",
+                claude_home / "plugins/cache/laxpud-vibekits/python-project",
             ],
             paths,
         )
@@ -131,8 +131,19 @@ class FakeOperations:
         self.isolated_error: BaseException | None = None
         self.promotion_error: BaseException | None = None
         self.preflight_result = PreflightResult(
-            Artifact("old", "a" * 40, "1.0.0", "sha256:old"),
-            Artifact("origin/main", "b" * 40, "1.1.0", "sha256:new"),
+            (
+                PluginRelease(
+                    PluginTarget(
+                        "python-project",
+                        "laxpud-vibekits",
+                        Path("skills/pyproject-standard/SKILL.md"),
+                        "github.com/laxpud/my-awesome-vibekits",
+                    ),
+                    Path("plugins/python-project"),
+                    Artifact("old", "a" * 40, "1.0.0", "sha256:old"),
+                    Artifact("origin/main", "b" * 40, "1.1.0", "sha256:new"),
+                ),
+            ),
             "Laxpud/my-awesome-vibekits",
         )
 
@@ -164,6 +175,8 @@ class ApplicationStateTests(unittest.TestCase):
             skill_smoke=False,
             report=None,
             timeout=300.0,
+            plugins=None,
+            all=False,
         )
 
     def _execute(

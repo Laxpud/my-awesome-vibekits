@@ -1,0 +1,34 @@
+{
+  "name": "project-docs",
+  "version": "1.1.2",
+  "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
+  "author": {
+    "name": "Laxpud",
+    "url": "https://github.com/Laxpud"
+  },
+  "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+  "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "readme",
+    "todo",
+    "project-guidance"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Project Docs",
+    "shortDescription": "Maintainable project documentation workflows",
+    "longDescription": "Initialize or reorganize README, milestone TODO, documentation indexes, ownership boundaries, translations, and concise project-guidance routes.",
+    "developerName": "Laxpud",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
+    "defaultPrompt": [
+      "Use project-docs-bootstrap to organize README, TODO, docs, and project guidance."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

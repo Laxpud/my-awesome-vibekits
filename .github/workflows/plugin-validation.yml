@@ -1,0 +1,53 @@
+name: Plugin validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_live_e2e:
+        description: Run credentialed Windows Live E2E on a prepared self-hosted runner
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  static:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Verify catalog-generated metadata
+        run: python scripts/sync_plugin_metadata.py
+      - name: Verify Codex marketplace install paths
+        run: python scripts/check_codex_install.py --all
+      - name: Verify Markdown links and whitespace
+        run: |
+          python scripts/check_markdown_links.py
+          git diff --check
+
+  isolated-lifecycle:
+    needs: static
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Run deterministic dual-client tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+  live-e2e:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_live_e2e
+    needs: isolated-lifecycle
+    runs-on: [self-hosted, Windows, vibekits-live-e2e]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run real Codex and Claude upgrades without model calls
+        run: python scripts/plugin_update_e2e.py --all

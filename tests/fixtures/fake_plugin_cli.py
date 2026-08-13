@@ -25,7 +25,7 @@ def load_state() -> tuple[Path, dict[str, object]]:
     path = Path(os.environ["FAKE_PLUGIN_STATE"])
     if path.is_file():
         return path, json.loads(path.read_text(encoding="utf-8"))
-    return path, {"phase": "old", "codex": None, "claude": []}
+    return path, {"phase": "old", "codex": [], "claude": []}
 
 
 def save_state(path: Path, state: dict[str, object]) -> None:
@@ -60,9 +60,10 @@ def codex(args: list[str], path: Path, state: dict[str, object]) -> int:
         print("{}")
         return 0
     if args[:2] == ["plugin", "add"]:
-        install_path, version = install_payload("codex", "global", str(state["phase"]))
-        state["codex"] = {
-            "pluginId": "laxpud-vibekits@laxpud-vibekits",
+        plugin_id = args[2]
+        install_path, version = install_payload("codex", plugin_id, str(state["phase"]))
+        item = {
+            "pluginId": plugin_id,
             "version": version,
             "enabled": True,
             "source": {"path": install_path},
@@ -70,12 +71,24 @@ def codex(args: list[str], path: Path, state: dict[str, object]) -> int:
                 "source": "https://github.com/Laxpud/my-awesome-vibekits.git"
             },
         }
+        state["codex"] = [
+            existing
+            for existing in state.get("codex", [])
+            if existing.get("pluginId") != plugin_id
+        ] + [item]
+        save_state(path, state)
+        print("{}")
+        return 0
+    if args[:2] == ["plugin", "remove"]:
+        plugin_id = args[2]
+        state["codex"] = [
+            item for item in state.get("codex", []) if item.get("pluginId") != plugin_id
+        ]
         save_state(path, state)
         print("{}")
         return 0
     if args[:3] == ["plugin", "list", "--json"]:
-        installed = [state["codex"]] if state.get("codex") else []
-        print(json.dumps({"installed": installed}))
+        print(json.dumps({"installed": state.get("codex", [])}))
         return 0
     if args and args[0] == "exec":
         print(json.dumps({"type": "thread.started"}))
@@ -97,12 +110,13 @@ def claude(args: list[str], path: Path, state: dict[str, object]) -> int:
         save_state(path, state)
         return 0
     if args[:2] == ["plugin", "install"]:
+        plugin_id = args[2]
         scope = value_after(args, "--scope", "user")
         project = str(Path.cwd()) if scope in {"project", "local"} else None
-        key = f"{scope}:{project or 'user'}"
+        key = f"{plugin_id}:{scope}:{project or 'user'}"
         install_path, version = install_payload("claude", key, str(state["phase"]))
         item = {
-            "id": "laxpud-vibekits@laxpud-vibekits-dev",
+            "id": plugin_id,
             "version": version,
             "scope": scope,
             "enabled": scope != "local",
@@ -113,21 +127,56 @@ def claude(args: list[str], path: Path, state: dict[str, object]) -> int:
             existing
             for existing in state.get("claude", [])
             if not (
-                existing.get("scope") == scope
+                existing.get("id") == plugin_id
+                and existing.get("scope") == scope
                 and existing.get("projectPath") == project
             )
         ] + [item]
         save_state(path, state)
         return 0
+    if args[:2] in (["plugin", "enable"], ["plugin", "disable"]):
+        plugin_name = args[2].split("@", 1)[0]
+        scope = value_after(args, "--scope", "user")
+        project = str(Path.cwd()) if scope in {"project", "local"} else None
+        enabled = args[1] == "enable"
+        for item in state.get("claude", []):
+            if (
+                str(item.get("id", "")).split("@", 1)[0] == plugin_name
+                and item.get("scope") == scope
+                and item.get("projectPath") == project
+            ):
+                item["enabled"] = enabled
+        save_state(path, state)
+        return 0
+    if args[:2] == ["plugin", "uninstall"]:
+        plugin_name = args[2]
+        scope = value_after(args, "--scope", "user")
+        project = str(Path.cwd()) if scope in {"project", "local"} else None
+        state["claude"] = [
+            item
+            for item in state.get("claude", [])
+            if not (
+                str(item.get("id", "")).split("@", 1)[0] == plugin_name
+                and item.get("scope") == scope
+                and item.get("projectPath") == project
+            )
+        ]
+        save_state(path, state)
+        return 0
     if args[:2] == ["plugin", "update"]:
+        plugin_name = args[2].split("@", 1)[0]
         scope = value_after(args, "--scope", "user")
         if os.environ.get("FAKE_CLAUDE_FAIL_SCOPE") == scope:
             return fail(f"forced Claude update failure for scope {scope}")
         project = str(Path.cwd()) if scope in {"project", "local"} else None
         updated = False
         for item in state.get("claude", []):
-            if item.get("scope") == scope and item.get("projectPath") == project:
-                key = f"{scope}:{project or 'user'}"
+            if (
+                str(item.get("id", "")).split("@", 1)[0] == plugin_name
+                and item.get("scope") == scope
+                and item.get("projectPath") == project
+            ):
+                key = f"{item['id']}:{scope}:{project or 'user'}"
                 install_path, version = install_payload("claude", key, str(state["phase"]))
                 item["installPath"] = install_path
                 item["version"] = version

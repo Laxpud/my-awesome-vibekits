@@ -11,9 +11,9 @@
 5. 正常推进时，只有当前里程碑的全部任务和全部里程碑级完成条件都通过后，才能将完成记录归档到 `docs/archive/` 并把下一里程碑提升为当前里程碑；用户明确调整优先级时，必须保留被暂停里程碑的全部状态并记录调整，不得归档或制造完成状态。
 6. 每次交付前按本节规则同步任务状态、剩余条件和验证证据。
 
-## 暂停里程碑：维护体验与发布可靠性
+## 当前里程碑：维护体验与发布可靠性
 
-状态：2026-08-13 根据用户明确的优先级调整暂停。全部已完成、部分完成和未完成记录保持原状，不归档；完成当前“Codex / Claude Code 多插件目录与分发”里程碑后再决定恢复顺序。
+状态：2026-08-13 “Codex / Claude Code 多插件目录与分发”里程碑完成并归档后恢复为当前里程碑。暂停期间的已完成、部分完成和未完成记录均保持原状态。
 
 - [ ] 为每个已收录技能补充一个 README 可链接的最小使用示例。
   - 验收条件：根 README 的技能表能指向示例或对应 `SKILL.md` 中的示例段落，读者能在 1 分钟内判断技能适用场景。
@@ -41,71 +41,13 @@
     - 晋级覆盖 Codex 实例与 Claude Code 的全部 `user`、`project`、`local` 实例，保持原 `scope`、`projectPath` 和 `enabled` 状态；任一失败必须恢复两端快照。
     - 晋级后再次校验两端 version、source 和 digest，并提示新建会话或重新加载插件；隔离测试产生的 marketplace、缓存、配置和凭据副本必须清理。
     - 仅在 Windows Live E2E 完成真实 `1.1.0 → 1.1.1` 测试，并验证一次幂等 `--promote` 后勾选本项。
-  - 当前状态：部分完成。提交 `1430832` 已实现跨客户端更新验收工具及配套文档；剩余条件是完成 Windows Live E2E 的真实升级与幂等 `--promote` 验证。
+  - 当前状态：部分完成。提交 `1430832` 已实现跨客户端更新验收工具及配套文档；2026-08-13 已在多插件里程碑中将工具改为 catalog 驱动的独立插件流程并通过 fixture 回归。剩余条件仍是完成 Windows Live E2E 的真实 `1.1.0 → 1.1.1` 升级与幂等 `--promote` 验证。
 
 ### 里程碑级完成条件
 
 - [ ] 上述全部任务均标记为 `[x]`，且各自记录完成日期和验证证据。
 - [ ] 发布元数据一致性、插件更新单元测试、技能与插件静态验证、Markdown 链接和 `git diff --check` 全部通过。
 - [ ] 未解决决策和活动工作均保留在本文件或具名技术文档中，没有通过删除、弱化或提前归档隐藏。
-
-## 当前里程碑：Codex / Claude Code 多插件目录与分发
-
-状态：2026-08-13 根据用户明确安排提升为当前里程碑，并将范围收敛到 Codex 与 Claude Code。目标是维护一个逻辑插件目录和唯一内容源，可靠生成两端 marketplace 与 manifest；其他 Harness 只作为未来发展方向，不进入本里程碑验收门禁。
-
-- [ ] 建立仓库级统一插件 catalog，作为插件身份和分发元数据的唯一事实来源。
-  - 验收条件：
-    - catalog 至少记录每个插件的稳定 ID、目录、版本、描述、分类，以及 Codex、Claude Code 所需的平台覆盖项。
-    - `plugins/<plugin-id>/` 中的每个插件可独立安装、升级、禁用、卸载和回滚，不要求兄弟插件同步发版。
-    - catalog 校验拒绝重复插件 ID、重复或冲突的 Skill ID、不存在的目录、越过插件根目录的路径，以及 manifest 与 catalog 身份不一致。
-    - 插件发布包必须自包含；运行时不得通过 `../shared` 引用兄弟插件或仓库级共享文件。
-
-- [ ] 将现有 `laxpud-vibekits` 单插件直接拆分为三个独立插件。
-  - 验收条件：
-    - marketplace 顶层名称继续使用 `laxpud-vibekits`；插件目录和插件 ID 调整为：
-      - `plugins/code-quality/`，仅包含 `skills/code-comment-standard/`；
-      - `plugins/python-project/`，仅包含 `skills/pyproject-standard/`；
-      - `plugins/project-docs/`，仅包含 `skills/project-docs-bootstrap/`。
-    - 三个插件分别拥有独立的 Codex、Claude Code manifest 和版本；Skill ID 保持不变，在提供插件命名空间的平台上分别使用 `code-quality:code-comment-standard`、`python-project:pyproject-standard` 和 `project-docs:project-docs-bootstrap`。
-    - 删除旧 `plugins/laxpud-vibekits/` 插件包及其 marketplace 条目，不保留 deprecated bundle、兼容别名、聚合依赖包或人工维护的 Skills 副本。
-    - 根 README、中文 README、安装与更新文档、适配层规范、fixture 和测试全部改为三个独立插件，并明确此次变更不提供旧插件迁移兼容层。
-    - 三个插件均能在 Codex 与 Claude Code 中独立安装、升级、禁用、卸载和回滚；任一插件操作不得改变另外两个插件。
-
-- [ ] 从统一 catalog 生成 Codex 与 Claude Code 的多插件 marketplace。
-  - 验收条件：
-    - `.agents/plugins/marketplace.json` 和 `.claude-plugin/marketplace.json` 的 `plugins[]` 包含并正确解析上述三个独立插件。
-    - 生成过程保持 Codex 的 `policy.installation`、`policy.authentication`、`category` 及 Claude marketplace 必需字段，不以手工复制 JSON 作为长期维护方式。
-    - 每个 marketplace 条目指向独立的 `plugins/<plugin-id>/`，且各插件 manifest、版本、名称和 Skills 路径通过静态校验。
-    - 单个条目无效时能精确报告对应 marketplace、插件 ID 和字段，不再以 `plugins[0]` 代表整个目录。
-
-- [ ] 消除元数据同步、安装检查和更新流程中的单插件假设。
-  - 验收条件：
-    - 移除固定 `PLUGIN_ROOT`、`PLUGIN_NAME`、`MARKETPLACE_NAME`、`plugins[0]` 和 `len(plugins) == 1` 等单插件约束，改由 catalog 解析目标。
-    - 相关命令支持选择一个插件、多个插件或 `--all`，且默认行为有文档和测试覆盖。
-    - 发布、digest、安装检查、晋级和回滚均以 `(platform, marketplace, plugin)` 为目标；一个插件失败或回滚不得改变兄弟插件的版本、启用状态或安装来源。
-    - 旧 `laxpud-vibekits` 插件 ID、目录和 marketplace 条目被直接移除；测试不得以兼容旧单插件行为为通过条件。
-
-- [ ] 建立“共享内容核心 + Codex / Claude Code 双适配”生成流程。
-  - 验收条件：
-    - 每个插件的 `skills/` 是该插件唯一的技能内容源；生成物和安装投影不得成为第二份人工维护的 Skill 副本。
-    - 每个插件分别生成或同步 `.codex-plugin/plugin.json` 与 `.claude-plugin/plugin.json`，平台字段不得污染通用 `SKILL.md`。
-    - 两端 manifest 的名称、版本、描述、Skills 路径和发布来源与 catalog 一致，同时允许各自保留必要的平台专属字段。
-    - 生成器可重复执行且结果稳定；无输入变化时不得产生 diff，手工修改生成物后校验必须失败并给出修复方式。
-
-- [ ] 建立 Codex / Claude Code 双端验证矩阵和发布门禁。
-  - 验收条件：
-    - Codex 与 Claude Code 分别验证 marketplace 发现/列出、逐插件安装、启用、Skill 加载、升级、禁用、卸载和独立回滚。
-    - fixture 覆盖三个正式插件，并另含两个插件内的同名候选 Skill、一个无效路径和一次独立回滚，用于验证命名冲突、故障隔离和错误定位。
-    - CI 必须先通过 catalog、两端生成物一致性和静态 schema 检查，再执行客户端 smoke test；需要凭据、网络或 GUI 的检查明确标为独立门禁。
-    - 两端测试使用隔离配置且默认不调用模型；可选 Skill smoke test 的 token 消耗、清理边界和晋级条件必须保持显式。
-
-### 里程碑级完成条件
-
-- [ ] 上述全部任务均标记为 `[x]`，且各自记录完成日期和验证证据。
-- [ ] 仓库中不存在把 marketplace 限制为单一插件的生产代码；指定的三个独立插件均能从同一 catalog 生成并通过 Codex、Claude Code 的安装与升级测试。
-- [ ] 旧 `laxpud-vibekits` 插件 ID、目录和 marketplace 条目均不存在，且没有 deprecated bundle、兼容别名或聚合依赖包。
-- [ ] Codex 与 Claude Code 的 marketplace、manifest 和安装状态均可追溯到统一 catalog 与插件内容，且一个插件的失败、升级或回滚不影响兄弟插件。
-- [ ] 两端生成物均可由统一 catalog 和插件内容重新生成，`git diff` 能证明没有必须手工同步的 Skills 内容副本。
 
 ## 未来发展方向：跨 Harness 兼容与分发
 

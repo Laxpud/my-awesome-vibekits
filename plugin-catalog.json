@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "marketplace": {
+    "id": "laxpud-vibekits",
+    "displayName": "Laxpud Vibekits",
+    "description": "Independent, platform-neutral workflow plugins for Codex and Claude Code.",
+    "owner": "Laxpud"
+  },
+  "publisher": {
+    "name": "Laxpud",
+    "url": "https://github.com/Laxpud",
+    "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+    "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+    "license": "MIT"
+  },
+  "plugins": [
+    {
+      "id": "code-quality",
+      "directory": "plugins/code-quality",
+      "version": "1.1.2",
+      "description": "Standards for maintainable code comments, docstrings, TODOs, and public API documentation.",
+      "category": "Productivity",
+      "keywords": ["code-quality", "comments", "documentation"],
+      "skills": [
+        {"id": "code-comment-standard", "path": "skills/code-comment-standard"}
+      ],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Code Quality",
+          "shortDescription": "Maintainable code-comment standards",
+          "longDescription": "Generate, review, and improve comments, docstrings, TODOs, and public API documentation while preserving code behavior and repository style.",
+          "defaultPrompt": ["Use code-comment-standard to review and improve comments in this codebase."]
+        },
+        "claude": {
+          "category": "workflow",
+          "tags": ["code-quality", "comments", "documentation"]
+        }
+      }
+    },
+    {
+      "id": "python-project",
+      "directory": "plugins/python-project",
+      "version": "1.1.2",
+      "description": "Standards for uv and hatchling pyproject.toml configuration and Python project metadata.",
+      "category": "Productivity",
+      "keywords": ["python", "uv", "hatchling", "pyproject"],
+      "skills": [
+        {"id": "pyproject-standard", "path": "skills/pyproject-standard"}
+      ],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Python Project",
+          "shortDescription": "uv and hatchling project standards",
+          "longDescription": "Create or review pyproject.toml metadata, dependencies, dynamic versions, licenses, scripts, classifiers, and uv index configuration.",
+          "defaultPrompt": ["Use pyproject-standard when creating or editing pyproject.toml."]
+        },
+        "claude": {
+          "category": "workflow",
+          "tags": ["python", "uv", "hatchling", "pyproject"]
+        }
+      }
+    },
+    {
+      "id": "project-docs",
+      "directory": "plugins/project-docs",
+      "version": "1.1.2",
+      "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
+      "category": "Productivity",
+      "keywords": ["documentation", "readme", "todo", "project-guidance"],
+      "skills": [
+        {"id": "project-docs-bootstrap", "path": "skills/project-docs-bootstrap"}
+      ],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Project Docs",
+          "shortDescription": "Maintainable project documentation workflows",
+          "longDescription": "Initialize or reorganize README, milestone TODO, documentation indexes, ownership boundaries, translations, and concise project-guidance routes.",
+          "defaultPrompt": ["Use project-docs-bootstrap to organize README, TODO, docs, and project guidance."]
+        },
+        "claude": {
+          "category": "workflow",
+          "tags": ["documentation", "readme", "todo", "project-guidance"]
+        }
+      }
+    }
+  ]
+}

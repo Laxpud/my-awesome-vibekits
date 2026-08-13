@@ -8,13 +8,21 @@ from pathlib import Path
 from scripts.plugin_update_flow.claude_adapter import ClaudeAdapter
 from scripts.plugin_update_flow.codex_adapter import CodexAdapter
 from scripts.plugin_update_flow.git_channel import digest_directory
-from scripts.plugin_update_flow.models import Artifact
+from scripts.plugin_update_flow.models import Artifact, PluginTarget
 from scripts.plugin_update_flow.runtime import CommandResult
 from scripts.plugin_update_flow.smoke import (
     EXPECTED_SMOKE_RESULT,
     parse_claude_smoke,
     parse_codex_smoke,
     validate_smoke_payload,
+)
+
+
+TARGET = PluginTarget(
+    "python-project",
+    "laxpud-vibekits",
+    Path("skills/pyproject-standard/SKILL.md"),
+    "github.com/laxpud/my-awesome-vibekits",
 )
 
 
@@ -66,7 +74,7 @@ class CodexAdapterTests(unittest.TestCase):
     def test_accepts_a_cross_platform_fake_command_prefix(self) -> None:
         runner = QueueRunner(["{}"])
         adapter = CodexAdapter(
-            runner, command=("python-test", "fake_plugin_cli.py", "codex")
+            runner, target=TARGET, command=("python-test", "fake_plugin_cli.py", "codex")
         )
 
         adapter.install_plugin()
@@ -82,8 +90,8 @@ class CodexAdapterTests(unittest.TestCase):
             {
                 "installed": [
                     {
-                        "pluginId": "laxpud-vibekits@laxpud-vibekits",
-                        "name": "laxpud-vibekits",
+                        "pluginId": "python-project@laxpud-vibekits",
+                        "name": "python-project",
                         "marketplaceName": "laxpud-vibekits",
                         "version": "1.1.1",
                         "enabled": False,
@@ -96,7 +104,9 @@ class CodexAdapterTests(unittest.TestCase):
                 ]
             }
         )
-        adapter = CodexAdapter(QueueRunner([output]), env={"CODEX_HOME": "temp"})
+        adapter = CodexAdapter(
+            QueueRunner([output]), target=TARGET, env={"CODEX_HOME": "temp"}
+        )
 
         instances = adapter.list_instances()
 
@@ -112,7 +122,7 @@ class CodexAdapterTests(unittest.TestCase):
                 {
                     "installed": [
                         {
-                            "pluginId": "laxpud-vibekits@laxpud-vibekits",
+                            "pluginId": "python-project@laxpud-vibekits",
                             "version": "1.1.1",
                             "enabled": True,
                             "source": {"path": str(install_path)},
@@ -123,7 +133,7 @@ class CodexAdapterTests(unittest.TestCase):
                     ]
                 }
             )
-            adapter = CodexAdapter(QueueRunner([output]))
+            adapter = CodexAdapter(QueueRunner([output]), target=TARGET)
             artifact = Artifact(
                 "origin/main",
                 "b" * 40,
@@ -141,7 +151,7 @@ class CodexAdapterTests(unittest.TestCase):
                 {
                     "installed": [
                         {
-                            "pluginId": "laxpud-vibekits@laxpud-vibekits",
+                            "pluginId": "python-project@laxpud-vibekits",
                             "version": "1.1.1",
                             "enabled": True,
                             "source": {"path": str(install_path)},
@@ -152,7 +162,7 @@ class CodexAdapterTests(unittest.TestCase):
                     ]
                 }
             )
-            adapter = CodexAdapter(QueueRunner([output]))
+            adapter = CodexAdapter(QueueRunner([output]), target=TARGET)
             artifact = Artifact(
                 "origin/main",
                 "b" * 40,
@@ -165,7 +175,7 @@ class CodexAdapterTests(unittest.TestCase):
 
     def test_refreshes_marketplace_before_reinstall(self) -> None:
         runner = QueueRunner(["{}", "{}"])
-        adapter = CodexAdapter(runner, env={"CODEX_HOME": "temp"})
+        adapter = CodexAdapter(runner, target=TARGET, env={"CODEX_HOME": "temp"})
 
         adapter.update_plugin()
 
@@ -174,7 +184,7 @@ class CodexAdapterTests(unittest.TestCase):
             runner.calls[0][0],
         )
         self.assertEqual(
-            ("codex", "plugin", "add", "laxpud-vibekits@laxpud-vibekits", "--json"),
+            ("codex", "plugin", "add", "python-project@laxpud-vibekits", "--json"),
             runner.calls[1][0],
         )
 
@@ -183,7 +193,7 @@ class ClaudeAdapterTests(unittest.TestCase):
     def test_accepts_a_cross_platform_fake_command_prefix(self) -> None:
         runner = QueueRunner([""])
         adapter = ClaudeAdapter(
-            runner, command=("python-test", "fake_plugin_cli.py", "claude")
+            runner, target=TARGET, command=("python-test", "fake_plugin_cli.py", "claude")
         )
 
         adapter.install_plugin()
@@ -196,7 +206,7 @@ class ClaudeAdapterTests(unittest.TestCase):
     def test_smoke_sets_a_budget_limit(self) -> None:
         output = json.dumps({"result": json.dumps(EXPECTED_SMOKE_RESULT)})
         runner = QueueRunner([output])
-        adapter = ClaudeAdapter(runner)
+        adapter = ClaudeAdapter(runner, target=TARGET)
 
         adapter.run_smoke(Path("/empty"))
 
@@ -208,7 +218,7 @@ class ClaudeAdapterTests(unittest.TestCase):
         output = json.dumps(
             [
                 {
-                    "id": "laxpud-vibekits@laxpud-vibekits-dev",
+                    "id": "python-project@laxpud-vibekits",
                     "version": "1.1.1",
                     "scope": "project",
                     "enabled": True,
@@ -216,7 +226,7 @@ class ClaudeAdapterTests(unittest.TestCase):
                     "projectPath": "C:/project-a",
                 },
                 {
-                    "id": "laxpud-vibekits@laxpud-vibekits-dev",
+                    "id": "python-project@laxpud-vibekits",
                     "version": "1.1.1",
                     "scope": "project",
                     "enabled": False,
@@ -225,30 +235,35 @@ class ClaudeAdapterTests(unittest.TestCase):
                 },
             ]
         )
-        adapter = ClaudeAdapter(QueueRunner([output]), env={"CLAUDE_CONFIG_DIR": "temp"})
+        adapter = ClaudeAdapter(
+            QueueRunner([output]), target=TARGET, env={"CLAUDE_CONFIG_DIR": "temp"}
+        )
 
         instances = adapter.list_instances()
 
         self.assertEqual(["C:/project-a", "C:/project-b"], [item.project_path for item in instances])
         self.assertEqual([True, False], [item.enabled for item in instances])
         self.assertEqual(
-            ["laxpud-vibekits-dev", "laxpud-vibekits-dev"],
+            ["laxpud-vibekits", "laxpud-vibekits"],
             [item.source for item in instances],
         )
 
     def test_updates_each_scope_from_its_project_directory(self) -> None:
         runner = QueueRunner(["", "", ""])
-        adapter = ClaudeAdapter(runner, env={"CLAUDE_CONFIG_DIR": "temp"})
+        adapter = ClaudeAdapter(
+            runner, target=TARGET, env={"CLAUDE_CONFIG_DIR": "temp"}
+        )
 
         adapter.update_plugin_scopes(
             [("project", "C:/project-a"), ("local", "C:/project-b")]
         )
 
         self.assertEqual(
-            ("claude", "plugin", "marketplace", "update", "laxpud-vibekits-dev"),
+            ("claude", "plugin", "marketplace", "update", "laxpud-vibekits"),
             runner.calls[0][0],
         )
         self.assertEqual(Path("C:/project-a"), runner.calls[1][1])
+        self.assertIn("python-project@laxpud-vibekits", runner.calls[1][0])
         self.assertIn("project", runner.calls[1][0])
         self.assertEqual(Path("C:/project-b"), runner.calls[2][1])
         self.assertIn("local", runner.calls[2][0])
@@ -259,7 +274,7 @@ class ClaudeAdapterTests(unittest.TestCase):
             output = json.dumps(
                 [
                     {
-                        "id": "laxpud-vibekits@laxpud-vibekits-dev",
+                        "id": "python-project@laxpud-vibekits",
                         "version": "1.1.1",
                         "scope": "user",
                         "enabled": True,
@@ -267,7 +282,7 @@ class ClaudeAdapterTests(unittest.TestCase):
                     }
                 ]
             )
-            adapter = ClaudeAdapter(QueueRunner([output]))
+            adapter = ClaudeAdapter(QueueRunner([output]), target=TARGET)
             artifact = Artifact(
                 "origin/main",
                 "b" * 40,

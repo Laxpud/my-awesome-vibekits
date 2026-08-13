@@ -42,17 +42,50 @@ class FakeRepository:
 class PreflightTests(unittest.TestCase):
     def _root(self, directory: str) -> tuple[Path, Path]:
         root = Path(directory)
-        manifest = root / "plugins/laxpud-vibekits/.codex-plugin/plugin.json"
-        manifest.parent.mkdir(parents=True)
-        manifest.write_text(
-            json.dumps(
+        catalog = {
+            "schemaVersion": 1,
+            "marketplace": {
+                "id": "laxpud-vibekits",
+                "displayName": "Laxpud Vibekits",
+                "description": "test",
+                "owner": "Laxpud",
+            },
+            "publisher": {
+                "name": "Laxpud",
+                "url": "https://github.com/Laxpud",
+                "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+                "repository": "https://github.com/Laxpud/my-awesome-vibekits.git",
+                "license": "MIT",
+            },
+            "plugins": [
                 {
-                    "name": "laxpud-vibekits",
-                    "repository": "https://github.com/Laxpud/my-awesome-vibekits.git",
+                    "id": "python-project",
+                    "directory": "plugins/python-project",
+                    "version": "1.1.0",
+                    "description": "Python project standards.",
+                    "category": "Productivity",
+                    "keywords": ["python"],
+                    "skills": [
+                        {"id": "pyproject-standard", "path": "skills/pyproject-standard"}
+                    ],
+                    "platforms": {
+                        "codex": {
+                            "installation": "AVAILABLE",
+                            "authentication": "ON_INSTALL",
+                            "displayName": "Python Project",
+                            "shortDescription": "Python standards",
+                            "longDescription": "Python project standards.",
+                            "defaultPrompt": ["Use pyproject-standard."],
+                        },
+                        "claude": {"category": "workflow", "tags": ["python"]},
+                    },
                 }
-            ),
-            encoding="utf-8",
-        )
+            ],
+        }
+        (root / "plugin-catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
+        skill = root / "plugins/python-project/skills/pyproject-standard/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("---\nname: pyproject-standard\n---\n", encoding="utf-8")
         validator = root / "codex-home/skills/.system/plugin-creator/scripts/validate_plugin.py"
         validator.parent.mkdir(parents=True)
         validator.write_text("", encoding="utf-8")
@@ -120,15 +153,15 @@ class PreflightTests(unittest.TestCase):
                 target_ref="origin/main", from_ref="old-tag", promote=True
             )
 
-            self.assertEqual(repository.baseline, result.baseline)
-            self.assertEqual(repository.target, result.target)
+            self.assertEqual(repository.baseline, result.releases[0].baseline)
+            self.assertEqual(repository.target, result.releases[0].target)
             self.assertEqual("Laxpud/my-awesome-vibekits", result.repository_slug)
             self.assertEqual([("origin/main", "old-tag")], repository.resolve_calls)
             expected = [
                 ("python-test", str(root / "scripts/sync_plugin_metadata.py")),
                 ("python-test", str(root / "scripts/check_codex_install.py")),
-                ("python-test", str(validator), str(root / "plugins/laxpud-vibekits")),
-                ("claude", "plugin", "validate", str(root / "plugins/laxpud-vibekits")),
+                ("python-test", str(validator), str(root / "plugins/python-project")),
+                ("claude", "plugin", "validate", str(root / "plugins/python-project")),
                 (
                     "claude",
                     "plugin",

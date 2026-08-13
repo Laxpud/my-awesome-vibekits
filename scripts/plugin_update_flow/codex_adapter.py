@@ -7,16 +7,9 @@ from pathlib import Path
 from typing import Mapping, Protocol, Sequence
 
 from .git_channel import digest_directory
-from .models import Artifact, Installation
+from .models import Artifact, Installation, PluginTarget
 from .runtime import CommandResult, RetryPolicy
 from .smoke import SMOKE_PROMPT, parse_codex_smoke
-
-
-PLUGIN_NAME = "laxpud-vibekits"
-MARKETPLACE_NAME = "laxpud-vibekits"
-PLUGIN_ID = f"{PLUGIN_NAME}@{MARKETPLACE_NAME}"
-EXPECTED_REPOSITORY = "github.com/laxpud/my-awesome-vibekits"
-REQUIRED_SKILL = Path("skills/pyproject-standard/SKILL.md")
 
 
 class Runner(Protocol):
@@ -30,10 +23,12 @@ class CodexAdapter:
         self,
         runner: Runner,
         *,
+        target: PluginTarget,
         env: Mapping[str, str] | None = None,
         command: Sequence[str] = ("codex",),
     ) -> None:
         self.runner = runner
+        self.target = target
         self.env = dict(env or {})
         self.command = tuple(command)
 
@@ -55,9 +50,15 @@ class CodexAdapter:
 
     def install_plugin(self) -> None:
         self.runner.run(
-            [*self.command, "plugin", "add", PLUGIN_ID, "--json"],
+            [*self.command, "plugin", "add", self.target.qualified_id, "--json"],
             env=self.env,
             retry=RetryPolicy(),
+        )
+
+    def uninstall_plugin(self) -> None:
+        self.runner.run(
+            [*self.command, "plugin", "remove", self.target.qualified_id, "--json"],
+            env=self.env,
         )
 
     def update_plugin(self) -> None:
@@ -67,7 +68,7 @@ class CodexAdapter:
                 "plugin",
                 "marketplace",
                 "upgrade",
-                MARKETPLACE_NAME,
+                self.target.marketplace,
                 "--json",
             ],
             env=self.env,
@@ -85,7 +86,7 @@ class CodexAdapter:
             raise ValueError("Codex plugin list has no installed array")
         instances: list[Installation] = []
         for item in installed:
-            if not isinstance(item, dict) or item.get("pluginId") != PLUGIN_ID:
+            if not isinstance(item, dict) or item.get("pluginId") != self.target.qualified_id:
                 continue
             source = item.get("source")
             marketplace_source = item.get("marketplaceSource")
@@ -100,8 +101,8 @@ class CodexAdapter:
             instances.append(
                 Installation(
                     platform="codex",
-                    plugin_id=PLUGIN_ID,
-                    marketplace=MARKETPLACE_NAME,
+                    plugin_id=self.target.qualified_id,
+                    marketplace=self.target.marketplace,
                     version=str(item.get("version", "")),
                     enabled=bool(item.get("enabled", False)),
                     install_path=Path(path),
@@ -119,13 +120,14 @@ class CodexAdapter:
         source = source.removeprefix("https://").removeprefix("http://")
         source = source.removeprefix("git@github.com:")
         source = source.removesuffix(".git").rstrip("/")
-        if source != EXPECTED_REPOSITORY:
+        if source != self.target.expected_repository:
             raise ValueError(
                 f"Codex marketplace source mismatch: {instance.source!r}"
             )
-        if not (instance.install_path / REQUIRED_SKILL).is_file():
+        if not (instance.install_path / self.target.required_skill).is_file():
             raise ValueError(
-                f"Codex installation is missing pyproject-standard: {REQUIRED_SKILL}"
+                f"Codex installation is missing {self.target.plugin_id} skill: "
+                f"{self.target.required_skill}"
             )
         digest = digest_directory(instance.install_path)
         if instance.version != artifact.version:

@@ -1,0 +1,19 @@
+{
+  "name": "code-quality",
+  "description": "Standards for maintainable code comments, docstrings, TODOs, and public API documentation.",
+  "version": "1.1.2",
+  "author": {
+    "name": "Laxpud"
+  },
+  "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+  "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+  "license": "MIT",
+  "keywords": [
+    "code-quality",
+    "comments",
+    "documentation"
+  ],
+  "skills": [
+    "./skills/"
+  ]
+}

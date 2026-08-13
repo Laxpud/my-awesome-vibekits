@@ -9,6 +9,7 @@
 | [`README.md`](../README.md) | 英文公开入口：项目定位、能力、支持环境和最短使用路径。 |
 | [`README.cn.md`](README.cn.md) | 根 README 的中文翻译，与英文版同步维护。 |
 | [`TODO.md`](../TODO.md) | 当前里程碑、活动任务、验收条件、完成证据和状态维护规则。 |
+| [`plugin-catalog.json`](../plugin-catalog.json) | 插件身份、独立版本、Skill 路径和双端分发元数据的唯一事实来源。 |
 
 ## 维护文档
 
@@ -24,6 +25,12 @@
 | --- | --- |
 | [`AGENTS.md`](../AGENTS.md) | Codex 的快速路由、工作流触发器和少量高风险边界。 |
 | [`CLAUDE.md`](../CLAUDE.md) | Claude Code 的快速路由、工作流触发器和少量高风险边界。 |
+
+## 里程碑归档
+
+| 文档 | 内容 |
+| --- | --- |
+| [`2026-08-13-codex-claude-multi-plugin-distribution.md`](archive/2026-08-13-codex-claude-multi-plugin-distribution.md) | 统一 catalog、三插件拆分、双端生成和验证门禁的完成记录。 |
 
 ## 文档所有权
 

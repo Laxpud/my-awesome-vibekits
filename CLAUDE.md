@@ -10,7 +10,7 @@
 | --- | --- |
 | 项目定位、用户能力、安装路径或已收录内容 | [`README.md`](README.md)；公开内容变化时同时检查 [`docs/README.cn.md`](docs/README.cn.md) |
 | 文档结构、入口或所有权 | [`docs/index.md`](docs/index.md) |
-| 通用技能、可复用规则或平台适配层 | [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md) |
+| 通用技能、插件 catalog、可复用规则或平台适配层 | [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md) |
 | 插件发布、客户端更新、隔离 E2E 或日常晋级 | [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md) |
 | Codex marketplace、manifest 或安装说明 | [`docs/CODEX_INSTALL_SMOKE_TEST.md`](docs/CODEX_INSTALL_SMOKE_TEST.md) |
 
@@ -23,6 +23,6 @@
 
 ## 高风险边界
 
-- `plugins/laxpud-vibekits/skills/` 是唯一共享技能来源；不得创建根目录 `skills/` 副本，也不得把平台专属逻辑写入共享 `SKILL.md`。
+- `plugin-catalog.json` 是插件身份与分发元数据的唯一来源；每个 `plugins/<plugin-id>/skills/` 是该插件唯一的技能来源，不得创建副本或跨插件 `../shared` 引用。
 - 平台专属配置只能进入对应适配层；修改边界前先读 [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md)。
 - `scripts/plugin_update_e2e.py --promote` 会修改日常用户安装。只有目标版本已提交并推送、隔离测试通过、工作区干净且相关客户端完全退出时，才按 [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md) 执行。

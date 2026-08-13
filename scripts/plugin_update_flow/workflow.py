@@ -127,15 +127,12 @@ def _manual_recovery_commands(
     """按晋级前实例生成可复制的逐实例人工修复命令。"""
 
     commands: list[dict[str, object]] = []
-    for _instance in codex_instances:
+    for instance in codex_instances:
         commands.append(
             {
                 "platform": "codex",
                 "cwd": None,
-                "command": (
-                    "codex plugin add "
-                    "laxpud-vibekits@laxpud-vibekits --json"
-                ),
+                "command": f"codex plugin add {instance.plugin_id} --json",
             }
         )
     for instance in claude_instances:
@@ -144,8 +141,8 @@ def _manual_recovery_commands(
                 "platform": "claude",
                 "cwd": instance.project_path,
                 "command": (
-                    "claude plugin update laxpud-vibekits --scope "
-                    f"{instance.scope or 'user'}"
+                    f"claude plugin update {instance.plugin_id.split('@', 1)[0]} "
+                    f"--scope {instance.scope or 'user'}"
                 ),
             }
         )
@@ -162,12 +159,14 @@ class IsolatedHomes:
         real_claude_home: Path,
         repository: str,
         branch: str,
+        marketplace: str = "laxpud-vibekits",
         parent: Path | None = None,
     ) -> None:
         self.real_codex_home = real_codex_home
         self.real_claude_home = real_claude_home
         self.repository = repository
         self.branch = branch
+        self.marketplace = marketplace
         self.parent = parent
         self._temporary: tempfile.TemporaryDirectory[str] | None = None
         self.root = Path()
@@ -198,7 +197,7 @@ class IsolatedHomes:
             )
             settings = {
                 "extraKnownMarketplaces": {
-                    "laxpud-vibekits-dev": {
+                    self.marketplace: {
                         "source": {
                             "source": "github",
                             "repo": self.repository,

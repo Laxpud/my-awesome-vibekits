@@ -11,8 +11,6 @@ from .models import Artifact, SemVer
 from .runtime import CommandRunner, RetryPolicy
 
 
-PLUGIN_ROOT = Path("plugins/laxpud-vibekits")
-MANIFEST_PATH = PLUGIN_ROOT / ".codex-plugin/plugin.json"
 _IGNORED_PARTS = {
     ".git",
     "__pycache__",
@@ -62,8 +60,15 @@ def _payload_bytes(content: bytes) -> bytes:
 class GitRepository:
     """封装发布目标、历史版本和 Git 树内容读取。"""
 
-    def __init__(self, root: Path) -> None:
+    def __init__(
+        self,
+        root: Path,
+        *,
+        plugin_root: Path = Path("plugins/python-project"),
+    ) -> None:
         self.root = root.resolve()
+        self.plugin_root = plugin_root
+        self.manifest_path = plugin_root / ".codex-plugin/plugin.json"
 
     def resolve_artifacts(
         self, target_ref: str, *, from_ref: str | None = None
@@ -79,7 +84,7 @@ class GitRepository:
             return baseline, target
 
         commits = self._git_text(
-            "rev-list", target_commit, "--", MANIFEST_PATH.as_posix()
+            "rev-list", target_commit, "--", self.manifest_path.as_posix()
         ).splitlines()
         for commit in commits:
             candidate = self.artifact(commit, commit)
@@ -106,7 +111,7 @@ class GitRepository:
     def artifact(self, ref: str, commit: str | None = None) -> Artifact:
         resolved = commit or self.resolve_commit(ref)
         manifest = json.loads(
-            self._git_bytes("show", f"{resolved}:{MANIFEST_PATH.as_posix()}").decode(
+            self._git_bytes("show", f"{resolved}:{self.manifest_path.as_posix()}").decode(
                 "utf-8"
             )
         )
@@ -118,11 +123,11 @@ class GitRepository:
 
     def plugin_digest_at(self, commit: str) -> str:
         names = self._git_text(
-            "ls-tree", "-r", "--name-only", commit, "--", PLUGIN_ROOT.as_posix()
+            "ls-tree", "-r", "--name-only", commit, "--", self.plugin_root.as_posix()
         ).splitlines()
         digest = hashlib.sha256()
         for name in sorted(names):
-            relative_path = Path(name).relative_to(PLUGIN_ROOT)
+            relative_path = Path(name).relative_to(self.plugin_root)
             if any(part in _IGNORED_PARTS for part in relative_path.parts):
                 continue
             relative = relative_path.as_posix().encode("utf-8")

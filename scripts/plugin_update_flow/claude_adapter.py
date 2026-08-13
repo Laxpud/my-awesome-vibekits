@@ -7,15 +7,9 @@ from pathlib import Path
 from typing import Mapping, Protocol, Sequence
 
 from .git_channel import digest_directory
-from .models import Artifact, Installation
+from .models import Artifact, Installation, PluginTarget
 from .runtime import CommandResult, RetryPolicy
 from .smoke import SMOKE_PROMPT, SMOKE_SCHEMA, parse_claude_smoke
-
-
-PLUGIN_NAME = "laxpud-vibekits"
-MARKETPLACE_NAME = "laxpud-vibekits-dev"
-PLUGIN_ID = f"{PLUGIN_NAME}@{MARKETPLACE_NAME}"
-REQUIRED_SKILL = Path("skills/pyproject-standard/SKILL.md")
 
 
 class Runner(Protocol):
@@ -29,33 +23,68 @@ class ClaudeAdapter:
         self,
         runner: Runner,
         *,
+        target: PluginTarget,
         env: Mapping[str, str] | None = None,
         command: Sequence[str] = ("claude",),
         max_budget_usd: float = 1.0,
     ) -> None:
         self.runner = runner
+        self.target = target
         self.env = dict(env or {})
         self.command = tuple(command)
         self.max_budget_usd = max_budget_usd
 
     def install_plugin(self, *, scope: str = "user", cwd: Path | None = None) -> None:
         self.runner.run(
-            [*self.command, "plugin", "install", PLUGIN_ID, "--scope", scope],
+            [*self.command, "plugin", "install", self.target.qualified_id, "--scope", scope],
             cwd=cwd,
             env=self.env,
             retry=RetryPolicy(),
         )
 
+    def set_enabled(
+        self, enabled: bool, *, scope: str = "user", cwd: Path | None = None
+    ) -> None:
+        action = "enable" if enabled else "disable"
+        self.runner.run(
+            [*self.command, "plugin", action, self.target.plugin_id, "--scope", scope],
+            cwd=cwd,
+            env=self.env,
+        )
+
+    def uninstall_plugin(
+        self, *, scope: str = "user", cwd: Path | None = None
+    ) -> None:
+        self.runner.run(
+            [
+                *self.command,
+                "plugin",
+                "uninstall",
+                self.target.plugin_id,
+                "--scope",
+                scope,
+            ],
+            cwd=cwd,
+            env=self.env,
+        )
+
     def update_plugin_scopes(self, scopes: list[tuple[str, str | None]]) -> None:
         self.runner.run(
-            [*self.command, "plugin", "marketplace", "update", MARKETPLACE_NAME],
+            [*self.command, "plugin", "marketplace", "update", self.target.marketplace],
             env=self.env,
             retry=RetryPolicy(),
         )
         for scope, project_path in scopes:
             cwd = Path(project_path) if project_path else None
             self.runner.run(
-                [*self.command, "plugin", "update", PLUGIN_NAME, "--scope", scope],
+                [
+                    *self.command,
+                    "plugin",
+                    "update",
+                    self.target.qualified_id,
+                    "--scope",
+                    scope,
+                ],
                 cwd=cwd,
                 env=self.env,
                 retry=RetryPolicy(),
@@ -70,7 +99,7 @@ class ClaudeAdapter:
             raise ValueError("Claude plugin list is not an array")
         instances: list[Installation] = []
         for item in value:
-            if not isinstance(item, dict) or item.get("id") != PLUGIN_ID:
+            if not isinstance(item, dict) or item.get("id") != self.target.qualified_id:
                 continue
             install_path = item.get("installPath")
             if not isinstance(install_path, str):
@@ -78,12 +107,12 @@ class ClaudeAdapter:
             instances.append(
                 Installation(
                     platform="claude",
-                    plugin_id=PLUGIN_ID,
-                    marketplace=MARKETPLACE_NAME,
+                    plugin_id=self.target.qualified_id,
+                    marketplace=self.target.marketplace,
                     version=str(item.get("version", "")),
                     enabled=bool(item.get("enabled", False)),
                     install_path=Path(install_path),
-                    source=MARKETPLACE_NAME,
+                    source=self.target.marketplace,
                     scope=str(item.get("scope", "")),
                     project_path=(
                         str(item["projectPath"]) if item.get("projectPath") else None
@@ -98,10 +127,10 @@ class ClaudeAdapter:
             raise ValueError("expected at least one Claude installation")
         verified: list[Installation] = []
         for instance in instances:
-            if not (instance.install_path / REQUIRED_SKILL).is_file():
+            if not (instance.install_path / self.target.required_skill).is_file():
                 raise ValueError(
-                    "Claude installation is missing pyproject-standard: "
-                    f"{REQUIRED_SKILL}"
+                    f"Claude installation is missing {self.target.plugin_id} skill: "
+                    f"{self.target.required_skill}"
                 )
             digest = digest_directory(instance.install_path)
             if instance.version != artifact.version:

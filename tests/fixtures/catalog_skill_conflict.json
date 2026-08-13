@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "marketplace": {
+    "id": "fixture-marketplace",
+    "displayName": "Fixture Marketplace",
+    "description": "Conflict fixture.",
+    "owner": "Tests"
+  },
+  "publisher": {
+    "name": "Tests",
+    "url": "https://github.com/example",
+    "homepage": "https://github.com/example/plugins",
+    "repository": "https://github.com/example/plugins",
+    "license": "MIT"
+  },
+  "plugins": [
+    {
+      "id": "first-plugin",
+      "directory": "plugins/first-plugin",
+      "version": "1.0.0",
+      "description": "First fixture plugin.",
+      "category": "Productivity",
+      "keywords": ["fixture"],
+      "skills": [{"id": "shared-name", "path": "skills/shared-name"}],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "First",
+          "shortDescription": "First fixture",
+          "longDescription": "First fixture plugin.",
+          "defaultPrompt": ["Use the first fixture."]
+        },
+        "claude": {"category": "workflow", "tags": ["fixture"]}
+      }
+    },
+    {
+      "id": "second-plugin",
+      "directory": "plugins/second-plugin",
+      "version": "1.0.0",
+      "description": "Second fixture plugin.",
+      "category": "Productivity",
+      "keywords": ["fixture"],
+      "skills": [{"id": "shared-name", "path": "skills/shared-name"}],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Second",
+          "shortDescription": "Second fixture",
+          "longDescription": "Second fixture plugin.",
+          "defaultPrompt": ["Use the second fixture."]
+        },
+        "claude": {"category": "workflow", "tags": ["fixture"]}
+      }
+    }
+  ]
+}

@@ -30,6 +30,20 @@ class ExitCode(IntEnum):
     PRECONDITION_FAILED = 4
 
 
+@dataclass(frozen=True)
+class PluginTarget:
+    """一次平台操作的插件坐标与安装后内容契约。"""
+
+    plugin_id: str
+    marketplace: str
+    required_skill: Path
+    expected_repository: str
+
+    @property
+    def qualified_id(self) -> str:
+        return f"{self.plugin_id}@{self.marketplace}"
+
+
 @total_ordering
 @dataclass(frozen=True)
 class SemVer:

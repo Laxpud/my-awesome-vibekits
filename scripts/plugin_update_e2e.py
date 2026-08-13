@@ -76,63 +76,97 @@ class LocalOperations:
             target_ref=options.target_ref,
             from_ref=options.from_ref,
             promote=bool(options.promote),
+            plugin_ids=options.plugins,
         )
 
     def isolated(self, result: PreflightResult) -> dict[str, object]:
-        branch = f"automation/plugin-e2e/{self.run_id}"
-        channel = TemporaryGitChannel(
-            runner=self.runner,
-            root=self.root,
-            remote="origin",
-            branch=branch,
-            baseline_commit=result.baseline.commit,
-            target_commit=result.target.commit,
-        )
-        try:
-            with IsolatedHomes(
-                real_codex_home=self.codex_home,
-                real_claude_home=self.claude_home,
-                repository=result.repository_slug,
+        results: dict[str, object] = {}
+        cleanup: list[dict[str, object]] = []
+        for release in result.releases:
+            plugin_id = release.coordinates.plugin_id
+            branch = f"automation/plugin-e2e/{self.run_id}-{plugin_id}"
+            channel = TemporaryGitChannel(
+                runner=self.runner,
+                root=self.root,
+                remote="origin",
                 branch=branch,
-            ) as homes:
-                codex = CodexAdapter(self.runner, env=homes.codex_env())
-                claude = ClaudeAdapter(self.runner, env=homes.claude_env())
-                return run_isolated_upgrade(
-                    channel=channel,
-                    codex=codex,
-                    claude=claude,
-                    baseline=result.baseline,
-                    target=result.target,
-                    marketplace_source=result.repository_slug,
+                baseline_commit=release.baseline.commit,
+                target_commit=release.target.commit,
+            )
+            try:
+                with IsolatedHomes(
+                    real_codex_home=self.codex_home,
+                    real_claude_home=self.claude_home,
+                    repository=result.repository_slug,
                     branch=branch,
-                    smoke_dir=homes.smoke_dir,
-                    schema_path=homes.schema_path,
-                    run_skill_smoke=self.run_skill_smoke,
+                    marketplace=release.coordinates.marketplace,
+                ) as homes:
+                    codex = CodexAdapter(
+                        self.runner,
+                        target=release.coordinates,
+                        env=homes.codex_env(),
+                    )
+                    claude = ClaudeAdapter(
+                        self.runner,
+                        target=release.coordinates,
+                        env=homes.claude_env(),
+                    )
+                    results[plugin_id] = run_isolated_upgrade(
+                        channel=channel,
+                        codex=codex,
+                        claude=claude,
+                        baseline=release.baseline,
+                        target=release.target,
+                        marketplace_source=result.repository_slug,
+                        branch=branch,
+                        smoke_dir=homes.smoke_dir,
+                        schema_path=homes.schema_path,
+                        run_skill_smoke=(
+                            self.run_skill_smoke
+                            and plugin_id == "python-project"
+                        ),
+                    )
+            finally:
+                cleanup.append(
+                    {
+                        "plugin": plugin_id,
+                        "temporaryBranch": branch,
+                        "remoteBranchDeleted": not channel.create_attempted,
+                        "isolatedCredentialsDeleted": True,
+                    }
                 )
-        finally:
-            self.cleanup_info = {
-                "temporaryBranch": branch,
-                "remoteBranchDeleted": not channel.create_attempted,
-                "isolatedCredentialsDeleted": True,
-            }
+                self.cleanup_info = {"plugins": cleanup}
+        return results
 
     def promote(self, result: PreflightResult) -> dict[str, object]:
         lock_path = self.codex_home / ".tmp/plugin-update-e2e-promotion.lock"
         with ProcessLock(lock_path):
             require_plugin_clients_stopped()
-            codex = CodexAdapter(self.runner)
-            claude = ClaudeAdapter(self.runner)
-            if not codex.list_instances() or not claude.list_instances():
-                raise PreflightError(
-                    "both Codex and Claude must have an installed daily instance"
+            instances: list[dict[str, object]] = []
+            for release in result.releases:
+                coordinates = release.coordinates
+                codex = CodexAdapter(self.runner, target=coordinates)
+                claude = ClaudeAdapter(self.runner, target=coordinates)
+                if not codex.list_instances() or not claude.list_instances():
+                    raise PreflightError(
+                        f"{coordinates.plugin_id}: both Codex and Claude require "
+                        "an installed daily instance"
+                    )
+                snapshot = StateSnapshot(
+                    self.codex_home
+                    / ".tmp/plugin-update-e2e-snapshots"
+                    / self.run_id
+                    / coordinates.plugin_id,
+                    promotion_state_paths(
+                        self.codex_home,
+                        self.claude_home,
+                        coordinates.marketplace,
+                        coordinates.plugin_id,
+                    ),
                 )
-            snapshot = StateSnapshot(
-                self.codex_home
-                / ".tmp/plugin-update-e2e-snapshots"
-                / self.run_id,
-                promotion_state_paths(self.codex_home, self.claude_home),
-            )
-            return run_promotion(codex, claude, result.target, snapshot)
+                promoted = run_promotion(codex, claude, release.target, snapshot)
+                instances.extend(promoted["instances"])
+            return {"result": "passed", "instances": instances}
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -142,6 +176,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         description="Test a real Codex and Claude plugin upgrade, then optionally promote."
     )
     parser.add_argument("--from-ref", help="baseline commit or tag")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument(
+        "--plugin",
+        action="append",
+        dest="plugins",
+        metavar="ID",
+        help="test one plugin; repeat to select multiple plugins",
+    )
+    selection.add_argument(
+        "--all",
+        action="store_true",
+        help="test every catalog plugin (also the default)",
+    )
     parser.add_argument(
         "--target-ref", default="origin/main", help="target Git ref (default: origin/main)"
     )
@@ -168,16 +215,21 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return options
 
 
-def promotion_state_paths(codex_home: Path, claude_home: Path) -> list[Path]:
+def promotion_state_paths(
+    codex_home: Path,
+    claude_home: Path,
+    marketplace: str = "laxpud-vibekits",
+    plugin_id: str = "python-project",
+) -> list[Path]:
     """返回计划明确授权备份和恢复的最小日常插件状态集合。"""
 
     return [
         codex_home / "config.toml",
-        codex_home / ".tmp/marketplaces/laxpud-vibekits",
+        codex_home / f".tmp/marketplaces/{marketplace}",
         claude_home / "plugins/installed_plugins.json",
         claude_home / "plugins/known_marketplaces.json",
-        claude_home / "plugins/marketplaces/laxpud-vibekits-dev",
-        claude_home / "plugins/cache/laxpud-vibekits-dev",
+        claude_home / f"plugins/marketplaces/{marketplace}",
+        claude_home / f"plugins/cache/{marketplace}/{plugin_id}",
     ]
 
 
@@ -238,8 +290,14 @@ def execute_operations(
             exit_code = ExitCode.PRECONDITION_FAILED
             return exit_code
 
-        report["baseline"] = prepared.baseline.to_dict()
-        report["target"] = prepared.target.to_dict()
+        report["baseline"] = {
+            item.coordinates.plugin_id: item.baseline.to_dict()
+            for item in prepared.releases
+        }
+        report["target"] = {
+            item.coordinates.plugin_id: item.target.to_dict()
+            for item in prepared.releases
+        }
         try:
             report["platforms"] = operations.isolated(prepared)
         except (Exception, KeyboardInterrupt) as error:

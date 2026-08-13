@@ -1,29 +1,55 @@
 {
-  "name": "laxpud-vibekits-dev",
-  "description": "Development marketplace for Laxpud's platform-neutral skill kit",
+  "name": "laxpud-vibekits",
+  "description": "Independent, platform-neutral workflow plugins for Codex and Claude Code.",
   "owner": {
     "name": "Laxpud"
   },
   "plugins": [
     {
-      "name": "laxpud-vibekits",
-      "description": "Platform-neutral reusable skills for code comments, Python project standards, and documentation workflows.",
+      "name": "code-quality",
+      "description": "Standards for maintainable code comments, docstrings, TODOs, and public API documentation.",
       "version": "1.1.2",
-      "author": { "name": "Laxpud" },
-      "source": "./plugins/laxpud-vibekits",
+      "author": {
+        "name": "Laxpud"
+      },
+      "source": "./plugins/code-quality",
       "category": "workflow",
       "tags": [
-        "vibekits",
-        "agent-skills",
-        "claude-code",
-        "codex",
         "code-quality",
         "comments",
+        "documentation"
+      ]
+    },
+    {
+      "name": "python-project",
+      "description": "Standards for uv and hatchling pyproject.toml configuration and Python project metadata.",
+      "version": "1.1.2",
+      "author": {
+        "name": "Laxpud"
+      },
+      "source": "./plugins/python-project",
+      "category": "workflow",
+      "tags": [
         "python",
-        "project-standards",
+        "uv",
+        "hatchling",
+        "pyproject"
+      ]
+    },
+    {
+      "name": "project-docs",
+      "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
+      "version": "1.1.2",
+      "author": {
+        "name": "Laxpud"
+      },
+      "source": "./plugins/project-docs",
+      "category": "workflow",
+      "tags": [
         "documentation",
-        "project-docs",
-        "rules"
+        "readme",
+        "todo",
+        "project-guidance"
       ]
     }
   ]
