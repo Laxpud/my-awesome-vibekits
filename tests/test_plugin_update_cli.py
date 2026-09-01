@@ -136,7 +136,7 @@ class FakeOperations:
                     PluginTarget(
                         "python-project",
                         "laxpud-vibekits",
-                        Path("skills/pyproject-standard/SKILL.md"),
+                        (Path("skills/pyproject-standard/SKILL.md"),),
                         "github.com/laxpud/my-awesome-vibekits",
                     ),
                     Path("plugins/python-project"),

@@ -1,7 +1,7 @@
 {
   "name": "project-docs",
-  "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
-  "version": "1.1.2",
+  "description": "Specialized workflows for project documentation baselines, refactoring, README, planning, architecture, and agent guidance.",
+  "version": "2.0.0",
   "author": {
     "name": "Laxpud"
   },
@@ -11,7 +11,17 @@
   "keywords": [
     "documentation",
     "readme",
+    "refactor",
+    "planning",
     "todo",
+    "roadmap",
+    "milestone",
+    "backlog",
+    "architecture",
+    "mermaid",
+    "adr",
+    "agents",
+    "claude",
     "project-guidance"
   ],
   "skills": [

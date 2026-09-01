@@ -22,10 +22,25 @@ class CatalogTests(unittest.TestCase):
             ["code-quality", "python-project", "project-docs"],
             [plugin.id for plugin in catalog.plugins],
         )
+        expected_skills = {
+            "code-quality": ("code-comment-standard",),
+            "python-project": ("pyproject-standard",),
+            "project-docs": (
+                "project-docs-bootstrap",
+                "project-docs-refactor",
+                "project-docs-readme",
+                "project-docs-planning",
+                "project-docs-architecture",
+                "project-docs-guidance",
+            ),
+        }
         for plugin in catalog.plugins:
             plugin_root = REPOSITORY_ROOT / Path(plugin.directory.as_posix())
-            self.assertEqual(1, len(plugin.skills))
-            self.assertTrue((plugin_root / plugin.required_skill).is_file())
+            self.assertEqual(
+                expected_skills[plugin.id], tuple(skill.id for skill in plugin.skills)
+            )
+            for skill in plugin.required_skills:
+                self.assertTrue((plugin_root / skill).is_file())
             self.assertTrue((plugin_root / ".codex-plugin/plugin.json").is_file())
             self.assertTrue((plugin_root / ".claude-plugin/plugin.json").is_file())
         self.assertFalse((REPOSITORY_ROOT / "plugins/laxpud-vibekits").exists())
@@ -103,14 +118,14 @@ class CatalogTests(unittest.TestCase):
                     shutil.copytree(source, root / "plugins" / source.name)
             catalog = load_catalog(root)
 
-            set_versions(root, catalog, catalog.select(["python-project"]), "2.0.0")
+            set_versions(root, catalog, catalog.select(["python-project"]), "2.1.0")
             updated = load_catalog(root)
 
             self.assertEqual(
                 {
                     "code-quality": "1.1.2",
-                    "python-project": "2.0.0",
-                    "project-docs": "1.1.2",
+                    "python-project": "2.1.0",
+                    "project-docs": "2.0.0",
                 },
                 {plugin.id: plugin.version for plugin in updated.plugins},
             )

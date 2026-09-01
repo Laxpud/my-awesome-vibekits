@@ -67,25 +67,37 @@
     {
       "id": "project-docs",
       "directory": "plugins/project-docs",
-      "version": "1.1.2",
-      "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
+      "version": "2.0.0",
+      "description": "Specialized workflows for project documentation baselines, refactoring, README, planning, architecture, and agent guidance.",
       "category": "Productivity",
-      "keywords": ["documentation", "readme", "todo", "project-guidance"],
+      "keywords": ["documentation", "readme", "refactor", "planning", "todo", "roadmap", "milestone", "backlog", "architecture", "mermaid", "adr", "agents", "claude", "project-guidance"],
       "skills": [
-        {"id": "project-docs-bootstrap", "path": "skills/project-docs-bootstrap"}
+        {"id": "project-docs-bootstrap", "path": "skills/project-docs-bootstrap"},
+        {"id": "project-docs-refactor", "path": "skills/project-docs-refactor"},
+        {"id": "project-docs-readme", "path": "skills/project-docs-readme"},
+        {"id": "project-docs-planning", "path": "skills/project-docs-planning"},
+        {"id": "project-docs-architecture", "path": "skills/project-docs-architecture"},
+        {"id": "project-docs-guidance", "path": "skills/project-docs-guidance"}
       ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
           "displayName": "Project Docs",
-          "shortDescription": "Maintainable project documentation workflows",
-          "longDescription": "Initialize or reorganize README, milestone TODO, documentation indexes, ownership boundaries, translations, and concise project-guidance routes.",
-          "defaultPrompt": ["Use project-docs-bootstrap to organize README, TODO, docs, and project guidance."]
+          "shortDescription": "Specialized project-documentation workflows",
+          "longDescription": "Use six focused skills to initialize a documentation baseline, refactor documentation structure, maintain README files, manage planning documents, describe architecture and decisions, or refine repository agent guidance.",
+          "defaultPrompt": [
+            "Use project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
+            "Use project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
+            "Use project-docs-readme to create or maintain the root README and its official translations.",
+            "Use project-docs-planning to design or maintain this repository's TODO.md, roadmaps, milestones, backlog, tasks, and implementation plans.",
+            "Use project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
+            "Use project-docs-guidance to create or refine repository agent-guidance files and scoped rules."
+          ]
         },
         "claude": {
           "category": "workflow",
-          "tags": ["documentation", "readme", "todo", "project-guidance"]
+          "tags": ["documentation", "readme", "planning", "architecture", "adr", "project-guidance"]
         }
       }
     }

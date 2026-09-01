@@ -57,6 +57,16 @@ class FakeCliIntegrationTests(unittest.TestCase):
                 skill = payload / f"skills/{skill_id}/SKILL.md"
                 skill.parent.mkdir(parents=True)
                 skill.write_text(f"---\nname: {skill_id}\n---\n", encoding="utf-8")
+        for skill_id in (
+            "project-docs-refactor",
+            "project-docs-readme",
+            "project-docs-planning",
+            "project-docs-architecture",
+            "project-docs-guidance",
+        ):
+            skill = self.target_payload / f"skills/{skill_id}/SKILL.md"
+            skill.parent.mkdir(parents=True)
+            skill.write_text(f"---\nname: {skill_id}\n---\n", encoding="utf-8")
         self.state_path = self.root / "state.json"
         self.install_root = self.root / "installs"
         self.env = {
@@ -72,7 +82,7 @@ class FakeCliIntegrationTests(unittest.TestCase):
         self.plugin_target = PluginTarget(
             "python-project",
             "laxpud-vibekits",
-            Path("skills/pyproject-standard/SKILL.md"),
+            (Path("skills/pyproject-standard/SKILL.md"),),
             "github.com/laxpud/my-awesome-vibekits",
         )
         self.codex = CodexAdapter(
@@ -94,12 +104,27 @@ class FakeCliIntegrationTests(unittest.TestCase):
             "target", "b" * 40, "1.1.0", digest_directory(self.target_payload)
         )
 
-    def _adapters(self, plugin_id: str, skill_id: str) -> tuple[CodexAdapter, ClaudeAdapter]:
+    def _adapters(
+        self, plugin_id: str, skill_id: str
+    ) -> tuple[CodexAdapter, ClaudeAdapter]:
+        skill_ids = (skill_id,)
+        baseline_skill_ids = (skill_id,)
+        if plugin_id == "project-docs":
+            skill_ids = (
+                "project-docs-bootstrap",
+                "project-docs-refactor",
+                "project-docs-readme",
+                "project-docs-planning",
+                "project-docs-architecture",
+                "project-docs-guidance",
+            )
+            baseline_skill_ids = ("project-docs-bootstrap",)
         target = PluginTarget(
             plugin_id,
             "laxpud-vibekits",
-            Path(f"skills/{skill_id}/SKILL.md"),
+            tuple(Path(f"skills/{item}/SKILL.md") for item in skill_ids),
             "github.com/laxpud/my-awesome-vibekits",
+            tuple(Path(f"skills/{item}/SKILL.md") for item in baseline_skill_ids),
         )
         fixture = Path(__file__).parent / "fixtures/fake_plugin_cli.py"
         runner = CommandRunner(timeout=10)
@@ -137,6 +162,32 @@ class FakeCliIntegrationTests(unittest.TestCase):
         self.assertEqual(["create", "advance", "cleanup"], channel.events)
         self.assertEqual("1.1.0", self.codex.list_instances()[0].version)
         self.assertEqual("1.1.0", self.claude.list_instances()[0].version)
+
+    def test_upgrade_accepts_old_single_skill_and_requires_six_target_skills(self) -> None:
+        codex, claude = self._adapters("project-docs", "project-docs-bootstrap")
+        schema_path = self.root / "schema.json"
+        schema_path.write_text(json.dumps(SMOKE_SCHEMA), encoding="utf-8")
+        smoke_dir = self.root / "empty-smoke"
+        smoke_dir.mkdir()
+        channel = AdvancingFakeChannel(self.state_path)
+
+        result = run_isolated_upgrade(
+            channel=channel,
+            codex=codex,
+            claude=claude,
+            baseline=self.baseline,
+            target=self.target,
+            marketplace_source="Laxpud/my-awesome-vibekits",
+            branch="automation/plugin-e2e/project-docs-six-skills",
+            smoke_dir=smoke_dir,
+            schema_path=schema_path,
+        )
+
+        self.assertEqual("passed", result["codex"]["result"])
+        self.assertEqual("passed", result["claude"]["result"])
+        for skill in codex.target.required_skills:
+            install_path = codex.list_instances()[0].install_path
+            self.assertTrue((install_path / skill).is_file())
 
     def test_partial_promotion_failure_restores_both_fake_clients(self) -> None:
         project_a = self.root / "project-a"

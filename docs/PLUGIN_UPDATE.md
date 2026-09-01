@@ -37,8 +37,8 @@ python scripts/check_codex_install.py --remote --all
 
 | 门禁 | 环境 | 覆盖内容 | 是否调用模型 |
 | --- | --- | --- | --- |
-| catalog 与生成物 | 普通 CI | ID/路径/Skill 冲突、双端 manifest、marketplace、防漂移 | 否 |
-| 隔离生命周期 fixture | 普通 CI | 三插件双端发现、逐插件安装、Claude 启停、Codex enabled 状态保留、Skill 路径、升级、卸载、独立回滚、故障隔离 | 否 |
+| catalog 与生成物 | 普通 CI | ID/路径/Skill 冲突、完整 Skill 集合、双端 manifest、marketplace、防漂移 | 否 |
+| 隔离生命周期 fixture | 普通 CI | 三插件双端发现、逐插件安装、Claude 启停、Codex enabled 状态保留、完整 Skill 集合、升级、卸载、独立回滚、故障隔离 | 否 |
 | 客户端 schema/CLI | 有 Codex 与 Claude CLI 的环境 | 三个正式插件及两份 marketplace validator | 否 |
 | Live E2E | 有凭据、网络和远端写权限的 Windows runner | 真实 marketplace 刷新、逐插件安装/升级、version/source/digest、清理 | 默认否 |
 | Skill smoke | Live E2E 可选项 | 新会话发现并调用 `python-project:pyproject-standard` | 是 |
@@ -46,7 +46,7 @@ python scripts/check_codex_install.py --remote --all
 
 普通 CI 先运行静态门禁，再运行确定性的 fake-client 生命周期测试。需要凭据、网络、GUI 或模型的门禁独立运行，不得让凭据缺失伪装成静态检查成功，也不得默认消耗 token。
 
-测试 fixture 明确包括：三个正式插件；两个插件内同名 `shared-name` 候选 Skill 的冲突 catalog；一个越过根目录的无效路径 catalog；以及只升级和回滚 `python-project`、保持另外两插件不变的生命周期场景。
+测试 fixture 明确包括：三个正式插件；两个插件内同名 `shared-name` 候选 Skill 的冲突 catalog；一个越过根目录的无效路径 catalog；只升级和回滚 `python-project`、保持另外两插件不变的生命周期场景；以及 `project-docs` 从旧版单 Skill 安装升级到目标六 Skill 安装的场景。
 
 ## 自动化升级门禁
 
@@ -59,7 +59,7 @@ python scripts/plugin_update_e2e.py --plugin code-quality --plugin project-docs
 python scripts/plugin_update_e2e.py --all --from-ref <commit-or-tag>
 ```
 
-每个插件使用独立临时分支 `automation/plugin-e2e/<run-id>-<plugin-id>`，完成“旧版安装 → marketplace 刷新 → 目标版更新”。两端均检查目标插件的 version、marketplace/source、插件自己的 Skill 路径和 payload digest。退出、失败、超时或中断都清理临时分支、隔离配置和凭据副本；任一清理失败会阻止日常晋级。
+每个插件使用独立临时分支 `automation/plugin-e2e/<run-id>-<plugin-id>`，完成“旧版安装 → marketplace 刷新 → 目标版更新”。两端均检查目标插件的 version、marketplace/source、Skill 集合和 payload digest：baseline 按该历史 payload 中实际存在的顶层 Skill 入口验证，target 按当前 catalog 声明的完整 Skill 集合验证。退出、失败、超时或中断都清理临时分支、隔离配置和凭据副本；任一清理失败会阻止日常晋级。
 
 未指定 `--from-ref` 时，工具在目标插件自己的 manifest 历史中查找最近的不同版本祖先。目标默认是 `origin/main`。每个插件的报告数据按插件 ID 分组，避免一个条目的结果覆盖其他条目。
 

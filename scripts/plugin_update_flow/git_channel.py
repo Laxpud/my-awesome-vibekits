@@ -138,6 +138,28 @@ class GitRepository:
             digest.update(content)
         return "sha256:" + digest.hexdigest()
 
+    def skill_paths_at(self, commit: str) -> tuple[Path, ...]:
+        """Return top-level skill entrypoints present in a historical plugin tree."""
+
+        skills_root = self.plugin_root / "skills"
+        names = self._git_text(
+            "ls-tree", "-r", "--name-only", commit, "--", skills_root.as_posix()
+        ).splitlines()
+        paths: list[Path] = []
+        for name in names:
+            relative = Path(name).relative_to(self.plugin_root)
+            if (
+                len(relative.parts) == 3
+                and relative.parts[0] == "skills"
+                and relative.name == "SKILL.md"
+            ):
+                paths.append(relative)
+        if not paths:
+            raise ValueError(
+                f"plugin at {commit} has no top-level skills/*/SKILL.md entrypoint"
+            )
+        return tuple(sorted(paths, key=lambda path: path.as_posix()))
+
     def _require_older(self, baseline: Artifact, target: Artifact) -> None:
         if not SemVer.parse(baseline.version) < SemVer.parse(target.version):
             raise ValueError(

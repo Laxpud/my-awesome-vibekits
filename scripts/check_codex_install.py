@@ -130,9 +130,12 @@ def _validate_plugin(
     if entry.get("category") != plugin.category:
         raise SmokeTestError(f"{prefix}: category does not match catalog")
 
-    skill_file = plugin_root / plugin.required_skill
-    if not skill_file.is_file():
-        raise SmokeTestError(f"{prefix}: missing required skill {plugin.required_skill}")
+    missing_skills = [
+        skill for skill in plugin.required_skills if not (plugin_root / skill).is_file()
+    ]
+    if missing_skills:
+        missing = ", ".join(str(skill) for skill in missing_skills)
+        raise SmokeTestError(f"{prefix}: missing required skill(s): {missing}")
     return repository_slug(require_string(manifest.get("repository"), f"{prefix}: manifest.repository")), str(
         manifest_path.relative_to(root)
     )

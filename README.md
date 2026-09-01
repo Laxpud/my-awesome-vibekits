@@ -2,26 +2,27 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Plugins](https://img.shields.io/badge/plugins-3-2563EB)](plugin-catalog.json)
-[![Skills](https://img.shields.io/badge/skills-3-brightgreen)](#included-plugins-and-skills)
+[![Skills](https://img.shields.io/badge/skills-8-brightgreen)](#included-plugins-and-skills)
 [![Codex Marketplace](https://img.shields.io/badge/Codex-Marketplace-111827)](.agents/plugins/marketplace.json)
 [![Claude Code Marketplace](https://img.shields.io/badge/Claude%20Code-Marketplace-D97706)](.claude-plugin/marketplace.json)
 [![中文](https://img.shields.io/badge/README-中文-C026D3)](docs/README.cn.md)
 
-Vibekits is a catalog of independent, platform-neutral workflow plugins for Codex and Claude Code. Each plugin owns one reusable skill and can be installed, upgraded, disabled, removed, or rolled back without changing its siblings.
+Vibekits is a catalog of independent, platform-neutral workflow plugins for Codex and Claude Code. Each plugin owns one or more reusable skills and can be installed, upgraded, disabled, removed, or rolled back without changing its siblings.
 
 The repository keeps one [`plugin-catalog.json`](plugin-catalog.json) as the distribution source of truth. It generates both marketplaces and each plugin's Codex and Claude Code manifests; the plugin-local `skills/` directory remains the only source for skill content.
 
 ## Current Status
 
 - The marketplace exposes three independently versioned plugins: `code-quality`, `python-project`, and `project-docs`.
+- `project-docs` 2.0 exposes six intent-specific skills for bootstrap, structural refactoring, README, planning, architecture, and agent guidance.
 - The former `laxpud-vibekits` aggregate plugin was removed. This split intentionally provides no deprecated bundle, alias, or migration compatibility layer.
-- Validation covers catalog conflicts, generated-file drift, both manifest formats, README install paths, and isolated three-plugin lifecycle and rollback behavior.
+- Validation covers catalog conflicts, complete per-plugin skill sets, generated-file drift, both manifest formats, README install paths, and isolated three-plugin lifecycle and rollback behavior.
 
 ## Start Here
 
 If you want to try one capability first:
 
-- Organize project documentation with [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md) from `project-docs`.
+- Initialize a missing documentation baseline with [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md) from `project-docs`; use the focused skill listed below for an existing documentation system.
 - Standardize code comments with [`code-comment-standard`](plugins/code-quality/skills/code-comment-standard/SKILL.md) from `code-quality`.
 - Create or review `pyproject.toml` with [`pyproject-standard`](plugins/python-project/skills/pyproject-standard/SKILL.md) from `python-project`.
 
@@ -39,7 +40,7 @@ If you want to try one capability first:
 Install only the plugins you need. After installation, start a new session and describe the task directly, or explicitly ask for a skill:
 
 ```text
-Use project-docs-bootstrap to reorganize this repository documentation.
+Use project-docs-refactor to reorganize this repository documentation.
 ```
 
 ### Codex
@@ -66,7 +67,12 @@ After cloning, start with the [technical documentation index](docs/index.md), th
 | --- | --- | --- | --- |
 | `code-quality` | [`code-comment-standard`](plugins/code-quality/skills/code-comment-standard/SKILL.md) | You need to generate, review, complete, or standardize comments, docstrings, TODOs, or public API documentation. | Cross-language comment levels, quality standards, anti-patterns, and a maintainer-oriented commenting workflow. |
 | `python-project` | [`pyproject-standard`](plugins/python-project/skills/pyproject-standard/SKILL.md) | You are creating or editing a Python project's `pyproject.toml`. | Standards for `uv`, `hatchling`, dynamic versions, licenses, dependencies, classifiers, scripts, and package index configuration. |
-| `project-docs` | [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md) | A repository needs clear documentation ownership, milestone-driven TODO workflows, or concise project-guidance routes. | README/TODO/docs ownership, milestone acceptance rules, project-guidance review, and archive and directory-README boundaries. |
+| `project-docs` | [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md) | A repository has no usable documentation baseline, even if implementation already exists. | An evidence-based minimum baseline with a root README and only the additional documents justified by real project needs. |
+| `project-docs` | [`project-docs-refactor`](plugins/project-docs/skills/project-docs-refactor/SKILL.md) | You need to audit or change documentation structure, ownership, links, migrations, indexes, archives, or directory READMEs. | Read-only audits or implemented reorganizations that preserve authoritative ownership and external path compatibility where needed. |
+| `project-docs` | [`project-docs-readme`](plugins/project-docs/skills/project-docs-readme/SKILL.md) | You need to create or maintain the root README, public project facts, or official translations. | A concise public entry point and semantically aligned official translations without duplicating technical detail. |
+| `project-docs` | [`project-docs-planning`](plugins/project-docs/skills/project-docs-planning/SKILL.md) | You need to design or maintain `TODO.md`, roadmap, milestone, backlog, task, or implementation-plan documents. | A progressive planning model with one declared active entry, explicit commitment/readiness state, exit criteria, and durable completion evidence. |
+| `project-docs` | [`project-docs-architecture`](plugins/project-docs/skills/project-docs-architecture/SKILL.md) | You need to document current or target architecture, Mermaid diagrams, design boundaries, or architectural decisions. | Evidence-backed current/target views, adaptive C4-style Mermaid diagrams, drift triage, and lightweight ADRs. |
+| `project-docs` | [`project-docs-guidance`](plugins/project-docs/skills/project-docs-guidance/SKILL.md) | You need to create or refine repository-local agent guidance such as `AGENTS.md` or `CLAUDE.md`. | Thin global and scoped routes that link authoritative docs, respect actual harness semantics, and avoid duplicated project facts. |
 
 ## Included Rules
 

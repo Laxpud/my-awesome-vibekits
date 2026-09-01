@@ -28,6 +28,7 @@ class FakeRepository:
         self.baseline = Artifact("old", "a" * 40, "1.0.0", "sha256:old")
         self.target = Artifact("origin/main", "b" * 40, "1.1.0", "sha256:new")
         self.resolve_calls: list[tuple[str, str | None]] = []
+        self.asserted_skill_commit: str | None = None
 
     def resolve_commit(self, ref: str) -> str:
         return self.refs[ref]
@@ -37,6 +38,10 @@ class FakeRepository:
     ) -> tuple[Artifact, Artifact]:
         self.resolve_calls.append((target_ref, from_ref))
         return self.baseline, self.target
+
+    def skill_paths_at(self, commit: str) -> tuple[Path, ...]:
+        self.asserted_skill_commit = commit
+        return (Path("skills/pyproject-standard/SKILL.md"),)
 
 
 class PreflightTests(unittest.TestCase):
@@ -155,6 +160,17 @@ class PreflightTests(unittest.TestCase):
 
             self.assertEqual(repository.baseline, result.releases[0].baseline)
             self.assertEqual(repository.target, result.releases[0].target)
+            self.assertEqual(
+                (Path("skills/pyproject-standard/SKILL.md"),),
+                result.releases[0].coordinates.required_skills,
+            )
+            self.assertEqual(
+                (Path("skills/pyproject-standard/SKILL.md"),),
+                result.releases[0].coordinates.baseline_required_skills,
+            )
+            self.assertEqual(
+                repository.baseline.commit, repository.asserted_skill_commit
+            )
             self.assertEqual("Laxpud/my-awesome-vibekits", result.repository_slug)
             self.assertEqual([("origin/main", "old-tag")], repository.resolve_calls)
             # Windows runner 可能以 8.3 短路径创建临时目录，而预检会将其解析为

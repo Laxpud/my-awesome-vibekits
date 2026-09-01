@@ -264,8 +264,8 @@ def run_isolated_upgrade(
         codex.add_marketplace(marketplace_source, branch)
         codex.install_plugin()
         claude.install_plugin(scope="user", cwd=smoke_dir)
-        codex_baseline = codex.verify_target(baseline)
-        claude_baseline = claude.verify_targets(baseline)
+        codex_baseline = codex.verify_baseline(baseline)
+        claude_baseline = claude.verify_baseline(baseline)
 
         channel.advance()
         codex.update_plugin()

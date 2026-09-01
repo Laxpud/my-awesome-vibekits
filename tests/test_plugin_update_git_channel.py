@@ -52,6 +52,11 @@ class GitRepositoryTests(unittest.TestCase):
         self._git("add", ".")
         self._git("commit", "-m", "old")
         self.old_commit = self._git("rev-parse", "HEAD").strip()
+        self.second_skill = (
+            self.manifest.parents[1] / "skills" / "second-skill" / "SKILL.md"
+        )
+        self.second_skill.parent.mkdir(parents=True)
+        self.second_skill.write_text("second", encoding="utf-8")
         self._write_version("1.1.0", "new")
         self._git("add", ".")
         self._git("commit", "-m", "new")
@@ -93,6 +98,21 @@ class GitRepositoryTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "older than target"):
             repository.resolve_artifacts("HEAD", from_ref="HEAD")
+
+    def test_reads_each_historical_top_level_skill_entrypoint(self) -> None:
+        repository = GitRepository(self.root)
+
+        self.assertEqual(
+            (Path("skills/sample/SKILL.md"),),
+            repository.skill_paths_at(self.old_commit),
+        )
+        self.assertEqual(
+            (
+                Path("skills/sample/SKILL.md"),
+                Path("skills/second-skill/SKILL.md"),
+            ),
+            repository.skill_paths_at(self.target_commit),
+        )
 
     def test_manifest_only_version_bump_does_not_change_payload_digest(self) -> None:
         repository = GitRepository(self.root)

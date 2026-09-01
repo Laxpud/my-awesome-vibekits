@@ -36,12 +36,29 @@ class PluginTarget:
 
     plugin_id: str
     marketplace: str
-    required_skill: Path
+    required_skills: tuple[Path, ...]
     expected_repository: str
+    baseline_required_skills: tuple[Path, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.required_skills:
+            raise ValueError("target plugin must declare at least one required skill")
+        if len(set(self.required_skills)) != len(self.required_skills):
+            raise ValueError("target plugin required skills must be unique")
+        if len(set(self.baseline_required_skills)) != len(
+            self.baseline_required_skills
+        ):
+            raise ValueError("baseline plugin required skills must be unique")
 
     @property
     def qualified_id(self) -> str:
         return f"{self.plugin_id}@{self.marketplace}"
+
+    @property
+    def baseline_skills(self) -> tuple[Path, ...]:
+        """Use the historical payload contract when an upgrade changes skill count."""
+
+        return self.baseline_required_skills or self.required_skills
 
 
 @total_ordering

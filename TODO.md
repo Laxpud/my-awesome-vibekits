@@ -17,7 +17,7 @@
 
 - [ ] 为每个已收录技能补充一个 README 可链接的最小使用示例。
   - 验收条件：根 README 的技能表能指向示例或对应 `SKILL.md` 中的示例段落，读者能在 1 分钟内判断技能适用场景。
-  - 当前状态：部分完成。`project-docs-bootstrap` 已有“示例”章节；`code-comment-standard` 和 `pyproject-standard` 仍缺少可直接定位的最小示例及对应入口。
+  - 当前状态：部分完成。2026-09-01 `project-docs` 的六个 Skill 均补充了正例与近似反例，`bootstrap` 和 `refactor` 另有组合示例，根 README 分行链接全部六个入口；`code-comment-standard` 和 `pyproject-standard` 仍缺少可直接定位的最小示例及对应入口。
 
 - [x] 建立插件发布前检查清单。
   - 验收条件：清单覆盖 Claude marketplace、Codex marketplace、两端 plugin manifest、技能 frontmatter、README 技能表和 JSON 解析验证。
@@ -29,19 +29,22 @@
   - 完成记录：2026-06-18。
   - 验证证据：提交 `4603f13` 补充双语 README 顶部互链；当前三个文件均存在且职责分离。
 
-- [ ] 基于真实仓库使用反馈继续改进 `project-docs-bootstrap`。
-  - 验收条件：至少用 2 个不同规模的真实仓库验证后，再决定是否补充大仓库扫描策略、旧路径 redirect note 模板、双语 README 同步检查细则，以及最终报告中的澄清/假设摘要格式。
-  - 当前状态：部分完成（1/2）。2026-08-08 已在本仓库应用新版文档所有权、里程碑 TODO 和项目指导路由规则；2026-08-27 根据使用反馈补充项目指导文件的目录作用域、规则下沉、继承去重和渐进式注入要求，并通过技能结构、生成元数据一致性与 Markdown 链接检查。仍需至少 1 个不同规模的真实仓库验证，再评估候选增强项。
+- [ ] 基于真实仓库使用反馈继续改进 `project-docs` 多 Skill 体系。
+  - 验收条件：至少用 2 个不同规模的真实仓库验证；第二个仓库需覆盖六个专项 Skill 的代表性路由与边界场景，再决定是否继续调整大仓库扫描策略、旧路径 redirect note、双语 README 同步细则、最终报告中的澄清/假设摘要，以及 planning/README 等详细默认设计。
+  - 优先级调整：2026-09-01 用户明确把单 Skill 拆分提升为当前工作，不归档或隐藏本里程碑其他未完成项。
+  - 当前状态：部分完成（真实仓库 1/2，六 Skill 的第二仓库覆盖尚未完成）。本仓库已有 2026-08-08 与 2026-08-27 的文档所有权、里程碑 TODO 和项目指导反馈；2026-09-01 经 82 个问题确认六 Skill 目标边界，已记录[目标设计](docs/design/project-docs-multi-skill.md)和 [ADR 0001](docs/adr/0001-split-project-docs-by-user-intent.md)，并完成 `project-docs` 2.0.0 本地实现，不设置兼容过渡期。旧单 Skill 的仓库反馈不自动视为六个新 Skill 各自通过真实场景验证。
+  - 本轮验证证据：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
+  - 剩余条件：至少再选 1 个不同规模的真实仓库逐项验证路由与产出；本机未安装 Claude Code，因此本轮只保留 Claude manifest/marketplace 静态验证，不宣称 Claude 运行时发现或路由已验证；planning、README 定位和其他面向人类文档的详细默认设计按用户要求留待后续讨论。
 
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。
-    - 更新后校验实际安装版本、插件来源、payload digest 和 `pyproject-standard/SKILL.md` 路径；默认不得调用模型或消耗 token，可用 `--skill-smoke` 额外验证新会话中的 skill 发现与调用。
+    - 更新后校验实际安装版本、插件来源、payload digest 和目标插件在 catalog 中声明的完整 Skill 集合；默认不得调用模型或消耗 token，可用 `--skill-smoke` 额外验证新会话中的 `pyproject-standard` skill 发现与调用。
     - 只有两端隔离测试及临时远端分支清理全部成功，并显式传入 `--promote` 时，才更新日常用户配置；任一门禁失败不得修改日常安装。
     - 晋级覆盖 Codex 实例与 Claude Code 的全部 `user`、`project`、`local` 实例，保持原 `scope`、`projectPath` 和 `enabled` 状态；任一失败必须恢复两端快照。
     - 晋级后再次校验两端 version、source 和 digest，并提示新建会话或重新加载插件；隔离测试产生的 marketplace、缓存、配置和凭据副本必须清理。
     - 仅在 Windows Live E2E 完成真实 `1.1.0 → 1.1.1` 测试，并验证一次幂等 `--promote` 后勾选本项。
-  - 当前状态：部分完成。提交 `1430832` 已实现跨客户端更新验收工具及配套文档；2026-08-13 已在多插件里程碑中将工具改为 catalog 驱动的独立插件流程并通过 fixture 回归。剩余条件仍是完成 Windows Live E2E 的真实 `1.1.0 → 1.1.1` 升级与幂等 `--promote` 验证。
+  - 当前状态：部分完成。提交 `1430832` 已实现跨客户端更新验收工具及配套文档；2026-08-13 已在多插件里程碑中将工具改为 catalog 驱动的独立插件流程并通过 fixture 回归；2026-09-01 将安装契约扩展为 baseline 按历史实际 Skill 集合、target 按 catalog 完整集合验证，并通过 `project-docs` 单 Skill 旧版升级到六 Skill 目标版的 fake-client 回归。剩余条件仍是完成 Windows Live E2E 的真实 `1.1.0 → 1.1.1` 升级与幂等 `--promote` 验证。
 
 ### 里程碑级完成条件
 

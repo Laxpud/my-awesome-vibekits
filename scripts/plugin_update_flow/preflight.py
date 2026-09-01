@@ -25,6 +25,8 @@ class Repository(Protocol):
         self, target_ref: str, *, from_ref: str | None = None
     ) -> tuple[Artifact, Artifact]: ...
 
+    def skill_paths_at(self, commit: str) -> tuple[Path, ...]: ...
+
 
 class PreflightError(RuntimeError):
     """表示运行环境或发布目标不满足自动化前置条件。"""
@@ -115,13 +117,15 @@ class ReleasePreflight:
             baseline, target = resolver.resolve_artifacts(
                 target_ref, from_ref=from_ref
             )
+            baseline_required_skills = resolver.skill_paths_at(baseline.commit)
             releases.append(
                 PluginRelease(
                     coordinates=PluginTarget(
                         plugin.id,
                         catalog.marketplace_id,
-                        plugin.required_skill,
+                        plugin.required_skills,
                         expected_repository,
+                        baseline_required_skills,
                     ),
                     plugin_root=plugin_root,
                     baseline=baseline,

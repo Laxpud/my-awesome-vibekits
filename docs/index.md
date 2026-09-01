@@ -19,6 +19,13 @@
 | [`PLUGIN_UPDATE.md`](PLUGIN_UPDATE.md) | 插件版本发布、隔离 E2E、客户端更新、日常晋级或回滚。 |
 | [`CODEX_INSTALL_SMOKE_TEST.md`](CODEX_INSTALL_SMOKE_TEST.md) | Codex marketplace、manifest 或 README 安装说明。 |
 
+## 设计与决策
+
+| 文档 | 内容 |
+| --- | --- |
+| [`project-docs 多 Skill 目标设计`](design/project-docs-multi-skill.md) | `project-docs` 2.0 的六 Skill 边界、路由、默认值、组合规则和验证缺口。 |
+| [`ADR 0001：按用户意图拆分 project-docs`](adr/0001-split-project-docs-by-user-intent.md) | 记录从单一综合 Skill 直接迁移到六个独立 Skill 的决定与后果。 |
+
 ## AI 工作入口
 
 | 文件 | 用途 |

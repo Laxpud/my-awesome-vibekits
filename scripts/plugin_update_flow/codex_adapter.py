@@ -111,7 +111,19 @@ class CodexAdapter:
             )
         return instances
 
+    def verify_baseline(self, artifact: Artifact) -> Installation:
+        """Verify an installed historical payload against its own skill set."""
+
+        return self._verify(artifact, self.target.baseline_skills)
+
     def verify_target(self, artifact: Artifact) -> Installation:
+        """Verify an installed target payload against the complete catalog contract."""
+
+        return self._verify(artifact, self.target.required_skills)
+
+    def _verify(
+        self, artifact: Artifact, required_skills: tuple[Path, ...]
+    ) -> Installation:
         instances = self.list_instances()
         if len(instances) != 1:
             raise ValueError(f"expected one Codex installation, found {len(instances)}")
@@ -124,10 +136,16 @@ class CodexAdapter:
             raise ValueError(
                 f"Codex marketplace source mismatch: {instance.source!r}"
             )
-        if not (instance.install_path / self.target.required_skill).is_file():
+        missing_skills = [
+            skill
+            for skill in required_skills
+            if not (instance.install_path / skill).is_file()
+        ]
+        if missing_skills:
+            missing = ", ".join(str(skill) for skill in missing_skills)
             raise ValueError(
-                f"Codex installation is missing {self.target.plugin_id} skill: "
-                f"{self.target.required_skill}"
+                f"Codex installation is missing {self.target.plugin_id} skill(s): "
+                f"{missing}"
             )
         digest = digest_directory(instance.install_path)
         if instance.version != artifact.version:

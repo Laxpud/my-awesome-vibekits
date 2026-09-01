@@ -48,6 +48,9 @@ class FakeCodex:
     def update_plugin(self) -> None:
         self.events.append("update")
 
+    def verify_baseline(self, artifact: Artifact) -> Installation:
+        return self.verify_target(artifact)
+
     def verify_target(self, artifact: Artifact) -> Installation:
         self.events.append(f"verify:{artifact.version}")
         return Installation(
@@ -75,6 +78,9 @@ class FakeClaude:
 
     def update_plugin_scopes(self, scopes: list[tuple[str, str | None]]) -> None:
         self.events.append(f"update:{scopes!r}")
+
+    def verify_baseline(self, artifact: Artifact) -> list[Installation]:
+        return self.verify_targets(artifact)
 
     def verify_targets(self, artifact: Artifact) -> list[Installation]:
         self.events.append(f"verify:{artifact.version}")

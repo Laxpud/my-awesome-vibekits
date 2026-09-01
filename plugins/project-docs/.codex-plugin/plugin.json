@@ -1,7 +1,7 @@
 {
   "name": "project-docs",
-  "version": "1.1.2",
-  "description": "Workflows for maintainable README, milestone TODO, documentation ownership, and project guidance.",
+  "version": "2.0.0",
+  "description": "Specialized workflows for project documentation baselines, refactoring, README, planning, architecture, and agent guidance.",
   "author": {
     "name": "Laxpud",
     "url": "https://github.com/Laxpud"
@@ -12,14 +12,24 @@
   "keywords": [
     "documentation",
     "readme",
+    "refactor",
+    "planning",
     "todo",
+    "roadmap",
+    "milestone",
+    "backlog",
+    "architecture",
+    "mermaid",
+    "adr",
+    "agents",
+    "claude",
     "project-guidance"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Project Docs",
-    "shortDescription": "Maintainable project documentation workflows",
-    "longDescription": "Initialize or reorganize README, milestone TODO, documentation indexes, ownership boundaries, translations, and concise project-guidance routes.",
+    "shortDescription": "Specialized project-documentation workflows",
+    "longDescription": "Use six focused skills to initialize a documentation baseline, refactor documentation structure, maintain README files, manage planning documents, describe architecture and decisions, or refine repository agent guidance.",
     "developerName": "Laxpud",
     "category": "Productivity",
     "capabilities": [
@@ -27,7 +37,12 @@
     ],
     "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
     "defaultPrompt": [
-      "Use project-docs-bootstrap to organize README, TODO, docs, and project guidance."
+      "Use project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
+      "Use project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
+      "Use project-docs-readme to create or maintain the root README and its official translations.",
+      "Use project-docs-planning to design or maintain this repository's TODO.md, roadmaps, milestones, backlog, tasks, and implementation plans.",
+      "Use project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
+      "Use project-docs-guidance to create or refine repository agent-guidance files and scoped rules."
     ],
     "brandColor": "#2563EB"
   }

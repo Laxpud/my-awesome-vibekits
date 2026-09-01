@@ -1,6 +1,6 @@
 # 技能、Catalog 与适配层维护规范
 
-本规范用于维护 Vibekits 的通用技能、插件 catalog、可复用规则和平台适配层。目标是让三个插件都能被 Codex 与 Claude Code 独立安装，同时不把平台专属逻辑污染到共享技能来源中。
+本规范用于维护 Vibekits 的通用技能、插件 catalog、可复用规则和平台适配层。目标是让三个插件都能被 Codex 与 Claude Code 独立安装、每个插件可拥有一个或多个职责清晰的技能，同时不把平台专属逻辑污染到共享技能来源中。
 
 项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护技能、规则、catalog、双平台适配层及其验证契约。
 
@@ -20,7 +20,7 @@
 
 ## Catalog 契约
 
-`plugin-catalog.json` 至少为每个插件维护稳定 `id`、目录、独立 SemVer、描述、分类、关键词、Skill ID/路径，以及 Codex 和 Claude Code 的平台覆盖项。
+`plugin-catalog.json` 至少为每个插件维护稳定 `id`、目录、独立 SemVer、描述、分类、关键词、完整 Skill ID/路径集合，以及 Codex 和 Claude Code 的平台覆盖项。数组顺序用于稳定展示，不代表只有第一个 Skill 才属于安装契约。
 
 校验器必须拒绝：
 
@@ -40,7 +40,13 @@ plugins/
 ├── python-project/
 │   └── skills/pyproject-standard/
 └── project-docs/
-    └── skills/project-docs-bootstrap/
+    └── skills/
+        ├── project-docs-bootstrap/
+        ├── project-docs-refactor/
+        ├── project-docs-readme/
+        ├── project-docs-planning/
+        ├── project-docs-architecture/
+        └── project-docs-guidance/
 ```
 
 原 `plugins/laxpud-vibekits/` 聚合包、旧 marketplace 条目、兼容别名和聚合依赖包均不得恢复。
@@ -66,11 +72,16 @@ plugins/<plugin-id>/skills/<skill-id>/
 - 需要脚本、参考资料或模板时，放在同一技能目录内，并在 `SKILL.md` 中说明何时读取或使用。
 - 新增或大改技能后，检查 catalog 描述、README 插件/技能表和生成物是否需要同步。
 
-在提供插件命名空间的平台上，三个公开 Skill 名分别是：
+在提供插件命名空间的平台上，八个公开 Skill 名分别是：
 
 - `code-quality:code-comment-standard`
 - `python-project:pyproject-standard`
 - `project-docs:project-docs-bootstrap`
+- `project-docs:project-docs-refactor`
+- `project-docs:project-docs-readme`
+- `project-docs:project-docs-planning`
+- `project-docs:project-docs-architecture`
+- `project-docs:project-docs-guidance`
 
 Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。
 
@@ -83,7 +94,7 @@ Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。
 当技能能力、插件定位或对外描述发生变化时，按顺序检查：
 
 - 对应 `plugins/<plugin-id>/skills/<skill-id>/SKILL.md` 的 `name` 与 `description` 是否准确。
-- [`plugin-catalog.json`](../plugin-catalog.json) 的插件描述、版本、分类、关键词、Skill 路径和双端覆盖项是否同步。
+- [`plugin-catalog.json`](../plugin-catalog.json) 的插件描述、版本、分类、关键词、完整 Skill 路径集合和双端覆盖项是否同步。
 - `python scripts/sync_plugin_metadata.py --write` 是否只产生预期的两份 marketplace 和选中插件 manifest 变更。
 - `.agents/plugins/marketplace.json` 每个条目是否保留 `policy.installation`、`policy.authentication`、`category` 和独立 source path。
 - `.claude-plugin/marketplace.json` 每个条目的描述、版本、标签和 source 是否指向同一插件包。
@@ -126,6 +137,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 另需验证：
 
 - 每个插件通过 Codex plugin validator 和 `claude plugin validate`；
+- 每个 catalog 声明的技能均存在于安装包中；升级测试按旧版实际 Skill 集合验证 baseline，按 catalog 完整集合验证 target；
 - 技能 frontmatter 只有 `name` 和 `description`，且目录名、Skill ID 与 catalog 一致；
 - README 和 docs 中的相对链接指向真实文件；
 - 根 README 保持英文，中文 README 与其章节结构对齐；

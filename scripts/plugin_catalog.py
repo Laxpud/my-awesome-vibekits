@@ -82,8 +82,12 @@ class PluginSpec:
         return f"./{self.directory.as_posix()}"
 
     @property
-    def required_skill(self) -> Path:
-        return Path(self.skills[0].path.as_posix()) / "SKILL.md"
+    def required_skills(self) -> tuple[Path, ...]:
+        """Return every skill entrypoint promised by the catalog."""
+
+        return tuple(
+            Path(skill.path.as_posix()) / "SKILL.md" for skill in self.skills
+        )
 
 
 @dataclass(frozen=True)

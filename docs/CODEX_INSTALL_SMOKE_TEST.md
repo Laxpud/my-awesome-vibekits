@@ -10,7 +10,7 @@
 - 每个条目的 `source.path` 精确定位 `plugins/<plugin-id>/`，且不逃出仓库；
 - marketplace 条目、插件目录、版本和 `.codex-plugin/plugin.json` 与 catalog 一致；
 - `policy.installation`、`policy.authentication` 和 `category` 完整；
-- manifest 的 `skills` 指向插件自己的 `./skills/`，且 catalog 声明的 `SKILL.md` 存在；
+- manifest 的 `skills` 指向插件自己的 `./skills/`，且 catalog 声明的每个 `SKILL.md` 都存在；
 - manifest 的 GitHub repository 与中英文 README 的 `codex plugin marketplace add <owner>/<repo>` 一致；
 - 两份 README 都引导用户进入 `/plugins`，并列出三个独立插件 ID。
 
@@ -54,5 +54,5 @@ python scripts/check_codex_install.py --remote --ref <branch-or-tag> --all
 
 - 不在检查脚本中维护插件名、目录、版本或 repository 常量。
 - 新增插件必须先进入 catalog，再生成 marketplace；不得手工追加 JSON。
-- 三个插件可分别检查，默认行为是检查全部。
+- 三个插件可分别检查，默认行为是检查全部；每个被选插件都校验其 catalog 声明的完整 Skill 集合，而非只检查数组首项。
 - 原 `laxpud-vibekits` 聚合插件条目不得作为兼容项恢复。

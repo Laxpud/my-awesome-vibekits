@@ -121,16 +121,34 @@ class ClaudeAdapter:
             )
         return instances
 
+    def verify_baseline(self, artifact: Artifact) -> list[Installation]:
+        """Verify historical installs against the skills that payload contained."""
+
+        return self._verify(artifact, self.target.baseline_skills)
+
     def verify_targets(self, artifact: Artifact) -> list[Installation]:
+        """Verify target installs against every skill promised by the catalog."""
+
+        return self._verify(artifact, self.target.required_skills)
+
+    def _verify(
+        self, artifact: Artifact, required_skills: tuple[Path, ...]
+    ) -> list[Installation]:
         instances = self.list_instances()
         if not instances:
             raise ValueError("expected at least one Claude installation")
         verified: list[Installation] = []
         for instance in instances:
-            if not (instance.install_path / self.target.required_skill).is_file():
+            missing_skills = [
+                skill
+                for skill in required_skills
+                if not (instance.install_path / skill).is_file()
+            ]
+            if missing_skills:
+                missing = ", ".join(str(skill) for skill in missing_skills)
                 raise ValueError(
-                    f"Claude installation is missing {self.target.plugin_id} skill: "
-                    f"{self.target.required_skill}"
+                    f"Claude installation is missing {self.target.plugin_id} skill(s): "
+                    f"{missing}"
                 )
             digest = digest_directory(instance.install_path)
             if instance.version != artifact.version:
