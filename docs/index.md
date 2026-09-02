@@ -15,7 +15,7 @@
 
 | 文档 | 修改什么内容前先读 |
 | --- | --- |
-| [`SKILL_RULE_GUIDELINES.md`](SKILL_RULE_GUIDELINES.md) | 通用技能、可复用规则、插件适配层、同步目标或静态验证。 |
+| [`SKILL_RULE_GUIDELINES.md`](SKILL_RULE_GUIDELINES.md) | 通用技能、插件 catalog、平台适配层、同步目标或静态验证。 |
 | [`PLUGIN_UPDATE.md`](PLUGIN_UPDATE.md) | 插件版本发布、隔离 E2E、客户端更新、日常晋级或回滚。 |
 | [`CODEX_INSTALL_SMOKE_TEST.md`](CODEX_INSTALL_SMOKE_TEST.md) | Codex marketplace、manifest 或 README 安装说明。 |
 

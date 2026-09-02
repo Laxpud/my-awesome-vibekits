@@ -1,8 +1,8 @@
-# 技能、Catalog 与适配层维护规范
+# Skill、Catalog 与适配层维护规范
 
-本规范用于维护 Vibekits 的通用技能、插件 catalog、可复用规则和平台适配层。目标是让三个插件都能被 Codex 与 Claude Code 独立安装、每个插件可拥有一个或多个职责清晰的技能，同时不把平台专属逻辑污染到共享技能来源中。
+本规范用于维护 Vibekits 的通用 Skill、插件 catalog 和平台适配层。目标是让三个插件都能被 Codex 与 Claude Code 独立安装、每个插件可拥有一个或多个职责清晰的 Skill，同时不把平台专属逻辑污染到共享 Skill 来源中。
 
-项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护技能、规则、catalog、双平台适配层及其验证契约。
+项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护 Skill、catalog、双平台适配层及其验证契约。
 
 ## 权威位置
 
@@ -10,7 +10,6 @@
 | --- | --- |
 | 插件身份、独立版本和分发元数据 | [`plugin-catalog.json`](../plugin-catalog.json) |
 | 通用技能内容 | `plugins/<plugin-id>/skills/<skill-id>/` |
-| 可复用规则 | `rules/<rule-name>.md` |
 | Codex marketplace 生成物 | `.agents/plugins/marketplace.json` |
 | Codex manifest 生成物 | `plugins/<plugin-id>/.codex-plugin/plugin.json` |
 | Claude Code marketplace 生成物 | `.claude-plugin/marketplace.json` |
@@ -84,10 +83,6 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs:project-docs-guidance`
 
 Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。
-
-## 规则要求
-
-可复用规则放在 `rules/<rule-name>.md`。规则应短小、清晰、平台无关；如果需要多步骤流程、示例、脚本或复杂上下文，应创建技能。个人全局规则备份必须明确标注备份用途，不视为平台无关通用规则。
 
 ## 适配层同步清单
 

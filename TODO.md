@@ -15,9 +15,10 @@
 
 状态：2026-08-13 “Codex / Claude Code 多插件目录与分发”里程碑完成并归档后恢复为当前里程碑。暂停期间的已完成、部分完成和未完成记录均保持原状态。
 
-- [ ] 为每个已收录技能补充一个 README 可链接的最小使用示例。
-  - 验收条件：根 README 的技能表能指向示例或对应 `SKILL.md` 中的示例段落，读者能在 1 分钟内判断技能适用场景。
-  - 当前状态：部分完成。2026-09-01 `project-docs` 的六个 Skill 均补充了正例与近似反例，`bootstrap` 和 `refactor` 另有组合示例，根 README 分行链接全部六个入口；`code-comment-standard` 和 `pyproject-standard` 仍缺少可直接定位的最小示例及对应入口。
+- [x] 为每个已收录技能补充一个 README 可链接的最小使用示例。
+  - 验收条件：根 README 的按目标入口能指向示例或对应 `SKILL.md` 中的示例段落，读者无需先阅读完整 Skill 正文即可判断适用场景并复制最小提示词。
+  - 完成记录：2026-09-01。
+  - 验证证据：中英文 README 均按用户目标列出 catalog 中全部八个 Skill、对应 Plugin、Skill 直达链接和可复制最小提示词；`project-docs-readme` 另有展开的首次成功路径。2026-09-01 catalog/生成物同步、Codex 本地安装 smoke test、Markdown 链接、Skill quick validator、三个 Codex plugin validator、`git diff --check` 和 72 项测试全部通过。
 
 - [x] 建立插件发布前检查清单。
   - 验收条件：清单覆盖 Claude marketplace、Codex marketplace、两端 plugin manifest、技能 frontmatter、README 技能表和 JSON 解析验证。
@@ -32,9 +33,9 @@
 - [ ] 基于真实仓库使用反馈继续改进 `project-docs` 多 Skill 体系。
   - 验收条件：至少用 2 个不同规模的真实仓库验证；第二个仓库需覆盖六个专项 Skill 的代表性路由与边界场景，再决定是否继续调整大仓库扫描策略、旧路径 redirect note、双语 README 同步细则、最终报告中的澄清/假设摘要，以及 planning/README 等详细默认设计。
   - 优先级调整：2026-09-01 用户明确把单 Skill 拆分提升为当前工作，不归档或隐藏本里程碑其他未完成项。
-  - 当前状态：部分完成（真实仓库 1/2，六 Skill 的第二仓库覆盖尚未完成）。本仓库已有 2026-08-08 与 2026-08-27 的文档所有权、里程碑 TODO 和项目指导反馈；2026-09-01 经 82 个问题确认六 Skill 目标边界，已记录[目标设计](docs/design/project-docs-multi-skill.md)和 [ADR 0001](docs/adr/0001-split-project-docs-by-user-intent.md)，并完成 `project-docs` 2.0.0 本地实现，不设置兼容过渡期。旧单 Skill 的仓库反馈不自动视为六个新 Skill 各自通过真实场景验证。
-  - 本轮验证证据：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
-  - 剩余条件：至少再选 1 个不同规模的真实仓库逐项验证路由与产出；本机未安装 Claude Code，因此本轮只保留 Claude manifest/marketplace 静态验证，不宣称 Claude 运行时发现或路由已验证；planning、README 定位和其他面向人类文档的详细默认设计按用户要求留待后续讨论。
+  - 当前状态：部分完成（真实仓库 1/2，六 Skill 的第二仓库覆盖尚未完成）。本仓库已有 2026-08-08 与 2026-08-27 的文档所有权、里程碑 TODO 和项目指导反馈；2026-09-01 经 82 个问题确认六 Skill 目标边界，已记录[目标设计](docs/design/project-docs-multi-skill.md)和 [ADR 0001](docs/adr/0001-split-project-docs-by-user-intent.md)，并完成 `project-docs` 2.0.0 本地实现，不设置兼容过渡期。同日另经用户逐项确认，明确了 README 面向最缺乏经验预期用户、前置条件、默认首次成功闭环和先审计后编辑的通用契约。旧单 Skill 的仓库反馈不自动视为六个新 Skill 各自通过真实场景验证。
+  - 本轮验证证据：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。2026-09-01 README 契约更新后再次通过 `project-docs-readme` quick validator、三个 Codex plugin validator、catalog/生成物同步、本地安装 smoke test、Markdown 链接、`git diff --check` 和 72 项测试。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
+  - 剩余条件：至少再选 1 个不同规模的真实仓库逐项验证路由与产出；本机未安装 Claude Code，因此只保留 Claude manifest/marketplace 静态验证，不宣称 Claude 运行时发现或路由已验证；planning 和其他面向人类文档的详细默认设计仍留待后续讨论，README 定位与默认路径已在 2026-09-01 确认并落实。
 
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
@@ -56,13 +57,17 @@
 
 本方向不属于当前里程碑，也不阻塞 Codex / Claude Code 多插件交付。进入实施前应重新核对各平台当时的官方协议、CLI 和分发政策，再把选定范围提升为具体验收里程碑。
 
+- [ ] 验证通过 `npx skills` 分发当前 Skill。
+  - 当前状态：仅作为未来分发方向记录；README 不提供可复制安装命令，也不宣称已经支持。
+  - 进入支持状态门槛：catalog 中全部八个 Skill 都能被发现；分别完成向 Codex 和 Claude Code 的安装与加载验证；覆盖更新和安全移除；文档明确独立 Skill 安装与 Plugin marketplace 的版本、启停和回滚生命周期差异。
+
 - [ ] 评估可复用插件格式与第三方 marketplace 入口。
   - 候选范围：GitHub Copilot CLI、Qwen Code、CodeBuddy、Cursor，以及 Agent Plugins 标准。
   - 验收方向：优先复用 Claude 插件包或开放标准；只有现有格式无法表达平台能力时才新增专属 manifest，并验证多 manifest 共存时的选择优先级。
 
 - [ ] 评估需要专属扩展 manifest 的 Harness。
   - 候选范围：Cursor Plugins、Gemini CLI extensions、Kimi Code plugins，以及未来出现稳定作者分发协议的平台。
-  - 验收方向：由统一 catalog 生成薄适配文件，不复制 Skills 内容；平台专属 hooks、commands、agents、rules 和权限语义不得进入通用 `SKILL.md`。
+  - 验收方向：由统一 catalog 生成薄适配文件，不复制 Skills 内容；平台专属 hooks、commands、agents 和权限语义不得进入通用 `SKILL.md`。
 
 - [ ] 评估以 Skills 目录或配置投影接入的平台。
   - 候选范围：OpenCode、TRAE、Windsurf、Qoder、Gemini CLI 及其他兼容 Agent Skills 的 Harness。
