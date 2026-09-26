@@ -14,16 +14,17 @@
 
 ## 发布前提
 
-先修改 [`plugin-catalog.json`](../plugin-catalog.json) 中目标插件的版本和元数据，再生成并验证：
+修改 project-docs 时先运行 `python3 scripts/build_project_docs.py --write`，将维护源生成为独立技能目录，再修改 [`plugin-catalog.json`](../plugin-catalog.json) 中目标插件的版本和元数据，再生成并验证：
 
 ```bash
+python3 scripts/build_project_docs.py
 python scripts/sync_plugin_metadata.py --plugin python-project --set-version <semver>
 python scripts/sync_plugin_metadata.py
 python scripts/check_codex_install.py --all
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-多个插件同版发布时可以重复 `--plugin`，只有确实要求同时发版时才使用 `--all --set-version`。生成器同步两份 marketplace 与选中插件的两端 manifest；技能内容不复制。
+多个插件同版发布时可以重复 `--plugin`，只有确实要求同时发版时才使用 `--all --set-version`。生成器同步两份 marketplace 与选中插件的两端 manifest；project-docs 技能内容由独立生成器维护，元数据生成器不复制或改写技能。
 
 提交并推送后执行远端检查：
 

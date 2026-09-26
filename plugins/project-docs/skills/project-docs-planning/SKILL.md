@@ -1,11 +1,12 @@
 ---
 name: project-docs-planning
 description: Use only when explicitly requested to organize TODO, roadmap, milestones, backlog, or plan/spec storage and archiving.
+disable-model-invocation: true
 ---
 
 # 组织规划文档
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)，根据请求读取现有规划入口和相关条目；不为一次规划调整通读整个仓库。
+仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)，根据请求读取现有规划入口和相关条目；不为一次规划调整通读整个仓库。
 
 | 当前任务 | 按需读取 |
 | --- | --- |

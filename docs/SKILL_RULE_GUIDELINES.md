@@ -9,13 +9,17 @@
 | 内容 | 权威位置 |
 | --- | --- |
 | 插件身份、独立版本和分发元数据 | [`plugin-catalog.json`](../plugin-catalog.json) |
-| 通用技能内容 | `plugins/<plugin-id>/skills/<skill-id>/` |
+| project-docs 维护源与公共资料 | `sources/project-docs/skills/<skill-id>/`、`sources/project-docs/references/` |
+| project-docs 安装文件（生成物） | `plugins/project-docs/skills/<skill-id>/` |
+| 其他插件的技能内容 | `plugins/<plugin-id>/skills/<skill-id>/` |
 | Codex marketplace 生成物 | `.agents/plugins/marketplace.json` |
 | Codex manifest 生成物 | `plugins/<plugin-id>/.codex-plugin/plugin.json` |
 | Claude Code marketplace 生成物 | `.claude-plugin/marketplace.json` |
 | Claude Code manifest 生成物 | `plugins/<plugin-id>/.claude-plugin/plugin.json` |
 
-每个插件自己的 `skills/` 是该插件唯一的技能内容来源。不得在根目录、兄弟插件或安装投影中创建人工维护副本，也不得通过 `../shared` 引用仓库级或兄弟插件内容。同一插件可在一个技能的 `references/` 保存共同约定，专项资料仍归对应技能；使用相对链接，安装后必须留在该插件 payload 内，不建立重复副本。`.codex-plugin/`、`.claude-plugin/` 和两份 marketplace 都是 catalog 的稳定生成物，不是独立事实来源。
+`project-docs` 区分维护源与安装文件：仅编辑 `sources/project-docs/`，源入口名为 `SKILL.md.in`，避免被技能发现器重复收录。公共写作与目录 README 规则归公共 `references/`，专项资料归各技能。源码可按需引用其他源资料；生成器复制所需引用及其依赖，改写为技能内部路径。安装后的每个技能都包含自身资料，不依赖兄弟技能、源码目录或软链。
+
+其他插件暂时仍直接维护各自 `skills/`，不在本轮迁移。生成副本只供安装和审阅，不人工维护，不创建跨插件运行时引用。`.codex-plugin/`、`.claude-plugin/` 和两份 marketplace 仍由 catalog 生成。
 
 ## Catalog 契约
 
@@ -47,7 +51,6 @@ plugins/
         ├── project-docs-architecture/
         ├── project-docs-guidance/
         └── project-docs-progress/
-            └── references/writing-style.md  # 七技能共用一份
 ```
 
 原 `plugins/laxpud-vibekits/` 聚合包、旧 marketplace 条目、兼容别名和聚合依赖包均不得恢复。
@@ -65,13 +68,13 @@ plugins/<plugin-id>/skills/<skill-id>/
 └── assets/      # 可选：输出所需模板或静态资源
 ```
 
-`SKILL.md` 的 frontmatter 只保留 `name` 和 `description`。`name` 必须与 Skill ID 和目录名一致；`description` 是触发技能的主要元数据，应同时说明能力范围和适用场景。
+`SKILL.md` 的 frontmatter 必须包含 `name` 和 `description`；允许 `disable-model-invocation` 布尔字段，用于支持该扩展的客户端。`name` 必须与 Skill ID 和目录名一致；`description` 是触发技能的主要元数据，应同时说明能力范围和适用场景。
 
 技能正文应专注于让 Agent 正确执行任务：
 
 - 写清楚流程、输入输出契约、边界条件和验证方式。
 - 只保留执行技能所需的信息；安装、平台命令和发布记录放到仓库文档或生成适配层；Codex 的技能调用设置放在各技能的 `agents/openai.yaml`，不混进 frontmatter。
-- 需要脚本、参考资料或模板时，优先放在同一技能目录内；真正共用的规则可放在插件内某个技能的 `references/`，也可引用同插件其他技能的配套资料，并在 `SKILL.md` 中说明何时读取。不借引用资料自动调用其他技能。
+- `project-docs` 的共同资料在维护源中只保存一份，专项资料归对应技能；安装文件由生成器带入实际引用的资料。入口说明何时读取，不借引用资料自动调用其他技能。安装副本位于 `references/common/` 或带来源技能名的 references/assets 子目录，不能再向上跳到兄弟技能。
 - 新增或大改技能后，检查 catalog 描述、README 插件/技能表和生成物是否需要同步。
 
 在提供插件命名空间的平台上，九个公开 Skill 名分别是：
@@ -86,11 +89,43 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs:project-docs-guidance`
 - `project-docs:project-docs-progress`
 
-Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
+Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。同时，六个专项技能在 frontmatter 设置 `disable-model-invocation: true`，progress 设置 `false`。两种配置表达同一调用意图，不能互相替代；不据此宣称所有客户端都支持该扩展。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
+
+## 生成自包含的 project-docs 技能
+
+```text
+sources/project-docs/                  维护源，不作为安装目录
+  references/                         共同写作与目录 README 规则
+  skills/<skill-id>/
+    SKILL.md.in                       源入口，不被当作独立技能发现
+    agents/openai.yaml
+    references/                       专项参考
+    assets/                           专项模板
+plugins/project-docs/skills/           生成并提交的安装文件
+  <skill-id>/
+    SKILL.md
+    agents/openai.yaml
+    references/common/                需要的公共资料副本
+    references/<来源技能名>/           需要的其他专项资料副本
+    assets/                           模板及需要的外部模板副本
+```
+
+生成与检查：
+
+```bash
+python3 scripts/build_project_docs.py --write
+python3 scripts/build_project_docs.py
+```
+
+默认只检查是否漂移；`--write` 更新生成目录，并清理失去来源的旧文件。生成文件一并提交，用户安装时不需要运行 Python。生成器保持正文与调用配置，只改写真实资源链接，不改代码围栏中的示例路径。支持普通 Markdown 行内链接、引用式定义和 HTML href/src；本地路径使用无空格路径或 URL 编码，不使用未编码的嵌套括号。源码依赖必须是 `sources/project-docs/` 内的文件，不允许借用另一个技能入口或指向仓库外部。
+
+打包顺序是先生成技能，再同步 catalog 元数据，再执行相关检查。此布局为未来单技能分发做准备，不代表本项目已完成 `npx skills` 安装、更新和卸载验收。
 
 ## 适配层同步清单
 
 当技能能力、插件定位或对外描述发生变化时，按顺序检查：
+
+- 修改 `sources/project-docs/` 后运行技能生成器，确认安装文件与维护源一致。
 
 - 对应 `plugins/<plugin-id>/skills/<skill-id>/SKILL.md` 的 `name` 与 `description` 是否准确。
 - [`plugin-catalog.json`](../plugin-catalog.json) 的插件描述、版本、分类、关键词、完整 Skill 路径集合和双端覆盖项是否同步。
@@ -136,11 +171,14 @@ python scripts/sync_plugin_metadata.py --plugin code-quality --plugin project-do
 
 脚本、安装器和元数据生成逻辑发生变化时，仍执行与改动相关的检查。轻量验收不替代下述正式发布检查，也不要求纯文案修改运行完整发布流程。
 
+本机随附的 skill quick validator 不接受 `disable-model-invocation` 字段，Codex plugin validator 拒绝该字段为 `true`。保留本项目明确选择的双配置，不修改外部校验器或临时删除字段来伪造通过；分别记录 YAML 与策略一致性检查、实际客户端安装发现结果和校验器不兼容。正式发布到有此限制的渠道前需解决格式适配或确认其接受规则，不能把本地安装成功等同于发布审核通过。
+
 ### 正式发布检查
 
 发布前至少执行：
 
 ```bash
+python3 scripts/build_project_docs.py
 python scripts/sync_plugin_metadata.py
 python scripts/check_codex_install.py --all
 python scripts/check_markdown_links.py
@@ -151,7 +189,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 
 - 每个插件通过 Codex plugin validator 和 `claude plugin validate`；
 - 每个 catalog 声明的技能均存在于安装包中；升级测试按旧版实际 Skill 集合验证 baseline，按 catalog 完整集合验证 target；
-- 技能 frontmatter 只有 `name` 和 `description`，且目录名、Skill ID 与 catalog 一致；
+- 技能 frontmatter 包含 `name`、`description`，以及按需设置的布尔字段 `disable-model-invocation`；目录名、Skill ID 与 catalog 一致；
 - README 和 docs 中的相对链接指向真实文件；
 - 根 README 保持英文，中文 README 与其章节结构对齐；
 - `git diff --check` 通过，且 diff 不含缓存、虚拟环境或本地测试输出。

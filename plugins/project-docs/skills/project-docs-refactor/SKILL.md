@@ -1,13 +1,14 @@
 ---
 name: project-docs-refactor
 description: Use only when explicitly requested to reorganize, simplify, or migrate existing documentation and resolve duplicated ownership or navigation.
+disable-model-invocation: true
 ---
 
 # 整理已有文档
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)及[整理与迁移规则](references/reorganizing-docs.md)。先读本次范围的入口及其相关链接，只在发现引用或所有权问题时扩大范围。
+仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)及[整理与迁移规则](references/reorganizing-docs.md)。先读本次范围的入口及其相关链接，只在发现引用或所有权问题时扩大范围。
 
-涉及目录 README 时读[目录 README 的取舍](references/directory-readmes.md)；迁移规划时按需读[规划格式](../project-docs-planning/references/planning-model.md)与[生命周期](../project-docs-planning/references/lifecycle.md)，技术内容读取[C4 导航](../project-docs-architecture/references/architecture-diagrams.md)。不要自动加载其他 SKILL 正文。
+涉及目录 README 时读[目录 README 的取舍](references/common/directory-readmes.md)；迁移规划时按需读[规划格式](references/project-docs-planning/planning-model.md)与[生命周期](references/project-docs-planning/lifecycle.md)，技术内容读取[C4 导航](references/project-docs-architecture/architecture-diagrams.md)。不要自动加载其他 SKILL 正文。
 
 默认整理活动内容、未来安排和受影响链接，保留旧历史原文。用户可明确选择把已有历史统一格式；范围含糊且会实质影响工作量或历史内容时才询问，已确认不重复询问。
 

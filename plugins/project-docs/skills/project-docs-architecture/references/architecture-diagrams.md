@@ -27,4 +27,4 @@
 
 ## 内容边界
 
-技术文档承载当前机理和长期约定；TODO 承载状态；plan/spec 保留 agent 原文；ADR 承载必要的决定理由。避免在多个位置维护相同事实。目录 README 不自动生成；已有目录说明的取舍见[目录 README](../../project-docs-refactor/references/directory-readmes.md)。
+技术文档承载当前机理和长期约定；TODO 承载状态；plan/spec 保留 agent 原文；ADR 承载必要的决定理由。避免在多个位置维护相同事实。目录 README 不自动生成；已有目录说明的取舍见[目录 README](common/directory-readmes.md)。

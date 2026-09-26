@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Planning"
+  short_description: "Organize tasks, milestones, and plan/spec archives"
+  default_prompt: "Use $project-docs:project-docs-planning for the requested planning task."
+policy:
+  allow_implicit_invocation: false

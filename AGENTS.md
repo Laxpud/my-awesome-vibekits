@@ -21,8 +21,15 @@
 - 准备发布时，先按 [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md) 同步版本并完成发布验证；不要手工分别修改版本镜像。
 - 修改 Codex marketplace、manifest 或 README 安装说明时，按 [`docs/CODEX_INSTALL_SMOKE_TEST.md`](docs/CODEX_INSTALL_SMOKE_TEST.md) 执行对应本地或远端检查。
 
+## 技能维护与生成
+
+- `project-docs` 只编辑 `sources/project-docs/`：入口为 `skills/<skill-id>/SKILL.md.in`，专项资料与调用配置归对应技能，公共资料归 `references/`。
+- 修改维护源后运行 `python3 scripts/build_project_docs.py --write`，生成 `plugins/project-docs/skills/`。不要手改生成文件；安装技能必须包含自身所需资料，不依赖兄弟技能或维护源路径。
+- 提交前运行 `python3 scripts/build_project_docs.py` 检查生成结果，并将维护源和受影响的生成文件一起提交。生成器与资料分发约定见[维护规范](docs/SKILL_RULE_GUIDELINES.md#生成自包含的-project-docs-技能)。
+- 其他插件仍直接维护各自的 `plugins/<plugin-id>/skills/`，不因局部任务自动迁移。技能内容检查采用[轻量验收](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)，不默认追加模型试跑或其他平台验证。
+
 ## 高风险边界
 
-- `plugin-catalog.json` 是插件身份与分发元数据的唯一来源；每个 `plugins/<plugin-id>/skills/` 是该插件唯一的技能来源，不得创建副本或跨插件 `../shared` 引用。
+- `plugin-catalog.json` 是插件身份与分发元数据的唯一来源；manifest 与 marketplace 由元数据生成器同步，不手改镜像，不建立跨插件运行时引用。
 - 平台专属配置只能进入对应适配层；修改边界前先读 [`docs/SKILL_RULE_GUIDELINES.md`](docs/SKILL_RULE_GUIDELINES.md)。
 - `scripts/plugin_update_e2e.py --promote` 会修改日常用户安装。只有目标版本已提交并推送、隔离测试通过、工作区干净且相关客户端完全退出时，才按 [`docs/PLUGIN_UPDATE.md`](docs/PLUGIN_UPDATE.md) 执行。

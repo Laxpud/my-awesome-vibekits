@@ -1,16 +1,17 @@
 ---
 name: project-docs-progress
 description: Maintain minimal progress when continuing an existing project task or checking its status. Excludes general Q&A, code explanations, and isolated small edits.
+disable-model-invocation: false
 ---
 
 # 维护最小进度
 
-读取[共同写作约定](references/writing-style.md)。只读现有活动入口（通常为 TODO）和当前任务必需的材料；没有入口则处理用户任务，不自动建立文档体系。
+读取[共同写作约定](references/common/writing-style.md)。只读现有活动入口（通常为 TODO）和当前任务必需的材料；没有入口则处理用户任务，不自动建立文档体系。
 
 用户指定工作优先；否则沿已有焦点或当前里程碑的优先顺序选择可执行任务，跳过明确阻塞项。既有方案仍适用时沿其推进，前提发生实质变化时说明差异。
 
 仅在完成情况、下一步、阻塞或关键决定变化时更新原位置：完成默认只勾选；确有后续价值的验证最多一条短句，写对象与结论，必要时附证据链接。未完成不勾选，不写命令、日志、哈希、文件清单或过程总结。
 
-普通状态更新到此为止。只有涉及方案保存、里程碑切换或归档时，才读[生命周期](../project-docs-planning/references/lifecycle.md)。沿用项目已约定格式，不借日常维护重构文档或改变承诺；不自动调用六个专项技能。
+普通状态更新到此为止。只有涉及方案保存、里程碑切换或归档时，才读[生命周期](references/project-docs-planning/lifecycle.md)。沿用项目已约定格式，不借日常维护重构文档或改变承诺；不自动调用六个专项技能。
 
 计划内的文档同步任务和直接受影响的少量事实可按授权维护。当前里程碑结束不代表可以实施下一里程碑；backlog 不自动提升为承诺。最终回复简述结果和必要限制，不再生成一份同内容的文档。

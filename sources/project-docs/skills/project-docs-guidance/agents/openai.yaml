@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Guidance"
+  short_description: "Keep AGENTS concise with one shared guidance source"
+  default_prompt: "Use $project-docs:project-docs-guidance for the requested guidance task."
+policy:
+  allow_implicit_invocation: false

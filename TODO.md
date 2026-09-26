@@ -36,8 +36,8 @@
   - 验收条件：落实已确认的文档管理、模板与写作规则，并按[技能内容的轻量验收](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)审阅；本轮安装与加载只检查 Codex。实际行为留待真实使用反馈，不要求第二个仓库逐项试跑。
   - 验收调整：2026-09-26 用户确认采用轻量验收，取消本轮额外行为试跑和其他客户端验证门槛；正式平台分发调整另列为后续工作。
   - 优先级调整：2026-09-01 用户明确把单 Skill 拆分提升为当前工作，不归档或隐藏本里程碑其他未完成项。
-  - 当前状态：2026-09-26 已按[改造设计](docs/design/project-docs-multi-skill.md)完成七技能、模板、调用配置与入口同步；尚未发布或更新日常安装。
-  - 验证：Codex 隔离安装、七技能发现、调用配置与资源引用、静态检查及七项既有 catalog 测试通过。
+  - 当前状态：2026-09-26 已按[改造设计](docs/design/project-docs-multi-skill.md)完成七技能、模板、调用配置与入口同步，补齐其他 agent 使用的 `disable-model-invocation`，并分离维护源与自包含安装目录；尚未发布或更新日常安装。
+  - 验证：生成一致性、42 处技能内链接、Codex 隔离安装与七技能发现通过；外部静态校验器仍不接受调用扩展，限制见[维护规范](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)。
   - 历史验证（2026-09-01）：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。2026-09-01 README 契约更新后再次通过 `project-docs-readme` quick validator、三个 Codex plugin validator、catalog/生成物同步、本地安装 smoke test、Markdown 链接、`git diff --check` 和 72 项测试。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
 
 - [ ] 建立插件更新端到端测试自动化。

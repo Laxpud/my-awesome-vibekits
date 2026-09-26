@@ -1,11 +1,12 @@
 ---
 name: project-docs-readme
 description: Use only when explicitly requested to create, review, or update a README, its official translations, or task-based user instructions.
+disable-model-invocation: true
 ---
 
 # README 与使用说明
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)。面向不熟悉仓库、代码经验较少的预期用户，用可执行的操作和可观察的结果说明用法。
+仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)。面向不熟悉仓库、代码经验较少的预期用户，用可执行的操作和可观察的结果说明用法。
 
 | 当前任务 | 按需读取 |
 | --- | --- |

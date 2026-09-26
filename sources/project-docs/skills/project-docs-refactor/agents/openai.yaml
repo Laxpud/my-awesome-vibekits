@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Refactor"
+  short_description: "Simplify documentation ownership and navigation"
+  default_prompt: "Use $project-docs:project-docs-refactor for the requested refactor task."
+policy:
+  allow_implicit_invocation: false

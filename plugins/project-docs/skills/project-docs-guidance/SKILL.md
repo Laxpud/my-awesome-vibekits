@@ -1,11 +1,12 @@
 ---
 name: project-docs-guidance
 description: Use only when explicitly requested to create, review, or refine AGENTS.md and its CLAUDE.md symlink or scoped repository guidance.
+disable-model-invocation: true
 ---
 
 # 项目工作规则
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)和[指导文件约定与模板](references/project-guidance.md)。
+仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)和[指导文件约定与模板](references/project-guidance.md)。
 
 只读本次范围内生效的父级与局部指导、相关权威来源以及受影响入口，不因改一条规则扫描所有代码或所有子目录规则。
 

@@ -1,11 +1,12 @@
 ---
 name: project-docs-architecture
 description: Use only when explicitly requested to document architecture, source relationships, technical mechanisms, or significant decisions using C4 and focused diagrams.
+disable-model-invocation: true
 ---
 
 # 技术文档与架构
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)，按任务读取相关代码、配置和现有技术入口，用实际实现支撑说明，不因文档任务通读全仓库。
+仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)，按任务读取相关代码、配置和现有技术入口，用实际实现支撑说明，不因文档任务通读全仓库。
 
 | 当前任务 | 按需读取 |
 | --- | --- |
