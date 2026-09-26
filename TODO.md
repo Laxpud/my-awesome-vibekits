@@ -4,16 +4,18 @@
 
 ## 执行与维护规则
 
-1. 除非用户明确指定其他任务，否则默认执行当前里程碑中第一个未完成任务。
-2. 只有任务的全部验收条件通过后才能将其标记为 `[x]`，并同时记录完成日期和验证证据。
-3. 部分完成的任务保持 `[ ]`，并记录已完成内容和仍未满足的条件。
-4. 不得通过删除、弱化或降低验收条件来制造完成状态。
-5. 正常推进时，只有当前里程碑的全部任务和全部里程碑级完成条件都通过后，才能将完成记录归档到 `docs/archive/` 并把下一里程碑提升为当前里程碑；用户明确调整优先级时，必须保留被暂停里程碑的全部状态并记录调整，不得归档或制造完成状态。
-6. 每次交付前按本节规则同步任务状态、剩余条件和验证证据。
+1. 用户指定工作优先；否则沿当前焦点或任务优先顺序选择可执行项，跳过明确阻塞项。
+2. 任务全部完成条件满足后才能勾选；默认只勾选，必要验证最多附一条短句和已有材料链接，不追加过程日志。
+3. 部分完成保持 `[ ]`，只写剩余工作或必要阻塞；不得删弱完成条件制造完成。
+4. 里程碑目标与完成条件满足、未完成事项有明确去向后，原清单移入 `docs/archive/`，不重写历史总结。开始下一里程碑仍需在用户授权范围内。
+5. 用户调整优先级时保留暂停任务与恢复条件；取消或终止明确标注，不伪装为完成。
+6. 交付时只同步实际变化的状态、阻塞和下一步；旧历史记录不要求重新加工。
 
 ## 当前里程碑：维护体验与发布可靠性
 
 状态：2026-08-13 “Codex / Claude Code 多插件目录与分发”里程碑完成并归档后恢复为当前里程碑。暂停期间的已完成、部分完成和未完成记录均保持原状态。
+
+审查记录（2026-09-24）：已按插件记录当前 7 项技能指令问题：[code-quality 3 项](docs/reviews/2026-09-24-code-quality.md)、[python-project 1 项](docs/reviews/2026-09-24-python-project.md)、[project-docs 3 项](docs/reviews/2026-09-24-project-docs.md)。原审查保留为历史；project-docs 的 A5–A7 已在本轮改造中处理，其他插件问题仍待处理。
 
 - [x] 为每个已收录技能补充一个 README 可链接的最小使用示例。
   - 验收条件：根 README 的按目标入口能指向示例或对应 `SKILL.md` 中的示例段落，读者无需先阅读完整 Skill 正文即可判断适用场景并复制最小提示词。
@@ -30,12 +32,13 @@
   - 完成记录：2026-06-18。
   - 验证证据：提交 `4603f13` 补充双语 README 顶部互链；当前三个文件均存在且职责分离。
 
-- [ ] 基于真实仓库使用反馈继续改进 `project-docs` 多 Skill 体系。
-  - 验收条件：至少用 2 个不同规模的真实仓库验证；第二个仓库需覆盖六个专项 Skill 的代表性路由与边界场景，再决定是否继续调整大仓库扫描策略、旧路径 redirect note、双语 README 同步细则、最终报告中的澄清/假设摘要，以及 planning/README 等详细默认设计。
+- [x] 基于真实仓库使用反馈改造 `project-docs` 多 Skill 体系。
+  - 验收条件：落实已确认的文档管理、模板与写作规则，并按[技能内容的轻量验收](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)审阅；本轮安装与加载只检查 Codex。实际行为留待真实使用反馈，不要求第二个仓库逐项试跑。
+  - 验收调整：2026-09-26 用户确认采用轻量验收，取消本轮额外行为试跑和其他客户端验证门槛；正式平台分发调整另列为后续工作。
   - 优先级调整：2026-09-01 用户明确把单 Skill 拆分提升为当前工作，不归档或隐藏本里程碑其他未完成项。
-  - 当前状态：部分完成（真实仓库 1/2，六 Skill 的第二仓库覆盖尚未完成）。本仓库已有 2026-08-08 与 2026-08-27 的文档所有权、里程碑 TODO 和项目指导反馈；2026-09-01 经 82 个问题确认六 Skill 目标边界，已记录[目标设计](docs/design/project-docs-multi-skill.md)和 [ADR 0001](docs/adr/0001-split-project-docs-by-user-intent.md)，并完成 `project-docs` 2.0.0 本地实现，不设置兼容过渡期。同日另经用户逐项确认，明确了 README 面向最缺乏经验预期用户、前置条件、默认首次成功闭环和先审计后编辑的通用契约。旧单 Skill 的仓库反馈不自动视为六个新 Skill 各自通过真实场景验证。
-  - 本轮验证证据：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。2026-09-01 README 契约更新后再次通过 `project-docs-readme` quick validator、三个 Codex plugin validator、catalog/生成物同步、本地安装 smoke test、Markdown 链接、`git diff --check` 和 72 项测试。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
-  - 剩余条件：至少再选 1 个不同规模的真实仓库逐项验证路由与产出；本机未安装 Claude Code，因此只保留 Claude manifest/marketplace 静态验证，不宣称 Claude 运行时发现或路由已验证；planning 和其他面向人类文档的详细默认设计仍留待后续讨论，README 定位与默认路径已在 2026-09-01 确认并落实。
+  - 当前状态：2026-09-26 已按[改造设计](docs/design/project-docs-multi-skill.md)完成七技能、模板、调用配置与入口同步；尚未发布或更新日常安装。
+  - 验证：Codex 隔离安装、七技能发现、调用配置与资源引用、静态检查及七项既有 catalog 测试通过。
+  - 历史验证（2026-09-01）：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。2026-09-01 README 契约更新后再次通过 `project-docs-readme` quick validator、三个 Codex plugin validator、catalog/生成物同步、本地安装 smoke test、Markdown 链接、`git diff --check` 和 72 项测试。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
 
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
@@ -49,17 +52,20 @@
 
 ### 里程碑级完成条件
 
-- [ ] 上述全部任务均标记为 `[x]`，且各自记录完成日期和验证证据。
+- [ ] 上述全部任务均满足各自完成条件并标记为 `[x]`；只保留必要的简短验证结论。
 - [ ] 发布元数据一致性、插件更新单元测试、技能与插件静态验证、Markdown 链接和 `git diff --check` 全部通过。
 - [ ] 未解决决策和活动工作均保留在本文件或具名技术文档中，没有通过删除、弱化或提前归档隐藏。
 
 ## 未来发展方向：跨 Harness 兼容与分发
 
-本方向不属于当前里程碑，也不阻塞 Codex / Claude Code 多插件交付。进入实施前应重新核对各平台当时的官方协议、CLI 和分发政策，再把选定范围提升为具体验收里程碑。
+本方向不属于本轮技能改造。2026-09-26 用户确认后续增加 `npx skills` 支持，并将插件市场收敛为只支持日常使用的 Codex；本轮不修改现有分发方式或平台支持。进入实施前重新核对相关协议与工具，并确定具体支持范围。下列其他跨平台探索保留为候选，不作为本轮或上述分发调整的默认门槛。
+
+- [ ] 将插件市场分发收敛为仅支持 Codex。
+  - 当前状态：后续工作；本轮不移除现有平台适配、修改 marketplace 或调整安装流程。
 
 - [ ] 验证通过 `npx skills` 分发当前 Skill。
   - 当前状态：仅作为未来分发方向记录；README 不提供可复制安装命令，也不宣称已经支持。
-  - 进入支持状态门槛：catalog 中全部八个 Skill 都能被发现；分别完成向 Codex 和 Claude Code 的安装与加载验证；覆盖更新和安全移除；文档明确独立 Skill 安装与 Plugin marketplace 的版本、启停和回滚生命周期差异。
+  - 进入支持状态门槛：按届时 catalog 中的技能集合和选定客户端检查发现、安装与加载，覆盖更新和安全移除；文档说明独立 Skill 安装与插件市场安装的生命周期差异，不预设 Claude Code 验证为必需门槛。
 
 - [ ] 评估可复用插件格式与第三方 marketplace 入口。
   - 候选范围：GitHub Copilot CLI、Qwen Code、CodeBuddy、Cursor，以及 Agent Plugins 标准。

@@ -1,6 +1,6 @@
 {
   "name": "project-docs",
-  "description": "Specialized workflows for project documentation baselines, refactoring, README, planning, architecture, and agent guidance.",
+  "description": "Minimal project progress tracking and explicit workflows for README, planning, architecture, guidance, and documentation organization.",
   "version": "2.0.0",
   "author": {
     "name": "Laxpud"

@@ -1,100 +1,21 @@
 ---
 name: project-docs-bootstrap
-description: 为没有能表达项目目的与最短路径的可用公共入口之仓库初始化最小、真实、可导航的项目文档。适用于新项目、只有占位 README 的已有代码仓库，以及把粗略 notes 沉淀为持久入口；已有非占位公共文档但内容分散、重复或所有权混乱时使用 project-docs-refactor，单一 README、规划、架构或 agent 指导维护使用对应的 project-docs 专项 Skill。
+description: Use only when explicitly requested to initialize a missing documentation baseline or create the minimum useful project documentation.
 ---
 
-# 项目文档基线初始化
+# 初始化文档入口
 
-## 目标
+仅在用户显式调用本技能时使用。读取[共同写作约定](../project-docs-progress/references/writing-style.md)。先看现有入口和能说明项目用途、运行方式的少量配置与代码，再补缺失事实；不通读整个仓库。
 
-交付一套下一位贡献者可以立即使用的最小文档基线。基线只记录有仓库证据或用户明确提供的事实，不创建空模板、推测性架构或未来也许有用的目录。
+只建立当前真实需要的入口，已有清晰布局优先。通常先解决 README；有活动项目管理需求才建 TODO / roadmap，有理解实现的需求才建技术说明，需要项目规则才建 AGENTS。不要一次生成所有目录或空白文档套件。
 
-## Interface
+| 需要建立的内容 | 按需读取的资料 |
+| --- | --- |
+| README / 使用说明 | [README 约定](../project-docs-readme/references/readme-contract.md)、[模板](../project-docs-readme/assets/readme-template.md)；需要日常用法时读[使用说明](../project-docs-readme/references/usage-guide.md) |
+| 当前与未来工作 | [规划职责](../project-docs-planning/references/planning-model.md)、[模板](../project-docs-planning/assets/planning-templates.md) |
+| 技术入口 | [C4 与源码导航](../project-docs-architecture/references/architecture-diagrams.md)、[技术页示例](../project-docs-architecture/assets/technical-templates.md) |
+| 项目指导 | [AGENTS 与软链](../project-docs-guidance/references/project-guidance.md) |
 
-当仓库没有能表达项目目的和最短路径的非占位公共入口时使用本 Skill，即使仓库已经有源码。可用基线至少应让读者找到项目目的、最短已验证使用路径，以及存在时的活动工作和必要技术说明。
+这些是本插件的配套资料，不是自动调用其他技能。只读正在创建的文档类型；计划归档等未发生的流程不提前加载。
 
-部分文档存在时按以下优先级裁决：只有占位 README、无法承担入口的散记或完全没有公共入口，仍属于 bootstrap；已经有至少一份能表达项目目的或入口的文档，但还伴随重复、位置或所有权问题，优先使用 refactor。只缺活动规划入口不等于整个文档基线缺失。
-
-以下任务属于其他 interface：
-
-- 已有文档分散、重复、位置或所有权混乱：使用 `project-docs-refactor`。
-- 只维护根 README、项目规划、architecture 或 agent 指导文件：使用对应专项 Skill。
-- 只修改拼写、徽章或一句孤立文案：直接完成该小改动，不加载本 Skill。
-
-如果用户显式要求本 Skill 完成范围外工作，指出范围不匹配并采用正确的主 Skill，不扩张 bootstrap。
-
-## 共同底线
-
-1. 编辑前读取仓库证据和适用项目指导。
-2. 尊重既有权威位置、清晰约定和用户拥有的改动。
-3. 不编造项目目的、架构、命令结果或完成状态。
-4. 同一主题保留一个权威来源，其他位置使用短路由或链接。
-5. 按“仓库证据 → 插件默认值 → 高风险澄清”决策；用户要求“按默认值”也不授权不可逆操作。
-6. 回读改动，检查链接和 diff，并报告假设、验证及未执行门禁。
-
-## 初始化流程
-
-1. **判断是否缺少基线。**
-   - 读取现有 `README*`、活动规划入口、`docs/`、项目指导文件、manifest、关键源码入口、粗略 notes 和 Git 状态。
-   - 已有清晰基线但需要重新分配所有权或路径时停止 bootstrap，改用 refactor。
-   - 项目目的、主要受众或入口证据冲突且会改变文档结构时，编辑前澄清。
-
-2. **选择真实需要的文档。**
-   - 根 README 是默认必需入口。
-   - 只有存在真实活动工作、候选工作或路线决策时才创建规划入口；新项目默认根 `TODO.md`。
-   - 只有存在多份技术文档且导航确有价值时才创建索引；新项目默认 `docs/index.md`。
-   - 只有存在可由源码、manifest 或用户决定支撑的系统关系时才创建 architecture 文档。
-   - 只有对应 agent 工具正在使用，或确有路由、工作流触发器或高风险边界时才创建项目指导文件。
-   - 先沿用仓库语言；空项目默认英文根 README。只有明确受众、用户要求或既有双语约定时才创建翻译。
-
-3. **建立根 README。**
-   - 写明项目目的、用户能力、适用环境或前置条件和最短已验证路径。
-   - 链接活动规划入口和必要的具名技术文档，不复制任务状态、完整架构或维护手册。
-   - 命令未实际验证时明确标注证据来源或未验证状态，不把推断写成已验证路径。
-
-4. **建立真实规划入口。**
-   - 从用户目标、notes 和仓库状态提取当前承诺、候选工作与退出条件。
-   - 轻量项目可以在一个 `TODO.md` 中表达 primary milestone、tasks 和 backlog。
-   - 不创建空 checklist，也不把未来想法伪装为已承诺任务。
-   - 需要完整 roadmap、多个 active milestones 或独立 plans 时，保持 bootstrap 只交付基线，并追加 `project-docs-planning`。
-
-5. **按需建立技术与 agent 入口。**
-   - 技术文档只记录能减少未来歧义的当前事实或明确标注的目标状态。
-   - 当前态 architecture 概览若创建，必须包含与项目复杂度相称的 Mermaid 图；深入架构与 ADR 维护追加 `project-docs-architecture`。
-   - 项目指导文件保持为薄路由；深入作用域、继承和跨平台去重追加 `project-docs-guidance`。
-
-6. **迁移粗略材料。**
-   - 将公共入口事实放入 README，活动工作放入规划入口，稳定技术事实放入具名技术文档。
-   - 未解决决策必须保留为 backlog、明确问题或目标设计，不能在清理 notes 时丢失。
-   - 只有有效内容已经迁移且不存在外部引用风险时，才删除或归档原始材料。
-
-7. **验证并停止。**
-   - 回读全部修改文件，搜索旧路径、断链、占位文本和互相冲突的权威来源。
-   - 检查每个创建的文件都有真实内容和可发现入口。
-   - 当下一位贡献者已能理解项目、运行最短路径并找到活动工作时停止，不继续扩建文档体系。
-
-## 示例
-
-正例：
-
-```text
-这个仓库已经有代码，但没有 README 或规划入口。请初始化最小项目文档。
-```
-
-预期：读取源码和 manifest 形成真实基线，创建根 README；只有确有活动工作时创建规划入口，其他文档按证据添加。
-
-近邻反例：
-
-```text
-README、TODO 和 docs 互相重复，旧路径也很多。请理清所有权并迁移。
-```
-
-这是 `project-docs-refactor`，因为仓库已有文档基线，问题是结构和所有权。
-
-组合示例：
-
-```text
-初始化这个新项目的文档，并为已经确定的多服务目标架构和迁移计划写完整说明。
-```
-
-以 bootstrap 建立基线；目标系统形态由 `project-docs-architecture` 深化，实施阶段与验证由 `project-docs-planning` 深化。三者互相链接，不复制内容。
+用户已要求创建则直接完成范围内工作；关键用途或推荐使用路径缺失时才询问。只要求审查则交付发现，不修改。检查新入口和链接是否可用，不把“初始化文档”扩大成源码改造、发布或迁移全部历史。

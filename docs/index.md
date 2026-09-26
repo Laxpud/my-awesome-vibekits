@@ -8,7 +8,8 @@
 | --- | --- |
 | [`README.md`](../README.md) | 英文公开入口：项目定位、能力、支持环境和最短使用路径。 |
 | [`README.cn.md`](README.cn.md) | 根 README 的中文翻译，与英文版同步维护。 |
-| [`TODO.md`](../TODO.md) | 当前里程碑、活动任务、验收条件、完成证据和状态维护规则。 |
+| [`使用说明`](usage.md) | 文档技能的选择、进度维护方式与按需操作示例。 |
+| [`TODO.md`](../TODO.md) | 当前里程碑、活动任务、验收条件、必要验证结论和状态维护规则。 |
 | [`plugin-catalog.json`](../plugin-catalog.json) | 插件身份、独立版本、Skill 路径和双端分发元数据的唯一事实来源。 |
 
 ## 维护文档
@@ -23,15 +24,25 @@
 
 | 文档 | 内容 |
 | --- | --- |
-| [`project-docs 多 Skill 目标设计`](design/project-docs-multi-skill.md) | `project-docs` 2.0 的六 Skill 边界、路由、默认值、组合规则和验证缺口。 |
+| [`project-docs 改造设计`](design/project-docs-multi-skill.md) | 已在源码中实施、尚未发布的七技能分工、文档模板与生命周期、C4 技术说明、共享写作规则和轻量验收。 |
 | [`ADR 0001：按用户意图拆分 project-docs`](adr/0001-split-project-docs-by-user-intent.md) | 记录从单一综合 Skill 直接迁移到六个独立 Skill 的决定与后果。 |
+
+## 技能指令审查记录
+
+以下记录保存 2026-09-24 整理的既有审查问题与建议方向，不作为新的执行规则。活动工作仍以 `TODO.md` 为入口。
+
+| 插件 | 问题记录 |
+| --- | --- |
+| `code-quality` | [注释技能的分层、阅读范围与重复询问](reviews/2026-09-24-code-quality.md) |
+| `python-project` | [配置技能的无条件元数据问答](reviews/2026-09-24-python-project.md) |
+| `project-docs` | [文档技能的盘点范围与验证触发条件](reviews/2026-09-24-project-docs.md) |
 
 ## AI 工作入口
 
 | 文件 | 用途 |
 | --- | --- |
 | [`AGENTS.md`](../AGENTS.md) | Codex 的快速路由、工作流触发器和少量高风险边界。 |
-| [`CLAUDE.md`](../CLAUDE.md) | Claude Code 的快速路由、工作流触发器和少量高风险边界。 |
+| [`CLAUDE.md`](../CLAUDE.md) | 指向 AGENTS.md 的相对软链，不单独维护正文。 |
 
 ## 里程碑归档
 
@@ -46,6 +57,6 @@
 | 面向用户的项目介绍、能力、环境和最短使用路径 | 根 `README.md` |
 | 活动任务、里程碑、验收条件和状态维护流程 | 根 `TODO.md` |
 | 架构、配置、测试、发布流程和其他稳定技术细节 | `docs/` 下的具名技术文档 |
-| AI 工作入口、文档与代码路由、工作流触发器和少量高风险边界 | `AGENTS.md`、`CLAUDE.md` |
+| AI 工作入口、文档与代码路由、工作流触发器和少量高风险边界 | `AGENTS.md`（`CLAUDE.md` 为软链） |
 
 项目指导文件应链接上述权威位置，不复制 README、TODO 或专题技术文档的详细内容。已完成里程碑只有在 `TODO.md` 顶部规则允许后，才能归档到 `docs/archive/`。

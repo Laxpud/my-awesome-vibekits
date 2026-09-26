@@ -32,6 +32,7 @@ class CatalogTests(unittest.TestCase):
                 "project-docs-planning",
                 "project-docs-architecture",
                 "project-docs-guidance",
+                "project-docs-progress",
             ),
         }
         for plugin in catalog.plugins:

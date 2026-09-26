@@ -1,13 +1,15 @@
 # Vibekits
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
-[![English](https://img.shields.io/badge/README-English-C026D3)](../README.md)
+<p align="center">
+  <a href="../README.md"><img src="https://img.shields.io/badge/README-English-blue?style=for-the-badge&amp;logo=readme" alt="English README"></a>
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
+</p>
 
 [技术文档](index.md) · [路线图](../TODO.md) · [反馈问题](https://github.com/Laxpud/my-awesome-vibekits/issues)
 
 Vibekits 是我个人孵化的一组 Codex 与 Claude Code 可复用工作流。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
 
-当前目录包含三个可独立安装的插件和八个 Skill，覆盖代码注释、Python 项目元数据与仓库文档。已经发布的 Skill 面向日常使用；反馈和新想法会继续在这个仓库中孵化。
+当前源码目录包含三个可独立安装的插件和九个 Skill，覆盖代码注释、Python 项目元数据与仓库文档。七技能改造已在源码中完成，尚未发布或更新日常安装；从远端安装不会取得未发布修改。
 
 ## 适合谁
 
@@ -117,7 +119,7 @@ codex
 把下面这段话粘贴到新的 Codex 任务或 Claude Code 会话：
 
 ```text
-使用 project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
+使用 $project-docs:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
 ```
 
 ### 成功时会看到什么
@@ -146,7 +148,7 @@ Agent 应该报告：
 Plugin：`project-docs` · Skill：[`project-docs-readme`](../plugins/project-docs/skills/project-docs-readme/SKILL.md)
 
 ```text
-使用 project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
+使用 $project-docs:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
 ```
 
 ### 创建缺失的文档基线
@@ -154,7 +156,7 @@ Plugin：`project-docs` · Skill：[`project-docs-readme`](../plugins/project-do
 Plugin：`project-docs` · Skill：[`project-docs-bootstrap`](../plugins/project-docs/skills/project-docs-bootstrap/SKILL.md)
 
 ```text
-使用 project-docs-bootstrap 检查这个仓库。如果它缺少可用的文档基线，提出一组基于证据的最小文档，并在我确认前不要编辑文件。
+使用 $project-docs:project-docs-bootstrap 检查这个仓库。如果它缺少可用的文档基线，提出一组基于证据的最小文档，并在我确认前不要编辑文件。
 ```
 
 ### 重组现有文档
@@ -162,7 +164,7 @@ Plugin：`project-docs` · Skill：[`project-docs-bootstrap`](../plugins/project
 Plugin：`project-docs` · Skill：[`project-docs-refactor`](../plugins/project-docs/skills/project-docs-refactor/SKILL.md)
 
 ```text
-使用 project-docs-refactor 审查这个仓库的文档所有权、导航和重复内容。给出按顺序排列的迁移计划，并在我确认前不要编辑文件。
+使用 $project-docs:project-docs-refactor 审查这个仓库的文档所有权、导航和重复内容。给出按顺序排列的迁移计划，并在我确认前不要编辑文件。
 ```
 
 ### 改进规划文档
@@ -170,7 +172,7 @@ Plugin：`project-docs` · Skill：[`project-docs-refactor`](../plugins/project-
 Plugin：`project-docs` · Skill：[`project-docs-planning`](../plugins/project-docs/skills/project-docs-planning/SKILL.md)
 
 ```text
-使用 project-docs-planning 审查这个仓库的活动规划文档。识别权威规划入口、含糊的承诺或就绪状态，以及缺失的验收条件，然后在编辑前提出修改方案。
+使用 $project-docs:project-docs-planning 审查这个仓库的活动规划文档。识别权威规划入口、含糊的承诺或就绪状态，以及缺失的验收条件，然后在编辑前提出修改方案。
 ```
 
 ### 记录架构与决策
@@ -178,7 +180,7 @@ Plugin：`project-docs` · Skill：[`project-docs-planning`](../plugins/project-
 Plugin：`project-docs` · Skill：[`project-docs-architecture`](../plugins/project-docs/skills/project-docs-architecture/SKILL.md)
 
 ```text
-使用 project-docs-architecture 根据代码证据记录这个仓库的当前架构。区分当前状态和目标状态，提出真正需要的最小图表或 ADR，并在我确认前不要编辑文件。
+使用 $project-docs:project-docs-architecture 根据代码证据记录这个仓库的当前架构。区分当前状态和目标状态，提出真正需要的最小图表或 ADR，并在我确认前不要编辑文件。
 ```
 
 ### 精简 Agent 指导
@@ -186,7 +188,7 @@ Plugin：`project-docs` · Skill：[`project-docs-architecture`](../plugins/proj
 Plugin：`project-docs` · Skill：[`project-docs-guidance`](../plugins/project-docs/skills/project-docs-guidance/SKILL.md)
 
 ```text
-使用 project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
+使用 $project-docs:project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
 ```
 
 ### 审查或规范代码注释
@@ -205,7 +207,15 @@ Plugin：`python-project` · Skill：[`pyproject-standard`](../plugins/python-pr
 使用 pyproject-standard 审查这个 Python 项目的 pyproject.toml。识别有仓库证据支持的改动，向我展示拟议配置，并在编辑前询问。
 ```
 
-第一次成功使用后，通常可以只用自然语言描述目标，让 Agent 自动选择相关 Skill。
+在 Codex 中，只有 `project-docs-progress` 可自动用于已有任务的进度维护；其余六个文档技能需要显式调用。普通小改不会自动建立文档体系，完成任务默认只勾选，不生成日志。具体用法见[使用说明](usage.md)。
+
+### 维护当前任务的最小进度
+
+Plugin：`project-docs` · Skill：[`project-docs-progress`](../plugins/project-docs/skills/project-docs-progress/SKILL.md)
+
+```text
+使用 $project-docs:project-docs-progress 继续 TODO 中当前已授权的任务；完成后只更新勾选和必要阻塞。
+```
 
 ## 故障排查
 
@@ -220,7 +230,7 @@ Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 
 - `code-quality` 包含一个代码注释 Skill；
 - `python-project` 包含一个 `pyproject.toml` Skill；
-- `project-docs` 包含六个文档 Skill。
+- `project-docs` 包含七个文档 Skill。
 
 每个 Plugin 都独立安装和维护版本，因此安装、禁用、更新或移除其中一个时，不需要改变其他 Plugin。
 
@@ -232,6 +242,8 @@ Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 
 ## 面向维护者与贡献者
 
+如果现有功能还不能满足你的需求，欢迎提出使用场景，也欢迎一起维护仓库、提交代码或改进文档。
+
 如需浏览源码或参与贡献：
 
 ```bash
@@ -239,7 +251,3 @@ git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
 从[技术文档索引](index.md)、[插件 Catalog](../plugin-catalog.json)和[当前路线图](../TODO.md)开始。发布、生成元数据、验证和回滚细节保留在这些维护文档中，不放进新手路径。
-
-## 许可证
-
-MIT License。参见 [LICENSE](../LICENSE)。

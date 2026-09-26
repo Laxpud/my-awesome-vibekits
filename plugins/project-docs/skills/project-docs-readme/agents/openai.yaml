@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Readme"
+  short_description: "Explain first use and everyday tasks for beginners"
+  default_prompt: "Use $project-docs:project-docs-readme for the requested readme task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Bootstrap"
+  short_description: "Create only the documentation this project needs"
+  default_prompt: "Use $project-docs:project-docs-bootstrap for the requested bootstrap task."
+policy:
+  allow_implicit_invocation: false

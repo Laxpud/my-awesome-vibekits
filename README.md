@@ -1,13 +1,15 @@
 # Vibekits
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![中文](https://img.shields.io/badge/README-中文-C026D3)](docs/README.cn.md)
+<p align="center">
+  <a href="docs/README.cn.md"><img src="https://img.shields.io/badge/README-中文-blue?style=for-the-badge&amp;logo=readme" alt="中文 README"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
+</p>
 
 [Documentation](docs/index.md) · [Roadmap](TODO.md) · [Report an issue](https://github.com/Laxpud/my-awesome-vibekits/issues)
 
 Vibekits is my personally incubated collection of reusable workflows for Codex and Claude Code. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
 
-The current catalog contains three independently installable plugins and eight skills for code comments, Python project metadata, and repository documentation. Published skills are intended for normal use; feedback and new ideas continue to be incubated in this repository.
+The current source catalog contains three independently installable plugins and nine skills for code comments, Python project metadata, and repository documentation. The seven-skill redesign is implemented in the source but has not been released or applied to daily installations. Remote installation does not include unpublished changes.
 
 ## Who This Is For
 
@@ -117,7 +119,7 @@ Start a new Claude Code session for the same project so the newly installed skil
 Paste this into the new Codex task or Claude Code session:
 
 ```text
-Use project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
+Use $project-docs:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
 ```
 
 ### What Success Looks Like
@@ -146,7 +148,7 @@ Before trying another prompt, install its named plugin from the same marketplace
 Plugin: `project-docs` · Skill: [`project-docs-readme`](plugins/project-docs/skills/project-docs-readme/SKILL.md)
 
 ```text
-Use project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
+Use $project-docs:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
 ```
 
 ### Create a Missing Documentation Baseline
@@ -154,7 +156,7 @@ Use project-docs-readme to review this repository's root README for a first-time
 Plugin: `project-docs` · Skill: [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md)
 
 ```text
-Use project-docs-bootstrap to inspect this repository. If it lacks a usable documentation baseline, propose the smallest evidence-based set of documents and wait for my confirmation before editing.
+Use $project-docs:project-docs-bootstrap to inspect this repository. If it lacks a usable documentation baseline, propose the smallest evidence-based set of documents and wait for my confirmation before editing.
 ```
 
 ### Reorganize Existing Documentation
@@ -162,7 +164,7 @@ Use project-docs-bootstrap to inspect this repository. If it lacks a usable docu
 Plugin: `project-docs` · Skill: [`project-docs-refactor`](plugins/project-docs/skills/project-docs-refactor/SKILL.md)
 
 ```text
-Use project-docs-refactor to audit this repository's documentation ownership, navigation, and duplicated content. Propose an ordered migration plan and wait for my confirmation before editing.
+Use $project-docs:project-docs-refactor to audit this repository's documentation ownership, navigation, and duplicated content. Propose an ordered migration plan and wait for my confirmation before editing.
 ```
 
 ### Improve Planning Documents
@@ -170,7 +172,7 @@ Use project-docs-refactor to audit this repository's documentation ownership, na
 Plugin: `project-docs` · Skill: [`project-docs-planning`](plugins/project-docs/skills/project-docs-planning/SKILL.md)
 
 ```text
-Use project-docs-planning to review this repository's active planning documents. Identify the authoritative planning entry, unclear commitment or readiness, and missing acceptance criteria, then propose changes before editing.
+Use $project-docs:project-docs-planning to review this repository's active planning documents. Identify the authoritative planning entry, unclear commitment or readiness, and missing acceptance criteria, then propose changes before editing.
 ```
 
 ### Document Architecture and Decisions
@@ -178,7 +180,7 @@ Use project-docs-planning to review this repository's active planning documents.
 Plugin: `project-docs` · Skill: [`project-docs-architecture`](plugins/project-docs/skills/project-docs-architecture/SKILL.md)
 
 ```text
-Use project-docs-architecture to document this repository's current architecture from code evidence. Separate current and target states, propose the minimum useful diagrams or ADRs, and wait for my confirmation before editing.
+Use $project-docs:project-docs-architecture to document this repository's current architecture from code evidence. Separate current and target states, propose the minimum useful diagrams or ADRs, and wait for my confirmation before editing.
 ```
 
 ### Refine Agent Guidance
@@ -186,7 +188,7 @@ Use project-docs-architecture to document this repository's current architecture
 Plugin: `project-docs` · Skill: [`project-docs-guidance`](plugins/project-docs/skills/project-docs-guidance/SKILL.md)
 
 ```text
-Use project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
+Use $project-docs:project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
 ```
 
 ### Review or Standardize Code Comments
@@ -205,7 +207,15 @@ Plugin: `python-project` · Skill: [`pyproject-standard`](plugins/python-project
 Use pyproject-standard to review this Python project's pyproject.toml. Identify evidence-backed changes, show me the proposed configuration, and ask before editing.
 ```
 
-After your first successful run, you can usually describe the goal naturally and let the agent select the relevant skill.
+In Codex, only `project-docs-progress` can run automatically for existing project tasks. Explicitly invoke the other six documentation skills. Small edits do not create a documentation system; completed tasks normally need only a checkbox, not a log. See the [usage guide](docs/usage.md).
+
+### Keep Current Progress Minimal
+
+Plugin: `project-docs` · Skill: [`project-docs-progress`](plugins/project-docs/skills/project-docs-progress/SKILL.md)
+
+```text
+Use $project-docs:project-docs-progress to continue the current authorized TODO task; update only checkboxes and necessary blockers.
+```
 
 ## Troubleshooting
 
@@ -220,7 +230,7 @@ Vibekits currently supports the Codex and Claude Code plugin marketplaces:
 
 - `code-quality` contains one code-comment skill;
 - `python-project` contains one `pyproject.toml` skill;
-- `project-docs` contains six documentation skills.
+- `project-docs` contains seven documentation skills.
 
 Each plugin is installed and versioned independently, so installing, disabling, updating, or removing one does not require changing its siblings.
 
@@ -232,6 +242,8 @@ For feature requests or usage feedback, [open an issue](https://github.com/Laxpu
 
 ## For Maintainers and Contributors
 
+If the project does not yet cover your needs, share your use case or help maintain it by contributing code or documentation.
+
 To browse or contribute to the source:
 
 ```bash
@@ -239,7 +251,3 @@ git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
 Start with the [technical documentation index](docs/index.md), [plugin catalog](plugin-catalog.json), and [active roadmap](TODO.md). Release, generated metadata, validation, and rollback details live in the linked maintainer documentation rather than this newcomer path.
-
-## License
-
-MIT License. See [LICENSE](LICENSE).

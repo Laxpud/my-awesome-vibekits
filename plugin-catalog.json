@@ -68,7 +68,7 @@
       "id": "project-docs",
       "directory": "plugins/project-docs",
       "version": "2.0.0",
-      "description": "Specialized workflows for project documentation baselines, refactoring, README, planning, architecture, and agent guidance.",
+      "description": "Minimal project progress tracking and explicit workflows for README, planning, architecture, guidance, and documentation organization.",
       "category": "Productivity",
       "keywords": ["documentation", "readme", "refactor", "planning", "todo", "roadmap", "milestone", "backlog", "architecture", "mermaid", "adr", "agents", "claude", "project-guidance"],
       "skills": [
@@ -77,22 +77,24 @@
         {"id": "project-docs-readme", "path": "skills/project-docs-readme"},
         {"id": "project-docs-planning", "path": "skills/project-docs-planning"},
         {"id": "project-docs-architecture", "path": "skills/project-docs-architecture"},
-        {"id": "project-docs-guidance", "path": "skills/project-docs-guidance"}
+        {"id": "project-docs-guidance", "path": "skills/project-docs-guidance"},
+        {"id": "project-docs-progress", "path": "skills/project-docs-progress"}
       ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
           "displayName": "Project Docs",
-          "shortDescription": "Specialized project-documentation workflows",
-          "longDescription": "Use six focused skills to initialize a documentation baseline, refactor documentation structure, maintain README files, manage planning documents, describe architecture and decisions, or refine repository agent guidance.",
+          "shortDescription": "Minimal progress and focused documentation",
+          "longDescription": "Track existing tasks with one lightweight automatic skill. Explicitly invoke six focused skills for documentation setup, refactoring, README and usage guides, planning formats and archives, C4 architecture and ADRs, or AGENTS guidance.",
           "defaultPrompt": [
-            "Use project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
-            "Use project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
-            "Use project-docs-readme to create or maintain the root README and its official translations.",
-            "Use project-docs-planning to design or maintain this repository's TODO.md, roadmaps, milestones, backlog, tasks, and implementation plans.",
-            "Use project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
-            "Use project-docs-guidance to create or refine repository agent-guidance files and scoped rules."
+            "Use $project-docs:project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
+            "Use $project-docs:project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
+            "Use $project-docs:project-docs-readme to create or maintain the README, official translations, and task-based usage guide.",
+            "Use $project-docs:project-docs-planning to organize TODO, roadmap, milestones, backlog, and plan/spec storage and archiving without rewriting plan/spec content.",
+            "Use $project-docs:project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
+            "Use $project-docs:project-docs-guidance to create or refine AGENTS.md, scoped rules, and the CLAUDE.md symlink.",
+            "Use $project-docs:project-docs-progress to continue the current task and record only meaningful progress."
           ]
         },
         "claude": {

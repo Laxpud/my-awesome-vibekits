@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs Architecture"
+  short_description: "Explain systems, components, and source relationships"
+  default_prompt: "Use $project-docs:project-docs-architecture for the requested architecture task."
+policy:
+  allow_implicit_invocation: false
