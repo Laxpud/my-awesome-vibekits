@@ -1,19 +1,42 @@
 # README 模板
 
-以下是中文示例；新项目默认根页英文、正式中文页 `docs/README.cn.md`。替换全部占位信息和相对路径；示例 MIT 仅用于展示样式，不替项目选择许可证。删除无内容的可选章节。
+以下展示根 README 的结构，说明文字以中文占位；新项目默认根页输出英文，正式中文页位于 `docs/README.cn.md`。替换全部占位信息和相对路径，删除无内容的可选部分。徽章按 [Orbit 徽章规范](../../references/project-docs-readme/badge-style.md)生成并验证后填入；示例 MIT 仅展示许可证入口，不替项目选择许可证，也不代表模板已附带图像文件。
 
 ```markdown
-# 项目名称
+<a id="readme-top"></a>
 
-<!-- 可选：项目已有图标。 -->
-<p align="center">
-  <a href="docs/README.cn.md"><img src="https://img.shields.io/badge/README-中文-blue?style=for-the-badge&amp;logo=readme" alt="中文 README"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
+<!-- 1. 多语言项目保留切换；当前语言加粗，单语言项目省略整块。 -->
+<div align="right">
+  <strong>English</strong> | <a href="docs/README.cn.md">简体中文</a>
+</div>
+
+<div align="center">
+
+<!-- 2. 可选：项目已有图标；项目名仅使用一个一级标题。 -->
+<h1>项目名称</h1>
+
+<p><strong>一句话说明帮助谁完成什么事。</strong><br />
+<sub>可选：补充项目特点或个性的简短副标题。</sub></p>
+
+<!-- 3. 创建并验证实际徽章资源后替换路径；其他有用徽章放在同一行。 -->
+<p>
+  <a href="LICENSE">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/readme/license-dark.svg" />
+      <img height="32" src="assets/readme/license-light.svg" alt="License: MIT" />
+    </picture>
+  </a>
 </p>
 
-一句话说明帮助谁完成什么事。
+<!-- 4. 可选：替换为有助于理解项目的真实预览图；没有就删除整块。 -->
+<a href="docs/images/preview.png">
+  <img src="docs/images/preview.png" alt="项目效果预览" width="92%" />
+</a>
 
-<!-- 可选：有助于理解产品的现有截图。 -->
+<!-- 5. 可选：只保留真实可用的官网、文档、演示或讨论入口。 -->
+<p><sub><a href="docs/usage.md">Documentation</a></sub></p>
+
+</div>
 
 ## 适合做什么
 
@@ -50,4 +73,12 @@
 [tech]: docs/tech/index.md
 ```
 
-中文页的徽章改为英文入口，所有相对路径按所在位置调整。需要其他徽章时放在同一 `<p>` 中，遵循相同样式、准确状态与合适 logo；不在末尾再放徽章。
+中文页的切换区使用：
+
+```html
+<div align="right">
+  <a href="../README.md">English</a> | <strong>简体中文</strong>
+</div>
+```
+
+同一组徽章和预览资源由两种语言共用，所有相对路径按所在位置调整，例如 `../LICENSE`、`../assets/readme/license-light.svg`；图片替代文字与页面语言一致。无需副标题时一并删除 `<br />` 和 `<sub>`，无需预览或快捷链接时删除整个可选块，不保留空容器或占位路径。徽章不在末尾重复。

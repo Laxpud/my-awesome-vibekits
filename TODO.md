@@ -40,6 +40,10 @@
   - 验证：生成一致性、42 处技能内链接、Codex 隔离安装与七技能发现通过；外部静态校验器仍不接受调用扩展，限制见[维护规范](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)。
   - 历史验证（2026-09-01）：六个 Skill 均通过 quick validator，`project-docs` 通过 Codex plugin validator，catalog/双平台生成物和本地 Codex 安装元数据一致，Markdown 链接、`git diff --check` 与 72 项测试通过；真实 Codex CLI 显式加载六个 Skill，并通过 refactor 模糊路由、例行 TODO 不触发 planning、architecture 主导并组合 planning 三个边界场景。独立只读前向评审发现的主次、bootstrap/refactor 和 Plan 创建边界已修正。2026-09-01 README 契约更新后再次通过 `project-docs-readme` quick validator、三个 Codex plugin validator、catalog/生成物同步、本地安装 smoke test、Markdown 链接、`git diff --check` 和 72 项测试。仓库没有 Mermaid renderer，本轮只完成了基础语法与 fenced block 人工检查。
 
+- [x] 更新 README 开头模板与 Orbit 徽章规范。
+  - 验收条件：模板按项目需要组合语言切换、居中定位、徽章、预览和快捷链接；落实极光紫单区块、Simple Icons 优先、Inter 500 与图标校准，生成自包含安装资料，并明确 Badgewind 实际生成的验证边界。
+  - 完成记录：2026-09-29；生成一致性、本地安装元数据、Markdown 链接与 diff 检查通过，quick validator 仍受已有调用字段限制；Badgewind 实际 SVG 未验证（本环境公共端点返回 403），字体加载边界见 [Orbit 徽章规范](sources/project-docs/skills/project-docs-readme/references/badge-style.md)；尚未发布或更新日常安装。
+
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。

@@ -287,77 +287,15 @@ ADR 放在 `docs/adr/`，沿用 `0001-short-slug.md` 连续编号。已接受的
 
 ## README：初学用户的使用入口
 
-面向不熟悉仓库、代码经验较少的预期用户。沿用项目语言约定；新项目默认英文根 README，正式中文版本按已确认路径维护，中文入口放在最前面的徽章行，中文页提供反向语言入口。创建或实质重写时，默认补齐中文入口需要的正式翻译；用户明确选择单语时服从其要求，孤立小改不因此扩张为翻译任务。正式翻译保持章节结构与公共事实一致，表达自然，不要求逐句对应。
+面向不熟悉仓库、代码经验较少的预期用户。沿用项目语言约定；新项目默认英文根 README，正式中文版本按已确认路径维护，语言入口放在右上角文本切换区，当前语言加粗，中文页提供反向语言入口。创建或实质重写时，默认补齐中文入口需要的正式翻译；用户明确选择单语时服从其要求，孤立小改不因此扩张为翻译任务。正式翻译保持章节结构与公共事实一致，表达自然，不要求逐句对应。
 
-### 顶部徽章
+### 开头布局与徽章
 
-- 徽章统一放在 `<p align="center">` 的 HTML 行中，每项使用带链接的 `<img>`；HTML 查询参数使用 `&amp;`。
-- 统一使用 Shields.io 的 `style=for-the-badge`；优先使用对应的真实 logo，可用 `logoColor` 保持对比度。没有合适 logo 时不使用误导性的图标。
-- 默认必备项为中文 README 入口和许可证。语言徽章链接正式译文，许可证徽章链接真实许可证文件；缺少许可证时向用户确认，不为了徽章擅自选择许可证。不得生成死链接或虚构状态。
-- Platform、release、运行时版本、安装入口等按项目实际选择。徽章不能把某次测试环境写成最低要求，或把计划支持的平台写成已支持。
-- 中文入口在前，随后是许可证和有用的项目徽章。徽章只出现于顶部，末尾不重复。
-- 顶部许可证徽章已经清楚表达并链接许可证时，不默认再写“许可证”章节；确有额外授权或署名说明时才保留必要文字。
+首屏采用顶部锚点、右上角语言切换、居中的项目名称与一句话定位、可选副标题、徽章行、可选预览图和快捷链接。具体文案、技术栈、素材和链接随项目需要选择，正文保持正常阅读布局。
 
-以下是样式示例，不表示每个项目都支持 Python 3.12 或 Linux；实际徽章必须与项目事实一致：
+徽章采用已确认的 Orbit 极光紫单区块胶囊方案：Inter 500、品牌色图标、统一紫色文字、5px 图文间距与整组图标上移 0.75px；品牌图标优先从 Simple Icons 选择，Ubuntu 使用圆形标志。通过 Badgewind 生成时必须核对实际字体与 SVG，不把网页样稿等同于生成服务能力。动态统计继续使用真实数据源。
 
-```markdown
-![Python](https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python)
-![Linux](https://img.shields.io/badge/Linux-supported-yellow?style=for-the-badge&logo=linux)
-```
-
-### 示例模板
-
-模板固定信息职责与顺序，不固定安装命令和使用动作。注释部分在没有实际内容时省略，不留空标题。
-
-```markdown
-# 项目名称
-
-<!-- 有现成且有用的图标时展示，不强制寻找或生成资源。 -->
-<p align="center">
-  <a href="docs/README.cn.md"><img src="https://img.shields.io/badge/README-中文-blue?style=for-the-badge&amp;logo=readme" alt="中文 README"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
-</p>
-<!-- MIT 只是样式示例，须替换为真实许可证；其他徽章放入同一行。 -->
-
-一句话说明：帮助谁完成什么事情。
-
-<!-- 有现成且有帮助的产品截图或效果图时展示。 -->
-
-## 适合做什么
-
-描述已有能力及用户开始前必须知道的适用限制。
-
-## 环境准备
-
-列出使用推荐路径真正需要的工具和条件。
-根据依赖的实际获取方式提供说明。
-
-## 快速开始
-
-给出一个推荐路径，说明必要操作的位置和可观察结果。
-
-## 接下来怎么用
-
-说明常用下一步；只有适用时才说明先修改哪些文件。
-复杂用法链接到[使用说明][usage]，不复制其步骤或参数表。
-
-## 常见问题
-
-只保留会阻碍首次使用的常见问题；没有则省略。
-
-## 更多文档
-
-链接用户需要的进一步使用说明和项目进展。
-
-## 参与贡献
-
-如果现有功能还不能满足你的需求，欢迎提出使用场景，
-也欢迎一起维护这个项目、提交代码或改进文档。
-
-提供真实的反馈、贡献入口，以及开发者需要的技术文档链接。
-
-[usage]: docs/usage.md
-```
+可执行规则和具体色值只维护在 [README 约定](../../sources/project-docs/skills/project-docs-readme/references/readme-contract.md)与 [Orbit 徽章规范](../../sources/project-docs/skills/project-docs-readme/references/badge-style.md)。开头和正文示例使用 [README 模板](../../sources/project-docs/skills/project-docs-readme/assets/readme-template.md)，不在此复制第二份模板。许可证链接真实文件，缺失时确认，不擅自选择许可证；无内容的可选块直接省略。
 
 ### 内容取舍与更新
 
