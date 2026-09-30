@@ -1,21 +1,17 @@
 # Orbit 徽章规范
 
-创建或调整 README 顶部徽章时读取。本方案固定视觉语言，标签、版本和链接由项目事实决定；不强制所有项目包含 Ubuntu、Python、Git 或 MIT。开头结构见 [README 模板](../../assets/project-docs-readme/readme-template.md)。
+创建或调整 README 顶部徽章时读取。保持统一视觉风格，徽章内容和素材按项目需要选择。开头结构见 [README 模板](../../assets/project-docs-readme/readme-template.md)。
 
-## 已确认的视觉参数
+## 视觉基线
 
-采用单区块胶囊：图标与文字共享连续底色，没有左右分区、分隔线、渐变、阴影或发光。文字统一使用主题紫色，品牌色只用于图标。
+采用极光紫单区块胶囊，图标与文字共享连续底色。文字统一使用主题紫色，图标兼顾品牌辨识度与整体协调性。
 
 | 项目 | 默认值 |
 | --- | --- |
-| 胶囊高度、圆角、边框 | 32px、完全圆角、1px 实线 |
+| 高度、圆角、边框 | 32px、完全圆角、1px 实线 |
 | 左右内边距、图文间距 | 左右各 12px、间距 5px |
-| 字体 | 实际加载的 Inter 500，12px；文字行框 16px |
-| 图标占位框 | 16 × 16px，图文整体居中 |
-| 图形尺寸 | 通常 15px；已确认的 Ubuntu 圆形标志 16px、Git 14px、许可证天平 15px |
-| 垂直校准 | 图标占位框统一上移 0.75px；不同时给内部图形叠加相同偏移 |
-
-外框居中不等于可见字形居中。先固定字体和字号，再核对图形重心；新图标确实有额外留白时可以少量单独校准，并明确它相对统一偏移的关系。不要为每个关键词随意改变字体、边距或图标比例。
+| 字体 | Inter，目标字重 500，12px；文字行框 16px |
+| 图标 | 默认 15px，统一上移 0.75px |
 
 | 颜色用途 | 浅色主题 | 深色主题 |
 | --- | --- | --- |
@@ -24,34 +20,28 @@
 | 文字 | `#59416F` | `#E5D8FA` |
 | 通用图标 | `#7548A3` | `#CFADFF` |
 
-品牌图标保持同一配色，不因页面主题自动换色。已确认的 Ubuntu 为 `#E95420`，Python 为 `#3776AB`，Git 为 `#F05032`。Git 这里是用户选定的保留值，不声称它始终等于 Simple Icons 最新元数据；不随上游更新静默改色。
+## 素材与品牌色
 
-## 图标与颜色来源
+按 [README 约定](readme-contract.md)确认由用户提供素材、AI 寻找，或不添加徽章。AI 寻找时以 [Iconify](https://icon-sets.iconify.design/)为统一入口，根据语义、品牌识别、视觉协调性和使用条件选择合适资源，不预设图标集优先级。用户提供的素材优先尊重其意图，适配方式按实际服务能力判断。
 
-1. 优先从 [Simple Icons](https://simpleicons.org/) 查找准确品牌及其图形，使用其单色轮廓；Ubuntu 选圆形 Circle of Friends，不使用带矩形底板的版本。核对名称和形状，不用近似品牌替代。
-2. 上述已确认颜色优先保留。其他品牌默认使用对应条目的 `hex` 色值，并保留取值来源与所用版本；来源不明确时查官方品牌资料，不凭关键词猜颜色。Simple Icons 的单色 Python 使用品牌蓝，不自动恢复其他图标库的蓝黄双色。
-3. 许可证等通用语义图标不借用品牌标志。Simple Icons 没有合适图标时可用 Lucide 等通用图标库，统一采用主题紫色；没有合适图标也可省略，不造品牌身份。
-4. 图标版本、品牌色和样式参数放在项目已有的资源配置或简短资源说明中，方便复现；不把逐项来源表塞进 README 首屏。
+品牌图标应考虑品牌色彩，可采用资源自带的合适配色，也可依据品牌资料设置颜色；通用图标默认使用主题紫色。具体图形、颜色和来源由项目决定，不将某次设计选择固化为通用规则。
 
-## Badgewind 生成与交付
+Iconify 的 [SVG API](https://iconify.design/docs/api/svg.html)通过 `color` 替换 `currentColor`；固定配色图标可以保留自带颜色。[集合元数据](https://iconify.design/docs/types/iconify-info.html)中的 `palette` 表示是否使用固定颜色，不是品牌色值表。目前查阅的官方 API 文档未提供专门的品牌主题色查询接口；需要确认品牌色时可参考原资源或官方品牌资料。
 
-使用 [Badgewind](https://github.com/agmmnn/badgewind) 设计并生成 SVG。以下是参数映射与实现边界，不是已经验证可直接复制的服务 URL：
+需要查找资源或确认服务能力时，按需查阅 [Iconify API 文档](https://iconify.design/docs/api/)，不要求固定检索步骤。
 
-| 目标 | 对应设置 |
-| --- | --- |
-| 单段标签 | 路径只放一段文本；`_` 表示空格，文字里的连字符按 Badgewind 规则写为 `--`，避免触发左右分区 |
-| 连续底色 | `badgeStyle` 设置胶囊底色、边框和圆角；同时用 `leftStyle` 覆盖默认分区背景与内边距，不只修改外层 |
-| 字体 | `font=inter`；设置 12px 和 500 的目标样式，实际字重仍须检查所加载的字体文件 |
-| 图标 | `icon=simple-icons:ubuntu` 等准确 ID；通过 `iconStyle` 指定尺寸、品牌色、5px 右间距和统一垂直偏移 |
-| 无阴影、字体稳定 | `textShadow=false`；生成时加载实际字体，并保留嵌入字形的 SVG 输出，避免依赖阅读者本机字体 |
+## 统一 URL 模板
 
-2026-09-29 核对的 [Badgewind 字体加载实现](https://github.com/agmmnn/badgewind/blob/master/src/index.tsx)固定读取 `latin-400-normal.woff`；仅添加 `font-medium` 不能证明加载了 Inter 500。要精确复现本方案，应在 Badgewind 本地生成环节传入实际 Inter 500 字体，并在渲染器中登记对应字重后输出 SVG；不把公共端点的 400 字重结果当作已确认的 500 字重样式。公共服务行为可能变化，生成时重新核对。正文布局与图标参数处理见其 [Badge 组件](https://github.com/agmmnn/badgewind/blob/master/src/components/Badge.tsx)。
+直接复用 [Badgewind](https://github.com/agmmnn/badgewind) 在线 URL，替换文字、图标、颜色及目标链接。日常应用不逐枚渲染、微调或导出本地图片。
 
-生成时按以下顺序完成：
+以下依次为浅色、深色模板：
 
-1. 从真实项目资料确定标签、目标链接、许可证与版本；保留上表的视觉参数，按需添加品牌图标。
-2. 分别生成浅色和深色 SVG。优先将确认后的静态结果存入目标项目的 `assets/readme/` 或现有资源目录，再用模板中的 `<picture>` 选择主题；不要把会话临时目录或本机绝对路径写入 README。
-3. 查看实际 SVG 与 README 渲染：核对字体、文字、图标、边框、单区块布局、5px 间距与偏移，检查浅深背景、窄屏换行和各语言相对路径。以 SVG 的实际效果为准，不把交互样稿的 CSS 效果当成 Badgewind 已支持或已验证。
-4. 外部服务不可访问、缺图标或字体降级时说明实际限制；保留已有可用资源，不写死链、不将失败响应保存为徽章，也不宣称生成成功。没有可用图像时可以先保留真实文本入口，并明确徽章尚未完成。
+```text
+https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&icon=ICON_ID&iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@ICON_COLOR)
 
-Stars、CI、下载量等需要实时数据时，使用项目现有的可靠服务或其他支持该数据源的服务；不要把数据下载成静态 SVG 后继续当实时徽章使用。样式尽量协调，但不虚构状态、不强制每个项目展示动态统计。
+https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&icon=ICON_ID&iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@ICON_COLOR)
+```
+
+`TEXT` 为单段文字，空格写 `_`，连字符写 `--`；`ICON_ID` 使用 Iconify 的 `集合:名称`；`ICON_COLOR` 为不带 `#` 的色值。图标自带固定配色时，颜色参数可能不影响这些颜色。HTML 属性中的 `&` 写为 `&amp;`，主题切换方式见 [README 模板](../../assets/project-docs-readme/readme-template.md)。
+
+在线服务的实际字体与显示能力可能与设计基线有差异；`font-medium` 不保证服务加载真实 Inter 500。核实改动的字段、链接与双语一致性，无法确认的在线效果如实说明。动态状态徽章保留真实数据来源。

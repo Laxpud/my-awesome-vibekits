@@ -1,6 +1,6 @@
 # README 模板
 
-以下展示根 README 的结构，说明文字以中文占位；新项目默认根页输出英文，正式中文页位于 `docs/README.cn.md`。替换全部占位信息和相对路径，删除无内容的可选部分。徽章按 [Orbit 徽章规范](../references/badge-style.md)生成并验证后填入；示例 MIT 仅展示许可证入口，不替项目选择许可证，也不代表模板已附带图像文件。
+以下展示根 README 的结构，说明文字以中文占位；新项目默认根页输出英文，正式中文页位于 `docs/README.cn.md`。替换全部占位信息和相对路径，删除无内容的可选部分。徽章按 [Orbit 徽章规范](../references/badge-style.md)复用统一 URL 模板，只替换文字、图标、品牌色与目标链接；示例 MIT 仅展示许可证入口，不替项目选择许可证，图片直接引用 Badgewind 在线地址。
 
 ```markdown
 <a id="readme-top"></a>
@@ -18,12 +18,12 @@
 <p><strong>一句话说明帮助谁完成什么事。</strong><br />
 <sub>可选：补充项目特点或个性的简短副标题。</sub></p>
 
-<!-- 3. 创建并验证实际徽章资源后替换路径；其他有用徽章放在同一行。 -->
+<!-- 3. 可选：按用户提供或 AI 查找的 Iconify ID 替换模板字段；用户不要徽章时删除整块，不生成本地文件。 -->
 <p>
   <a href="LICENSE">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/readme/license-dark.svg" />
-      <img height="32" src="assets/readme/license-light.svg" alt="License: MIT" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@CFADFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@7548A3)" alt="License: MIT" />
     </picture>
   </a>
 </p>
@@ -81,4 +81,4 @@
 </div>
 ```
 
-同一组徽章和预览资源由两种语言共用，所有相对路径按所在位置调整，例如 `../LICENSE`、`../assets/readme/license-light.svg`；图片替代文字与页面语言一致。无需副标题时一并删除 `<br />` 和 `<sub>`，无需预览或快捷链接时删除整个可选块，不保留空容器或占位路径。徽章不在末尾重复。
+同一组在线徽章 URL 由两种语言共用，无需按 README 所在目录改写；本地链接与可选预览图仍需调整相对路径，例如 `../LICENSE`、`../docs/images/preview.png`。图片替代文字与页面语言一致。无需副标题时一并删除 `<br />` 和 `<sub>`，无需预览或快捷链接时删除整个可选块，不保留空容器或占位路径。徽章不在末尾重复。

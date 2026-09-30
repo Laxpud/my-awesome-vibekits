@@ -1,11 +1,47 @@
-# Vibekits
+<a id="readme-top"></a>
 
-<p align="center">
-  <a href="../README.md"><img src="https://img.shields.io/badge/README-English-blue?style=for-the-badge&amp;logo=readme" alt="English README"></a>
-  <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
+<div align="right">
+  <a href="../README.md">English</a> | <strong>简体中文</strong>
+</div>
+
+<div align="center">
+
+<h1>Vibekits</h1>
+
+<p><strong>面向 AI 编程的可复用工程技能</strong><br />
+<sub>代码注释 · Python 项目 · 项目文档</sub></p>
+
+<p>
+  <a href="#codex-cli">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@FFFFFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@111111)" alt="Codex CLI" />
+    </picture>
+  </a>
+  &nbsp;
+  <a href="#claude-code">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" alt="Claude Code" />
+    </picture>
+  </a>
+  &nbsp;
+  <a href="../LICENSE">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@CFADFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@7548A3)" alt="许可证：MIT" />
+    </picture>
+  </a>
 </p>
 
-[技术文档](index.md) · [路线图](../TODO.md) · [反馈问题](https://github.com/Laxpud/my-awesome-vibekits/issues)
+<p><sub>
+  <a href="#快速开始">快速开始</a> ·
+  <a href="#按目标选择-skill">浏览技能</a> ·
+  <a href="index.md">技术文档</a> ·
+  <a href="https://github.com/Laxpud/my-awesome-vibekits/issues">反馈问题</a>
+</sub></p>
+
+</div>
 
 Vibekits 是我个人孵化的一组 Codex 与 Claude Code 可复用工作流。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
 

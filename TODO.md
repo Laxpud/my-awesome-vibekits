@@ -44,6 +44,12 @@
   - 验收条件：模板按项目需要组合语言切换、居中定位、徽章、预览和快捷链接；落实极光紫单区块、Simple Icons 优先、Inter 500 与图标校准，生成自包含安装资料，并明确 Badgewind 实际生成的验证边界。
   - 完成记录：2026-09-29；生成一致性、本地安装元数据、Markdown 链接与 diff 检查通过，quick validator 仍受已有调用字段限制；Badgewind 实际 SVG 未验证（本环境公共端点返回 403），字体加载边界见 [Orbit 徽章规范](sources/project-docs/skills/project-docs-readme/references/badge-style.md)；尚未发布或更新日常安装。
 
+- [x] 将 Orbit 首屏应用到当前仓库的双语 README，并明确徽章按统一 URL 模板复用。
+  - 完成记录：2026-09-30；只替换文字、图标、品牌色与链接，撤销本轮本地 SVG 资源；同步技能模板与生成资料，不再要求逐枚渲染、微调或导出。已按 Iconify 官方数据选用 Codex 浅深色标志和 Claude Code 原色标志；公共 API 返回 403，在线显示尚未确认。
+
+- [x] README 徽章统一通过 Iconify 查找资源，并增加首次生成时的素材方式选择：用户提供、AI 查找或不添加；已有决定不重复询问。
+  - 规范保持通用：保留统一模板和品牌色考虑，移除图标集优先级、特定品牌特例与固定检索步骤。
+
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。

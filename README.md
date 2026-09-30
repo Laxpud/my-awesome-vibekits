@@ -1,11 +1,47 @@
-# Vibekits
+<a id="readme-top"></a>
 
-<p align="center">
-  <a href="docs/README.cn.md"><img src="https://img.shields.io/badge/README-中文-blue?style=for-the-badge&amp;logo=readme" alt="中文 README"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&amp;logo=opensourceinitiative" alt="License: MIT"></a>
+<div align="right">
+  <strong>English</strong> | <a href="docs/README.cn.md">简体中文</a>
+</div>
+
+<div align="center">
+
+<h1>Vibekits</h1>
+
+<p><strong>Reusable engineering skills for AI coding</strong><br />
+<sub>Code comments · Python projects · Project documentation</sub></p>
+
+<p>
+  <a href="#codex-cli">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@FFFFFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@111111)" alt="Codex CLI" />
+    </picture>
+  </a>
+  &nbsp;
+  <a href="#claude-code">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" alt="Claude Code" />
+    </picture>
+  </a>
+  &nbsp;
+  <a href="LICENSE">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@CFADFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@7548A3)" alt="License: MIT" />
+    </picture>
+  </a>
 </p>
 
-[Documentation](docs/index.md) · [Roadmap](TODO.md) · [Report an issue](https://github.com/Laxpud/my-awesome-vibekits/issues)
+<p><sub>
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#choose-a-skill-by-goal">Browse skills</a> ·
+  <a href="docs/index.md">Documentation</a> ·
+  <a href="https://github.com/Laxpud/my-awesome-vibekits/issues">Feedback</a>
+</sub></p>
+
+</div>
 
 Vibekits is my personally incubated collection of reusable workflows for Codex and Claude Code. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
 
