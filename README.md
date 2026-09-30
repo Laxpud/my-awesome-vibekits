@@ -12,26 +12,20 @@
 <sub>Code comments · Python projects · Project documentation</sub></p>
 
 <p>
-  <a href="#codex-cli">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@FFFFFF)" />
-      <img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@111111)" alt="Codex CLI" />
-    </picture>
-  </a>
+  <a href="#codex-cli"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@FFFFFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@111111)" alt="Codex CLI" />
+    </picture></a>
   &nbsp;
-  <a href="#claude-code">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" />
-      <img height="32" src="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@D97757)" alt="Claude Code" />
-    </picture>
-  </a>
+  <a href="#claude-code"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@D97757)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@D97757)" alt="Claude Code" />
+    </picture></a>
   &nbsp;
-  <a href="LICENSE">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@CFADFF)" />
-      <img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&amp;leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@7548A3)" alt="License: MIT" />
-    </picture>
-  </a>
+  <a href="LICENSE"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@CFADFF)" />
+      <img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@7548A3)" alt="License: MIT" />
+    </picture></a>
 </p>
 
 <p><sub>

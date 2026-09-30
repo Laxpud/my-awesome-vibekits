@@ -50,6 +50,9 @@
 - [x] README 徽章统一通过 Iconify 查找资源，并增加首次生成时的素材方式选择：用户提供、AI 查找或不添加；已有决定不重复询问。
   - 规范保持通用：保留统一模板和品牌色考虑，移除图标集优先级、特定品牌特例与固定检索步骤。
 
+- [x] 修复 GitHub 深色徽章 URL 被 `srcset` 中逗号截断的问题，并同步双语 README 与模板。
+  - 验证：GitHub Markdown API 保留完整参数，六个图片代理响应均保留 32px 高度与 Orbit 配色；生成一致性、Markdown 链接和 diff 检查通过。
+
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。

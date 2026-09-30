@@ -37,11 +37,11 @@ Iconify 的 [SVG API](https://iconify.design/docs/api/svg.html)通过 `color` �
 以下依次为浅色、深色模板：
 
 ```text
-https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@D7C7ED),bg-(@F3EDFC),text-(@59416F)&leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&icon=ICON_ID&iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@ICON_COLOR)
+https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&icon=ICON_ID&iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@ICON_COLOR)
 
-https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px),rounded-full,border,border-solid,border-(@58446D),bg-(@2B223A),text-(@E5D8FA)&leftStyle=h-full,bg-transparent,rounded-full,px-3,py-0,text-(12px),leading-(16px),font-medium&icon=ICON_ID&iconStyle=w-(15px),h-(15px),mr-(5px),-translate-y-(0.75px),text-(@ICON_COLOR)
+https://badgewind.agmmnn.workers.dev/TEXT?font=inter&textShadow=false&badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&icon=ICON_ID&iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@ICON_COLOR)
 ```
 
-`TEXT` 为单段文字，空格写 `_`，连字符写 `--`；`ICON_ID` 使用 Iconify 的 `集合:名称`；`ICON_COLOR` 为不带 `#` 的色值。图标自带固定配色时，颜色参数可能不影响这些颜色。HTML 属性中的 `&` 写为 `&amp;`，主题切换方式见 [README 模板](../assets/readme-template.md)。
+`TEXT` 为单段文字，空格写 `_`，连字符写 `--`；`ICON_ID` 使用 Iconify 的 `集合:名称`；`ICON_COLOR` 为不带 `#` 的色值。图标自带固定配色时，颜色参数可能不影响这些颜色。URL 中的逗号编码为 `%2C`，避免 GitHub 将 `srcset` 拆成多个图片地址；HTML 属性中的 `&` 写为 `&amp;`，主题切换方式见 [README 模板](../assets/readme-template.md)。
 
 在线服务的实际字体与显示能力可能与设计基线有差异；`font-medium` 不保证服务加载真实 Inter 500。核实改动的字段、链接与双语一致性，无法确认的在线效果如实说明。动态状态徽章保留真实数据来源。
