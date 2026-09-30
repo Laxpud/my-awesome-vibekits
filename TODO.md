@@ -53,6 +53,8 @@
 - [x] 修复 GitHub 深色徽章 URL 被 `srcset` 中逗号截断的问题，并同步双语 README 与模板。
   - 验证：GitHub Markdown API 保留完整参数，六个图片代理响应均保留 32px 高度与 Orbit 配色；生成一致性、Markdown 链接和 diff 检查通过。
 
+- [x] 清除徽章链接内的空白下划线，同步双语 README 与模板；GitHub Markdown API 确认三个徽章链接均无空白文本节点。
+
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。
