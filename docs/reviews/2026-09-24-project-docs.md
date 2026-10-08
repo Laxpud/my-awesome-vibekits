@@ -15,7 +15,7 @@
 ## A6：指导文件维护的默认读取范围过大
 
 - **所属类别**：三、操作步骤过于僵化。
-- **原文与位置**：[project-docs-guidance/SKILL.md](../../plugins/project-docs/skills/project-docs-guidance/SKILL.md) 第 30 行：“读取现有 `AGENTS.md`、`CLAUDE.md` 和其他 agent 指导文件，以及 README、活动规划入口、具名技术文档、关键代码和配置入口。”[references/project-guidance.md](../../plugins/project-docs/skills/project-docs-guidance/references/project-guidance.md) 第 27 行有类似要求。
+- **原文与位置**：[project-docs-guidance/SKILL.md](../../plugins/project-docs/skills/project-docs-guidance/SKILL.md) 第 30 行：“读取现有 `AGENTS.md`、`CLAUDE.md` 和其他 agent 指导文件，以及 README、活动规划入口、具名技术文档、关键代码和配置入口。”[references/guidance-rules.md](../../plugins/project-docs/skills/project-docs-guidance/references/guidance-rules.md) 第 27 行有类似要求。
 - **原有目的**：确保指导文件有项目证据，避免误用发现、继承和平台规则。
 - **标记理由**：修正局部链接或维护一条路由，也可能被套入多类材料的默认盘点。问题位于技能流程，不是根 `AGENTS.md` 要求每次通读仓库，因此不归第四类。
 - **处理建议**：先读受影响文件、适用上级指导及直接权威来源；涉及项目事实、代码边界、目录继承或跨平台行为时，再加载对应证据。保留创建或依赖目录级指导时的平台语义核对。

@@ -42,7 +42,7 @@
 
 - [x] 更新 README 开头模板与 Orbit 徽章规范。
   - 验收条件：模板按项目需要组合语言切换、居中定位、徽章、预览和快捷链接；落实极光紫单区块、Simple Icons 优先、Inter 500 与图标校准，生成自包含安装资料，并明确 Badgewind 实际生成的验证边界。
-  - 完成记录：2026-09-29；生成一致性、本地安装元数据、Markdown 链接与 diff 检查通过，quick validator 仍受已有调用字段限制；Badgewind 实际 SVG 未验证（本环境公共端点返回 403），字体加载边界见 [Orbit 徽章规范](sources/project-docs/skills/project-docs-readme/references/badge-style.md)；尚未发布或更新日常安装。
+  - 完成记录：2026-09-29；生成一致性、本地安装元数据、Markdown 链接与 diff 检查通过，quick validator 仍受已有调用字段限制；Badgewind 实际 SVG 未验证（本环境公共端点返回 403），字体加载边界见 [Orbit 徽章规范](sources/project-docs/references/readme-badge-rules.md)；尚未发布或更新日常安装。
 
 - [x] 将 Orbit 首屏应用到当前仓库的双语 README，并明确徽章按统一 URL 模板复用。
   - 完成记录：2026-09-30；只替换文字、图标、品牌色与链接，撤销本轮本地 SVG 资源；同步技能模板与生成资料，不再要求逐枚渲染、微调或导出。已按 Iconify 官方数据选用 Codex 浅深色标志和 Claude Code 原色标志；公共 API 返回 403，在线显示尚未确认。
@@ -54,6 +54,14 @@
   - 验证：GitHub Markdown API 保留完整参数，六个图片代理响应均保留 32px 高度与 Orbit 配色；生成一致性、Markdown 链接和 diff 检查通过。
 
 - [x] 清除徽章链接内的空白下划线，同步双语 README 与模板；GitHub Markdown API 确认三个徽章链接均无空白文本节点。
+
+- [x] 补齐 project-docs 的共享规范引用，并扩展 progress 的 plan/spec 文件保存约定。
+  - 验证：规范与场景审阅、生成一致性、元数据、链接及本地安装契约通过；Codex 隔离发现七技能、调用配置与 68 处安装资料引用通过，实际行为待使用反馈；未发布或更新日常安装。
+
+- [x] 将 project-docs 全部规范与 Markdown 模板集中到共享 references，按引用生成自包含技能，并按六项规则精简指令。
+  - 验证：生成与元数据一致性、链接、本地安装契约、现有 72 项测试及 Codex 隔离七技能发现通过；保留必要验证与明确权限边界，未新增测试或更新日常安装。
+
+- [x] 按“主题 + 用途”统一 project-docs 参考文件名与标题，同步引用和生成物。
 
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：

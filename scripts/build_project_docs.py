@@ -56,7 +56,7 @@ def rewrite_links(text: str, replace) -> str:
 
 
 def build_files(root: Path) -> dict[Path, bytes]:
-    """计算完整输出，不修改源文件或安装目录；外部引用只带入所需文件。"""
+    """计算完整输出；从技能入口递归收集共享资料，不修改源文件或安装目录。"""
     source = (root / 'sources/project-docs').resolve()
     catalog = json.loads((root / 'plugin-catalog.json').read_text(encoding='utf-8'))
     plugin = next(item for item in catalog['plugins'] if item['id'] == 'project-docs')
@@ -79,20 +79,17 @@ def build_files(root: Path) -> dict[Path, bytes]:
         bundle = output / name
 
         def destination(path: Path) -> Path:
-            # 1. 自有文件保留位置；公共资料和借用资料都映射到本技能目录。
+            # 1. 技能仅维护入口和调用配置；共享资料按原相对路径进入自身 references。
             if path.is_relative_to(owner):
                 relative = path.relative_to(owner)
                 if relative == Path('SKILL.md.in'):
-                    relative = Path('SKILL.md')
-                return bundle / relative
-            relative = path.relative_to(source)
-            if relative.parts[0] == 'references':
-                return bundle / 'references/common' / Path(*relative.parts[1:])
-            if len(relative.parts) >= 4 and relative.parts[0] == 'skills':
-                _, other, kind, *rest = relative.parts
-                if kind in ('references', 'assets'):
-                    return bundle / kind / other / Path(*rest)
-            raise BundleError(f'Cannot bundle this cross-skill dependency: {path}')
+                    return bundle / 'SKILL.md'
+                if relative.parts[0] == 'agents':
+                    return bundle / relative
+            references = source / 'references'
+            if path.is_relative_to(references):
+                return bundle / 'references' / path.relative_to(references)
+            raise BundleError(f'Unsupported source dependency; use shared references: {path}')
 
         while pending:
             path = pending.pop()

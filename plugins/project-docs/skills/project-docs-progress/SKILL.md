@@ -1,17 +1,17 @@
 ---
 name: project-docs-progress
-description: Maintain minimal progress when continuing an existing project task or checking its status. Excludes general Q&A, code explanations, and isolated small edits.
+description: Track existing project tasks or apply storage conventions to project plan/spec file requests.
 disable-model-invocation: false
 ---
 
 # 维护最小进度
 
-读取[共同写作约定](references/common/writing-style.md)。只读现有活动入口（通常为 TODO）和当前任务必需的材料；没有入口则处理用户任务，不自动建立文档体系。
+读取[共同约定](references/common-writing-rules.md)、现有活动入口（通常为 TODO）及当前任务需要的材料。没有入口也可处理用户任务，不自动建立文档体系。
 
-用户指定工作优先；否则沿已有焦点或当前里程碑的优先顺序选择可执行任务，跳过明确阻塞项。既有方案仍适用时沿其推进，前提发生实质变化时说明差异。
+用户指定工作优先；否则沿已有焦点或任务优先顺序推进，跳过阻塞项。既有方案仍适用时沿其推进，前提实质变化时说明差异。
 
-仅在完成情况、下一步、阻塞或关键决定变化时更新原位置：完成默认只勾选；确有后续价值的验证最多一条短句，写对象与结论，必要时附证据链接。未完成不勾选，不写命令、日志、哈希、文件清单或过程总结。
+状态有变化才更新原位置。完成默认只勾选，有后续价值的验证最多一条短句和必要链接；未完成不勾选，不追加过程日志。
 
-普通状态更新到此为止。只有涉及方案保存、里程碑切换或归档时，才读[生命周期](references/project-docs-planning/lifecycle.md)。沿用项目已约定格式，不借日常维护重构文档或改变承诺；不自动调用六个专项技能。
+用户要求新建、保存或链接项目 plan/spec 文件时，先读[保存规则](references/planning-lifecycle-rules.md#保存-planspec)，包括“编写一个 plan.md”。正文由执行任务的 agent 按需求生成；仅在聊天中讨论计划不落盘，没有 TODO 也可保存文件。
 
-计划内的文档同步任务和直接受影响的少量事实可按授权维护。当前里程碑结束不代表可以实施下一里程碑；backlog 不自动提升为承诺。最终回复简述结果和必要限制，不再生成一份同内容的文档。
+切换里程碑或归档时读[生命周期](references/planning-lifecycle-rules.md)的对应章节，普通勾选无需加载。保存方案或结束当前里程碑不代表获准实施下一阶段；只同步计划内文档任务和直接受影响的事实。

@@ -23,7 +23,7 @@
 
 ## 技能维护与生成
 
-- `project-docs` 只编辑 `sources/project-docs/`：入口为 `skills/<skill-id>/SKILL.md.in`，专项资料与调用配置归对应技能，公共资料归 `references/`。
+- `project-docs` 只编辑 `sources/project-docs/`：入口为 `skills/<skill-id>/SKILL.md.in`，技能目录仅保留入口与调用配置；规范、示例和 Markdown 模板统一放在 `references/`。
 - 修改维护源后运行 `python3 scripts/build_project_docs.py --write`，生成 `plugins/project-docs/skills/`。不要手改生成文件；安装技能必须包含自身所需资料，不依赖兄弟技能或维护源路径。
 - 提交前运行 `python3 scripts/build_project_docs.py` 检查生成结果，并将维护源和受影响的生成文件一起提交。生成器与资料分发约定见[维护规范](docs/SKILL_RULE_GUIDELINES.md#生成自包含的-project-docs-技能)。
 - 其他插件仍直接维护各自的 `plugins/<plugin-id>/skills/`，不因局部任务自动迁移。技能内容检查采用[轻量验收](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)，不默认追加模型试跑或其他平台验证。

@@ -9,7 +9,7 @@
 | 内容 | 权威位置 |
 | --- | --- |
 | 插件身份、独立版本和分发元数据 | [`plugin-catalog.json`](../plugin-catalog.json) |
-| project-docs 维护源与公共资料 | `sources/project-docs/skills/<skill-id>/`、`sources/project-docs/references/` |
+| project-docs 技能入口与共享资料 | `sources/project-docs/skills/<skill-id>/`、`sources/project-docs/references/` |
 | project-docs 安装文件（生成物） | `plugins/project-docs/skills/<skill-id>/` |
 | 其他插件的技能内容 | `plugins/<plugin-id>/skills/<skill-id>/` |
 | Codex marketplace 生成物 | `.agents/plugins/marketplace.json` |
@@ -17,7 +17,7 @@
 | Claude Code marketplace 生成物 | `.claude-plugin/marketplace.json` |
 | Claude Code manifest 生成物 | `plugins/<plugin-id>/.claude-plugin/plugin.json` |
 
-`project-docs` 区分维护源与安装文件：仅编辑 `sources/project-docs/`，源入口名为 `SKILL.md.in`，避免被技能发现器重复收录。公共写作与目录 README 规则归公共 `references/`，专项资料归各技能。源码可按需引用其他源资料；生成器复制所需引用及其依赖，改写为技能内部路径。安装后的每个技能都包含自身资料，不依赖兄弟技能、源码目录或软链。
+`project-docs` 区分维护源与安装文件：仅编辑 `sources/project-docs/`，源入口名为 `SKILL.md.in`，避免被技能发现器重复收录。规范、示例和 Markdown 模板统一放在 `sources/project-docs/references/`，技能目录仅保留入口与调用配置。生成器从入口链接递归收集所需资料，复制到各技能自己的 `references/` 并改写链接；不区分 common 或来源技能子目录，不维护第二份依赖清单。安装后的每个技能都包含自身资料，不依赖兄弟技能、源码目录或软链。
 
 其他插件暂时仍直接维护各自 `skills/`，不在本轮迁移。生成副本只供安装和审阅，不人工维护，不创建跨插件运行时引用。`.codex-plugin/`、`.claude-plugin/` 和两份 marketplace 仍由 catalog 生成。
 
@@ -74,7 +74,7 @@ plugins/<plugin-id>/skills/<skill-id>/
 
 - 写清楚流程、输入输出契约、边界条件和验证方式。
 - 只保留执行技能所需的信息；安装、平台命令和发布记录放到仓库文档或生成适配层；Codex 的技能调用设置放在各技能的 `agents/openai.yaml`，不混进 frontmatter。
-- `project-docs` 的共同资料在维护源中只保存一份，专项资料归对应技能；安装文件由生成器带入实际引用的资料。入口说明何时读取，不借引用资料自动调用其他技能。安装副本位于 `references/common/` 或带来源技能名的 references/assets 子目录，不能再向上跳到兄弟技能。
+- `project-docs` 的全部配套资料在共享 `references/` 中维护一份，生成器只打包各入口引用的资料及其依赖。入口说明当前任务应读哪些资料；打包完整性不等于执行时全部加载，也不自动调用其他技能。
 - 新增或大改技能后，检查 catalog 描述、README 插件/技能表和生成物是否需要同步。
 
 在提供插件命名空间的平台上，九个公开 Skill 名分别是：
@@ -93,21 +93,19 @@ Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`
 
 ## 生成自包含的 project-docs 技能
 
+共享资料按“主题 + 用途”命名：规范用 `<topic>-rules.md`，单个模板用 `<topic>-template.md`，多个模板用 `<topic>-templates.md`；同一主题的补充规范使用相同前缀，例如 `readme-rules.md` 与 `readme-badge-rules.md`。
+
 ```text
 sources/project-docs/                  维护源，不作为安装目录
-  references/                         共同写作与目录 README 规则
+  references/                         全部规范、示例和 Markdown 模板
   skills/<skill-id>/
     SKILL.md.in                       源入口，不被当作独立技能发现
     agents/openai.yaml
-    references/                       专项参考
-    assets/                           专项模板
 plugins/project-docs/skills/           生成并提交的安装文件
   <skill-id>/
     SKILL.md
     agents/openai.yaml
-    references/common/                需要的公共资料副本
-    references/<来源技能名>/           需要的其他专项资料副本
-    assets/                           模板及需要的外部模板副本
+    references/                       该技能引用的资料及其递归依赖
 ```
 
 生成与检查：
@@ -117,13 +115,13 @@ python3 scripts/build_project_docs.py --write
 python3 scripts/build_project_docs.py
 ```
 
-默认只检查是否漂移；`--write` 更新生成目录，并清理失去来源的旧文件。生成文件一并提交，用户安装时不需要运行 Python。生成器保持正文与调用配置，只改写真实资源链接，不改代码围栏中的示例路径。支持普通 Markdown 行内链接、引用式定义和 HTML href/src；本地路径使用无空格路径或 URL 编码，不使用未编码的嵌套括号。源码依赖必须是 `sources/project-docs/` 内的文件，不允许借用另一个技能入口或指向仓库外部。
+默认只检查是否漂移；`--write` 更新生成目录，并清理失去来源的旧文件。生成文件一并提交，用户安装时不需要运行 Python。生成器保持正文与调用配置，只改写真实资源链接，不改代码围栏中的示例路径。支持普通 Markdown 行内链接、引用式定义和 HTML href/src；本地路径使用无空格路径或 URL 编码，不使用未编码的嵌套括号。技能目录只接受 `SKILL.md.in` 和 `agents/` 配置；文档依赖只能来自共享 `references/`，不允许跨技能引用或指向仓库外部。相同依赖在每个技能内只打包一次，未被引用的共享资料不进入该技能。
 
 打包顺序是先生成技能，再同步 catalog 元数据，再执行相关检查。此布局为未来单技能分发做准备，不代表本项目已完成 `npx skills` 安装、更新和卸载验收。
 
 ## 适配层同步清单
 
-当技能能力、插件定位或对外描述发生变化时，按顺序检查：
+当技能能力、插件定位或对外描述发生变化时，检查受影响项：
 
 - 修改 `sources/project-docs/` 后运行技能生成器，确认安装文件与维护源一致。
 

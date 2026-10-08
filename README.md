@@ -228,7 +228,7 @@ Plugin: `python-project` · Skill: [`pyproject-standard`](plugins/python-project
 Use pyproject-standard to review this Python project's pyproject.toml. Identify evidence-backed changes, show me the proposed configuration, and ask before editing.
 ```
 
-In Codex, only `project-docs-progress` can run automatically for existing project tasks. Explicitly invoke the other six documentation skills. Small edits do not create a documentation system; completed tasks normally need only a checkbox, not a log. See the [usage guide](docs/usage.md).
+In Codex, `project-docs-progress` can run automatically for existing project tasks and requests to create, save, or link project plan/spec files. Explicitly invoke the other six documentation skills. Bootstrap and refactor must read the same document-specific rules as the focused skills and apply them within the requested scope. Small edits do not create a documentation system; completed tasks normally need only a checkbox. See the [usage guide](docs/usage.md).
 
 ### Keep Current Progress Minimal
 
@@ -237,6 +237,8 @@ Plugin: `project-docs` · Skill: [`project-docs-progress`](plugins/project-docs/
 ```text
 Use $project-docs:project-docs-progress to continue the current authorized TODO task; update only checkboxes and necessary blockers.
 ```
+
+A request such as “write a plan.md” uses `docs/plans/plan-YYYY-MM-DD-HH-mm.md` by default; spec files use `docs/specs/spec-YYYY-MM-DD-HH-mm.md`. Explicit filenames or paths and established project conventions take precedence. The timestamp uses your configured timezone, or local environment time if none is configured; automatically named files use suffixes such as `-2` or `-3` on collision. A conflicting explicit destination is not silently renamed or overwritten. Existing files keep their names. A chat-only plan stays in chat, and saving a file does not create TODO/roadmap files or start implementation.
 
 ## Troubleshooting
 

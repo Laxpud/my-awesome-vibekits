@@ -68,7 +68,7 @@
       "id": "project-docs",
       "directory": "plugins/project-docs",
       "version": "2.0.0",
-      "description": "Minimal project progress tracking and explicit workflows for README, planning, architecture, guidance, and documentation organization.",
+      "description": "Minimal project progress and plan/spec storage, with shared document rules for explicit README, planning, architecture, guidance, and organization workflows.",
       "category": "Productivity",
       "keywords": ["documentation", "readme", "refactor", "planning", "todo", "roadmap", "milestone", "backlog", "architecture", "mermaid", "adr", "agents", "claude", "project-guidance"],
       "skills": [
@@ -85,8 +85,8 @@
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
           "displayName": "Project Docs",
-          "shortDescription": "Minimal progress and focused documentation",
-          "longDescription": "Track existing tasks with one lightweight automatic skill. Explicitly invoke six focused skills for documentation setup, refactoring, README and usage guides, planning formats and archives, C4 architecture and ADRs, or AGENTS guidance.",
+          "shortDescription": "Minimal progress, plan storage, and documentation",
+          "longDescription": "Track project progress and handle plan/spec file requests. Explicit skills cover documentation setup, refactoring, README and usage, planning, architecture and ADRs, and project guidance using shared references.",
           "defaultPrompt": [
             "Use $project-docs:project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
             "Use $project-docs:project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
@@ -94,7 +94,7 @@
             "Use $project-docs:project-docs-planning to organize TODO, roadmap, milestones, backlog, and plan/spec storage and archiving without rewriting plan/spec content.",
             "Use $project-docs:project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
             "Use $project-docs:project-docs-guidance to create or refine AGENTS.md, scoped rules, and the CLAUDE.md symlink.",
-            "Use $project-docs:project-docs-progress to continue the current task and record only meaningful progress."
+            "Use $project-docs:project-docs-progress to continue the current task with minimal progress, or create, save, and link a project plan/spec file using project storage conventions."
           ]
         },
         "claude": {

@@ -228,7 +228,7 @@ Plugin：`python-project` · Skill：[`pyproject-standard`](../plugins/python-pr
 使用 pyproject-standard 审查这个 Python 项目的 pyproject.toml。识别有仓库证据支持的改动，向我展示拟议配置，并在编辑前询问。
 ```
 
-在 Codex 中，只有 `project-docs-progress` 可自动用于已有任务的进度维护；其余六个文档技能需要显式调用。普通小改不会自动建立文档体系，完成任务默认只勾选，不生成日志。具体用法见[使用说明](usage.md)。
+在 Codex 中，`project-docs-progress` 可自动用于已有任务的进度维护，以及新建、保存或链接项目 plan/spec 文件的请求；其余六个文档技能需要显式调用。Bootstrap 和 refactor 必须读取与专项技能相同的对应文档规范，在用户指定范围内应用。普通小改不会自动建立文档体系，完成任务默认只勾选。具体用法见[使用说明](usage.md)。
 
 ### 维护当前任务的最小进度
 
@@ -237,6 +237,8 @@ Plugin：`project-docs` · Skill：[`project-docs-progress`](../plugins/project-
 ```text
 使用 $project-docs:project-docs-progress 继续 TODO 中当前已授权的任务；完成后只更新勾选和必要阻塞。
 ```
+
+“编写一个 plan.md”默认使用 `docs/plans/plan-YYYY-MM-DD-HH-mm.md`；spec 文件默认使用 `docs/specs/spec-YYYY-MM-DD-HH-mm.md`。明确的文件名、路径和项目既有约定优先。时间取用户配置时区，未配置时取环境本地时间；自动命名发生冲突时追加 `-2`、`-3` 等后缀；明确指定的位置冲突时不自动更名或覆盖。已有文件保留名称。仅在聊天中给出的计划留在聊天中，保存文件不创建 TODO/roadmap，也不开始实施。
 
 ## 故障排查
 

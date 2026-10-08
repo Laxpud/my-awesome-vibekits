@@ -1,22 +1,23 @@
 ---
 name: project-docs-bootstrap
-description: Use only when explicitly requested to initialize a missing documentation baseline or create the minimum useful project documentation.
+description: Use only when explicitly invoked to create a missing documentation baseline.
 disable-model-invocation: true
 ---
 
 # 初始化文档入口
 
-仅在用户显式调用本技能时使用。读取[共同写作约定](references/common/writing-style.md)。先看现有入口和能说明项目用途、运行方式的少量配置与代码，再补缺失事实；不通读整个仓库。
+读取[共同约定](references/common-writing-rules.md)。从现有入口及能说明用途、运行方式的相关配置和代码判断缺口，只补当前需要的文档，保留清晰的既有布局。
 
-只建立当前真实需要的入口，已有清晰布局优先。通常先解决 README；有活动项目管理需求才建 TODO / roadmap，有理解实现的需求才建技术说明，需要项目规则才建 AGENTS。不要一次生成所有目录或空白文档套件。
+处理某类文档前读取对应规范；创建或实质重写时使用模板。
 
-| 需要建立的内容 | 按需读取的资料 |
-| --- | --- |
-| README / 使用说明 | [README 约定](references/project-docs-readme/readme-contract.md)、[模板](assets/project-docs-readme/readme-template.md)；需要日常用法时读[使用说明](references/project-docs-readme/usage-guide.md) |
-| 当前与未来工作 | [规划职责](references/project-docs-planning/planning-model.md)、[模板](assets/project-docs-planning/planning-templates.md) |
-| 技术入口 | [C4 与源码导航](references/project-docs-architecture/architecture-diagrams.md)、[技术页示例](assets/project-docs-architecture/technical-templates.md) |
-| 项目指导 | [AGENTS 与软链](references/project-docs-guidance/project-guidance.md) |
+| 内容 | 先读规范 | 模板 |
+| --- | --- | --- |
+| README / 正式翻译 | [README](references/readme-rules.md) | [README 模板](references/readme-template.md) |
+| 日常使用说明 | [使用说明](references/usage-rules.md) | 内含示例 |
+| TODO / roadmap | [规划职责](references/planning-rules.md) | [规划模板](references/planning-templates.md) |
+| plan/spec 文件 | [保存规则](references/planning-lifecycle-rules.md#保存-planspec) | 正文由任务决定 |
+| 技术入口 | [技术文档](references/architecture-rules.md) | [技术页](references/architecture-templates.md) |
+| 重要决定 | [ADR](references/architecture-adr-rules.md) | 内含示例 |
+| 项目指导 | [AGENTS / CLAUDE](references/guidance-rules.md) | 内含示例 |
 
-这些是本插件的配套资料，不是自动调用其他技能。只读正在创建的文档类型；计划归档等未发生的流程不提前加载。
-
-用户已要求创建则直接完成范围内工作；关键用途或推荐使用路径缺失时才询问。只要求审查则交付发现，不修改。检查新入口和链接是否可用，不把“初始化文档”扩大成源码改造、发布或迁移全部历史。
+有活动管理需求才建 TODO / roadmap，有实现说明需求才建技术入口，需要项目规则才建 AGENTS；不生成空白文档套件，不迁移全部历史。

@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Docs Progress"
-  short_description: "Continue existing tasks with minimal progress notes"
+  short_description: "Track progress and apply project plan/spec storage conventions"
   default_prompt: "Use $project-docs:project-docs-progress for the requested progress task."
 policy:
   allow_implicit_invocation: true
