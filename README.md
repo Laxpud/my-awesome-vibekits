@@ -212,13 +212,15 @@ Plugin: `project-docs` · Skill: [`project-docs-guidance`](plugins/project-docs/
 Use $project-docs:project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
 ```
 
-### Review or Standardize Code Comments
+### Review or Improve Code Comments
 
 Plugin: `code-quality` · Skill: [`code-comment-standard`](plugins/code-quality/skills/code-comment-standard/SKILL.md)
 
 ```text
-Use code-comment-standard to review comments in this repository. Report inaccurate, redundant, or missing high-value comments and propose focused improvements without changing code behavior.
+Use $code-quality:code-comment-standard to review comments in these files. Identify missing processing steps, unclear data meaning, and unsupported claims. Explain the reading gaps and show focused rewrites without editing files.
 ```
+
+Invoke this skill explicitly. For an edit, ask the skill to apply the improvements within the requested scope while preserving code behavior. The skill includes [before-and-after examples with explanations](plugins/code-quality/skills/code-comment-standard/references/comment-examples.md). Everyday commenting preferences belong in your global or project instructions; this skill provides a focused review and editing workflow.
 
 ### Create or Review pyproject.toml
 

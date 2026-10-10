@@ -212,13 +212,15 @@ Plugin：`project-docs` · Skill：[`project-docs-guidance`](../plugins/project-
 使用 $project-docs:project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
 ```
 
-### 审查或规范代码注释
+### 审查或改进代码注释
 
 Plugin：`code-quality` · Skill：[`code-comment-standard`](../plugins/code-quality/skills/code-comment-standard/SKILL.md)
 
 ```text
-使用 code-comment-standard 审查这个仓库的代码注释。报告不准确、冗余或缺失的高价值注释，并在不改变代码行为的前提下提出聚焦的改进方案。
+使用 $code-quality:code-comment-standard 审查这些文件的代码注释。找出缺失的处理步骤、含糊的数据说明和缺乏依据的结论，解释具体阅读障碍并给出聚焦的改写示例，不编辑文件。
 ```
+
+本技能仅供显式调用。需要直接修改时，要求技能在指定范围内落实改进并保持代码行为。技能提供[带解释的正反改写案例](../plugins/code-quality/skills/code-comment-standard/references/comment-examples.md)。日常注释习惯由全局或项目指令约定；这个技能提供专门的审查与整改流程。
 
 ### 创建或审查 pyproject.toml
 

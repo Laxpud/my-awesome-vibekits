@@ -15,7 +15,7 @@
 
 状态：2026-08-13 “Codex / Claude Code 多插件目录与分发”里程碑完成并归档后恢复为当前里程碑。暂停期间的已完成、部分完成和未完成记录均保持原状态。
 
-审查记录（2026-09-24）：已按插件记录当前 7 项技能指令问题：[code-quality 3 项](docs/reviews/2026-09-24-code-quality.md)、[python-project 1 项](docs/reviews/2026-09-24-python-project.md)、[project-docs 3 项](docs/reviews/2026-09-24-project-docs.md)。原审查保留为历史；project-docs 的 A5–A7 已在本轮改造中处理，其他插件问题仍待处理。
+审查记录（2026-09-24）：已按插件记录当时的 7 项技能指令问题：[code-quality 3 项](docs/reviews/2026-09-24-code-quality.md)、[python-project 1 项](docs/reviews/2026-09-24-python-project.md)、[project-docs 3 项](docs/reviews/2026-09-24-project-docs.md)。原审查保留为历史；project-docs 的 A5–A7 和 code-quality 的 A1–A3 已在后续改造中处理，python-project 问题仍待处理。
 
 - [x] 为每个已收录技能补充一个 README 可链接的最小使用示例。
   - 验收条件：根 README 的按目标入口能指向示例或对应 `SKILL.md` 中的示例段落，读者无需先阅读完整 Skill 正文即可判断适用场景并复制最小提示词。
@@ -62,6 +62,12 @@
   - 验证：生成与元数据一致性、链接、本地安装契约、现有 72 项测试及 Codex 隔离七技能发现通过；保留必要验证与明确权限边界，未新增测试或更新日常安装。
 
 - [x] 按“主题 + 用途”统一 project-docs 参考文件名与标题，同步引用和生成物。
+
+- [x] 将 code-comment-standard 改为专项注释审查、补全与整改技能，精简入口并补充带上下文和改写理由的五组正反例。
+  - 验证：内容审阅、静态校验、元数据及链接检查、Codex 隔离安装发现与例库完整性通过；实际写作效果待使用反馈，未发布或更新日常安装。
+
+- [x] 在 [sources/code-comment-examples](sources/code-comment-examples/README.md) 按 positive/negative 扁平归档用户提供的 7 个正例和 3 个反例，并为 code-comment-standard 补齐展示元数据、默认提示词与 YAML/frontmatter 双重手动触发配置。
+  - 验证：10 个样本 SHA256 与原文件一致，调用配置、元数据、链接及 Codex 隔离安装发现与资料完整性检查通过；quick validator 不接受调用扩展字段，限制见[维护规范](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)；未发布或更新日常安装。
 
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：

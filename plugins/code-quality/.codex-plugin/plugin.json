@@ -1,7 +1,7 @@
 {
   "name": "code-quality",
   "version": "1.1.2",
-  "description": "Standards for maintainable code comments, docstrings, TODOs, and public API documentation.",
+  "description": "Focused review and improvement of code comments, docstrings, and API explanations, with practical before-and-after examples.",
   "author": {
     "name": "Laxpud",
     "url": "https://github.com/Laxpud"
@@ -17,8 +17,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Code Quality",
-    "shortDescription": "Maintainable code-comment standards",
-    "longDescription": "Generate, review, and improve comments, docstrings, TODOs, and public API documentation while preserving code behavior and repository style.",
+    "shortDescription": "Review and improve code comments",
+    "longDescription": "Review, complete, and rewrite comments to explain code responsibilities, processing steps, data meaning, and interface contracts without changing behavior.",
     "developerName": "Laxpud",
     "category": "Productivity",
     "capabilities": [
@@ -26,7 +26,7 @@
     ],
     "websiteURL": "https://github.com/Laxpud/my-awesome-vibekits",
     "defaultPrompt": [
-      "Use code-comment-standard to review and improve comments in this codebase."
+      "Use $code-quality:code-comment-standard to review comments in the requested files. Explain specific reading gaps and show focused rewrites without editing files."
     ],
     "brandColor": "#2563EB"
   }

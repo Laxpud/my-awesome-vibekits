@@ -89,7 +89,7 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs:project-docs-guidance`
 - `project-docs:project-docs-progress`
 
-Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。同时，六个专项技能在 frontmatter 设置 `disable-model-invocation: true`，progress 设置 `false`。两种配置表达同一调用意图，不能互相替代；不据此宣称所有客户端都支持该扩展。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
+Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能及 `code-comment-standard` 在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。这七个专项技能同时在 frontmatter 设置 `disable-model-invocation: true`，progress 设置 `false`。两种配置表达同一调用意图，不能互相替代；不据此宣称所有客户端都支持该扩展。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
 
 ## 生成自包含的 project-docs 技能
 
