@@ -69,7 +69,7 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
     "resetCreditAuthorized": false
   },
   "completion": {
-    "markers": ["任务完成，停止续跑控制器"],
+    "markers": ["任务完成，停止定时续跑。"],
     "resumeOnlyOnQuotaLimit": true,
     "maxRoundsWithoutProgress": 3
   },
@@ -85,7 +85,7 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
   不会各写一份而漂移。哨兵只匹配执行端的 `last_agent_message`，不匹配用户消息，
   因此把哨兵句子放进续跑消息本身不会自触发。
 - `completion.markers` 用作**停止哨兵**：续跑指令要求执行端在任务收工时原样写出
-  该短语（例如「任务完成，停止续跑控制器」）。哨兵是刻意约定的固定字符串，不是
+  该短语（例如「任务完成，停止定时续跑。」）。哨兵是刻意约定的固定字符串，不是
   对自然语言的猜测，判定优先级最高。局限：该短语若被引用（含否定语境）也会命中，
   因此要选一个不会在别处出现的句子，并只在完成时要求输出。
 - `completion.resumeOnlyOnQuotaLimit`：为 `true` 时按**停止原因**决定是否继续——
