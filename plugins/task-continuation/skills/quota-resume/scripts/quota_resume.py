@@ -32,6 +32,8 @@ from pathlib import Path
 STATE_VERSION = 1
 DEFAULT_MARGIN_SECONDS = 120
 DEFAULT_POLL_SECONDS = 300
+# 两次投递之间的最小间隔：防止一轮结束却无完成证据时反复催促同一会话。
+DEFAULT_MIN_DELIVERY_GAP_SECONDS = 900
 WAITING_RECHECK_SECONDS = 600
 QUEUE_CONSUME_DEADLINE_SECONDS = 6 * 3600
 
@@ -78,6 +80,7 @@ class TaskConfig:
     # 额度与调度
     margin_seconds: int = DEFAULT_MARGIN_SECONDS
     poll_seconds: int = DEFAULT_POLL_SECONDS
+    min_seconds_between_deliveries: int = DEFAULT_MIN_DELIVERY_GAP_SECONDS
     allowance: str = "natural"  # natural | reset_credit
     max_reset_credits: int = 0
     reset_credit_authorized: bool = False
@@ -144,6 +147,7 @@ def load_config(cfg_path: Path) -> TaskConfig:
         extra_queue_args=[str(a) for a in (delivery.get("extraArgs") or [])],
         margin_seconds=int(quota.get("marginSeconds", DEFAULT_MARGIN_SECONDS)),
         poll_seconds=int(raw.get("pollSeconds", DEFAULT_POLL_SECONDS)),
+        min_seconds_between_deliveries=int(raw.get("minSecondsBetweenDeliveries", DEFAULT_MIN_DELIVERY_GAP_SECONDS)),
         allowance=str(quota.get("allowance") or "natural"),
         max_reset_credits=int(quota.get("maxResetCredits", 0)),
         reset_credit_authorized=bool(quota.get("resetCreditAuthorized", False)),
@@ -343,8 +347,13 @@ def tail_events(rollout: Path, limit: int = 400) -> list[dict]:
 
 
 def classify_turn(events: list[dict], since_epoch: int) -> dict:
-    """在 since_epoch 之后寻找轮次终态与完成/阻塞证据。"""
-    result = {"turnCompleted": False, "userMessage": False, "completedAt": None, "blocker": None}
+    """在 since_epoch 之后寻找轮次状态与完成/阻塞证据。
+
+    turnRunning 表示脚本最近一次 task_started 之后没有出现终态，即该线程确实
+    正在执行。投递决策必须区分「在跑」与「已跑完」：前者绝不能追加消息。
+    """
+    result = {"turnCompleted": False, "turnRunning": False, "userMessage": False,
+              "completedAt": None, "blocker": None}
     for ev in events:
         ts = ev.get("timestamp")
         if not ts:
@@ -354,13 +363,17 @@ def classify_turn(events: list[dict], since_epoch: int) -> dict:
             continue
         payload = ev.get("payload") or {}
         ptype = payload.get("type")
-        if ptype == "task_complete":
+        if ptype == "task_started":
+            result["turnRunning"] = True
+        elif ptype == "task_complete":
             result["turnCompleted"] = True
+            result["turnRunning"] = False
             result["completedAt"] = epoch
             msg = payload.get("last_agent_message") or payload.get("message") or ""
             result["lastMessage"] = msg if isinstance(msg, str) else json.dumps(msg, ensure_ascii=False)
         elif ptype == "turn_aborted":
             result["turnCompleted"] = True
+            result["turnRunning"] = False
             result["completedAt"] = epoch
             result["blocker"] = f"turn_aborted: {payload.get('reason')}"
         elif ptype == "message" and payload.get("role") == "user":
@@ -375,6 +388,39 @@ def match_markers(text: str, markers: list[str]) -> bool:
 # --------------------------------------------------------------------------
 # 投递
 # --------------------------------------------------------------------------
+
+
+def delivery_gate(state: dict, verdict: dict, cfg: TaskConfig, now: int) -> dict:
+    """投递前的纯判定：额度已经允许时，是否真的应该现在投递。
+
+    两条闸门都来自实测问题：
+    - 线程正在执行时绝不追加消息（否则等于每轮都催一次在跑的会话）。
+    - 两次投递之间保持最小间隔（否则一轮结束却无完成证据时，会在额度可用的
+      情况下每个轮询周期都重复催促同一会话）。
+
+    返回 {allow, status, nextCheckAt, event, fields}；不修改 state、不落盘。
+    """
+    if verdict.get("turnRunning"):
+        return {
+            "allow": False,
+            "status": RUNNING,
+            "nextCheckAt": now + cfg.poll_seconds,
+            "event": "skip_while_running",
+            "fields": {},
+        }
+
+    last_delivery = int(state.get("lastDeliveryAt") or 0)
+    if last_delivery and now - last_delivery < cfg.min_seconds_between_deliveries:
+        return {
+            "allow": False,
+            "status": RUNNING,
+            "nextCheckAt": max(now + cfg.poll_seconds,
+                               last_delivery + cfg.min_seconds_between_deliveries),
+            "event": "delivery_throttled",
+            "fields": {"sinceLastSec": now - last_delivery},
+        }
+
+    return {"allow": True, "status": "", "nextCheckAt": 0, "event": "", "fields": {}}
 
 
 def queue_message(cfg: TaskConfig, message: str) -> tuple[int, str, str]:
@@ -471,7 +517,23 @@ def cycle(cfg: TaskConfig) -> int:
         log_event(cfg, "waiting_quota", **{k: v for k, v in quota.items() if v is not None})
         return 0
 
-    # 3. 额度允许，投递续跑消息。
+    # 3. 额度允许。投递前有两道闸：线程是否正在跑、以及距上次投递是否太近。
+    try:
+        verdict = classify_turn(tail_events(resolve_rollout(cfg)), 0)
+    except Exception as exc:
+        state.update({"status": RETRY_WAIT, "lastError": repr(exc), "nextCheckAt": now + WAITING_RECHECK_SECONDS})
+        save_state(cfg, state)
+        log_event(cfg, "rollout_unreadable", error=repr(exc))
+        return 1
+
+    decision = delivery_gate(state, verdict, cfg, now)
+    if not decision["allow"]:
+        state.update({"status": decision["status"], "nextCheckAt": decision["nextCheckAt"]})
+        save_state(cfg, state)
+        log_event(cfg, decision["event"], **decision.get("fields", {}))
+        return 0
+
+    # 4. 额度允许且线程空闲，投递续跑消息。
     message = cfg.message_file.read_text(encoding="utf-8")
     code, submission_id, out = queue_message(cfg, message)
     if code != 0 or not submission_id:
@@ -484,6 +546,7 @@ def cycle(cfg: TaskConfig) -> int:
         "status": QUEUED,
         "queuedSubmissionId": submission_id,
         "queuedAt": now,
+        "lastDeliveryAt": now,
         "consumeDeadline": now + QUEUE_CONSUME_DEADLINE_SECONDS,
         "rolloutOffset": rollout_offset(cfg),
         "nextCheckAt": now + cfg.poll_seconds,
@@ -570,6 +633,15 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
         return 1
 
     verdict = classify_turn(events, queued_at)
+
+    # 该线程正在执行：绝不追加续跑消息，只跟踪。
+    # 这是防止「额度可用就每轮投递」的关键判据——正在跑的会话不需要被催。
+    if verdict["turnRunning"]:
+        state.update({"status": RUNNING, "nextCheckAt": now + cfg.poll_seconds})
+        save_state(cfg, state)
+        log_event(cfg, "thread_running", elapsedSec=now - queued_at)
+        return 0
+
     if not verdict["turnCompleted"]:
         state["nextCheckAt"] = now + cfg.poll_seconds
         save_state(cfg, state)

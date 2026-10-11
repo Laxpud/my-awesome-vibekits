@@ -32,7 +32,7 @@
 ## 状态机
 
 ```
-waiting_quota ──额度允许──> queued ──匹配轮次出现──> running ──证据──> completed
+waiting_quota ──额度允许且线程空闲、间隔满足──> queued ──匹配轮次出现──> running ──证据──> completed
       ^                       │                        │
       │                       └──超期未消费──> needs_attention
       └────── 查询失败 retry_wait ──────┘        running ──继续可执行──> waiting_quota
@@ -50,6 +50,7 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
 {
   "name": "my-task",
   "pollSeconds": 300,
+  "minSecondsBetweenDeliveries": 900,
   "target": {
     "threadId": "<目标线程 UUID>",
     "threadName": "会话显示名（仅记录用）",
@@ -87,6 +88,10 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
 - `delivery.extraArgs` 里 **`--approve-for-me` 与 `--sandbox` 互斥**：前者本身已隐含
   `workspace-write` 沙箱，两个一起传会被 CLI 以参数冲突拒绝（`cannot be used with`）。
   只写 `--approve-for-me` 即可；确需自定义沙箱时改用 `--sandbox`，不要同时给。
+- `minSecondsBetweenDeliveries`（默认 900 秒）是两次投递之间的最小间隔。
+  一轮结束但没拿到完成证据时状态会回到 `waiting_quota`；若额度一直可用又不限制
+  间隔，就会每个 `pollSeconds` 都催一次同一会话。投递前的两道闸是：**线程正在
+  执行**（`task_started` 之后无终态）或**距上次投递过近**，都只跟踪、不追加消息。
 - `notify.command` 可为空数组，表示只写事件日志不弹通知。
 
 ## 命令
