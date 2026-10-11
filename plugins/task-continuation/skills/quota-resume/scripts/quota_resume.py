@@ -85,6 +85,7 @@ class TaskConfig:
     # 完成判定
     completion_markers: list[str] = field(default_factory=list)
     stop_markers: list[str] = field(default_factory=list)
+    max_rounds_without_progress: int = 3
 
     # 通知
     notify_command: list[str] = field(default_factory=list)
@@ -148,6 +149,7 @@ def load_config(cfg_path: Path) -> TaskConfig:
         reset_credit_authorized=bool(quota.get("resetCreditAuthorized", False)),
         completion_markers=[str(m) for m in (completion.get("markers") or [])],
         stop_markers=[str(m) for m in (completion.get("stopMarkers") or [])],
+        max_rounds_without_progress=int(completion.get("maxRoundsWithoutProgress", 3)),
         notify_command=[str(c) for c in (notify.get("command") or [])],
         approvals_reviewer=str(delivery.get("approvalsReviewer") or "auto_review"),
     )
@@ -525,9 +527,24 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
         return 0
 
     # 既非完成也非停止：继续下一轮投递（下一周期由额度门决定）。
-    state["status"] = WAITING_QUOTA
+    # 但必须有界：一轮结束却没有约定证据，就是「无进展」。没有这个上限时，
+    # 一个持续返回同样结果的任务会每轮都重新投递，白烧额度。
+    rounds = int(state.get("roundsWithoutProgress") or 0) + 1
+    if rounds >= cfg.max_rounds_without_progress:
+        state.update({
+            "status": NEEDS_ATTENTION,
+            "roundsWithoutProgress": rounds,
+            "blocker": f"连续 {rounds} 轮未取得约定证据",
+        })
+        save_state(cfg, state)
+        log_event(cfg, "no_progress_limit", rounds=rounds)
+        notify(cfg, f"[{cfg.name}] 需要处理",
+               f"连续 {rounds} 轮没有取得完成证据，已停止自动续跑。")
+        return 0
+
+    state.update({"status": WAITING_QUOTA, "roundsWithoutProgress": rounds})
     save_state(cfg, state)
-    log_event(cfg, "continue_next_round")
+    log_event(cfg, "continue_next_round", roundsWithoutProgress=rounds)
     return 0
 
 

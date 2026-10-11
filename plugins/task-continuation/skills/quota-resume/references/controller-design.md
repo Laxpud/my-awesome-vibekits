@@ -70,7 +70,8 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
   },
   "completion": {
     "markers": ["\"status\": \"complete\""],
-    "stopMarkers": ["\"status\": \"blocked\""]
+    "stopMarkers": ["\"status\": \"blocked\""],
+    "maxRoundsWithoutProgress": 3
   },
   "notify": { "command": ["notify-send", "--app-name", "quota-resume"] }
 }
@@ -80,7 +81,9 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
   且必须同时给出 `resetCreditAuthorized: true` 与 `maxResetCredits` 上限。
   购买额度、充值、切换计费路径不在授权范围内。
 - `completion.markers` 命中续跑指令约定的完成证据才记 `completed`；
-  `stopMarkers` 命中则记 `stopped`。两者都不命中时继续下一轮。
+  `stopMarkers` 命中则记 `stopped`。两者都不命中时继续下一轮，但受
+  `maxRoundsWithoutProgress` 限制：连续若干轮拿不到约定证据就转入
+  `needs_attention` 并通知，避免一个持续返回同样结果的任务每轮重复投递、白烧额度。
 - `notify.command` 可为空数组，表示只写事件日志不弹通知。
 
 ## 命令
