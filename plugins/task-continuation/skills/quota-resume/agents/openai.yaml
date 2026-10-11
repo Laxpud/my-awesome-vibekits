@@ -1,0 +1,6 @@
+interface:
+  display_name: "Quota Resume"
+  short_description: "Schedule task continuation after quota recovery"
+  default_prompt: "Use $task-continuation:quota-resume to create automatic continuation for my unfinished task after its five-hour quota recovers."
+policy:
+  allow_implicit_invocation: false

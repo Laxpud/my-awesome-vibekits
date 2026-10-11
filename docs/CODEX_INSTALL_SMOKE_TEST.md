@@ -12,7 +12,7 @@
 - `policy.installation`、`policy.authentication` 和 `category` 完整；
 - manifest 的 `skills` 指向插件自己的 `./skills/`，且 catalog 声明的每个 `SKILL.md` 都存在；
 - manifest 的 GitHub repository 与中英文 README 的 `codex plugin marketplace add <owner>/<repo>` 一致；
-- 两份 README 都引导用户进入 `/plugins`，并列出三个独立插件 ID。
+- 两份 README 都引导用户进入 `/plugins`，并列出 catalog 中的全部独立插件 ID。
 
 单条目失败时，诊断包含 marketplace 路径、插件 ID 和具体字段，不使用 `plugins[0]` 代称整个目录。
 
@@ -54,5 +54,5 @@ python scripts/check_codex_install.py --remote --ref <branch-or-tag> --all
 
 - 不在检查脚本中维护插件名、目录、版本或 repository 常量。
 - 新增插件必须先进入 catalog，再生成 marketplace；不得手工追加 JSON。
-- 三个插件可分别检查，默认行为是检查全部；每个被选插件都校验其 catalog 声明的完整 Skill 集合，而非只检查数组首项。
+- 各插件可分别检查，默认行为是检查全部；每个被选插件都校验其 catalog 声明的完整 Skill 集合，而非只检查数组首项。
 - 原 `laxpud-vibekits` 聚合插件条目不得作为兼容项恢复。

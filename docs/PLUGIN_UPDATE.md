@@ -1,6 +1,6 @@
 # 多插件发布与客户端更新
 
-本文说明三个独立插件的版本发布、双客户端验证、更新、晋级和回滚。插件版本彼此独立；marketplace 顶层名称统一为 `laxpud-vibekits`。
+本文说明 catalog 中独立插件的版本发布、双客户端验证、更新、晋级和回滚。插件版本彼此独立；marketplace 顶层名称统一为 `laxpud-vibekits`。
 
 ## 目标选择
 
@@ -10,7 +10,7 @@
 - 重复 `--plugin <id>`：按给定顺序处理一个或多个插件；
 - `--all`：显式处理全部插件。
 
-合法 ID 是 `code-quality`、`python-project` 和 `project-docs`。发布、digest、安装校验、晋级和回滚的最小目标都是 `(platform, marketplace, plugin)`；一次操作不得改写兄弟插件的版本、来源或 enabled 状态。
+合法 ID 由 [`plugin-catalog.json`](../plugin-catalog.json) 定义，当前为 `code-quality`、`python-project`、`project-docs` 和 `task-continuation`。发布、digest、安装校验、晋级和回滚的最小目标都是 `(platform, marketplace, plugin)`；一次操作不得改写兄弟插件的版本、来源或 enabled 状态。
 
 ## 发布前提
 
@@ -40,14 +40,14 @@ python scripts/check_codex_install.py --remote --all
 | --- | --- | --- | --- |
 | catalog 与生成物 | 普通 CI | ID/路径/Skill 冲突、完整 Skill 集合、双端 manifest、marketplace、防漂移 | 否 |
 | 隔离生命周期 fixture | 普通 CI | 三插件双端发现、逐插件安装、Claude 启停、Codex enabled 状态保留、完整 Skill 集合、升级、卸载、独立回滚、故障隔离 | 否 |
-| 客户端 schema/CLI | 有 Codex 与 Claude CLI 的环境 | 三个正式插件及两份 marketplace validator | 否 |
+| 客户端 schema/CLI | 有 Codex 与 Claude CLI 的环境 | catalog 中全部插件及两份 marketplace validator | 否 |
 | Live E2E | 有凭据、网络和远端写权限的 Windows runner | 真实 marketplace 刷新、逐插件安装/升级、version/source/digest、清理 | 默认否 |
 | Skill smoke | Live E2E 可选项 | 新会话发现并调用 `python-project:pyproject-standard` | 是 |
 | Codex GUI 生命周期 | Codex App 或 CLI `/plugins` | 逐插件启停和卸载，确认兄弟插件状态不变 | 否 |
 
 普通 CI 先运行静态门禁，再运行确定性的 fake-client 生命周期测试。需要凭据、网络、GUI 或模型的门禁独立运行，不得让凭据缺失伪装成静态检查成功，也不得默认消耗 token。
 
-测试 fixture 明确包括：三个正式插件；两个插件内同名 `shared-name` 候选 Skill 的冲突 catalog；一个越过根目录的无效路径 catalog；只升级和回滚 `python-project`、保持另外两插件不变的生命周期场景；以及 `project-docs` 从旧版单 Skill 安装升级到目标六 Skill 安装的场景。
+测试 fixture 明确包括：既有 `code-quality`、`python-project`、`project-docs` 三插件样本；两个插件内同名 `shared-name` 候选 Skill 的冲突 catalog；一个越过根目录的无效路径 catalog；只升级和回滚 `python-project`、保持另外两插件不变的生命周期场景；以及 `project-docs` 从旧版单 Skill 安装升级到目标六 Skill 安装的场景。新增插件的 catalog 与安装检查不代表该插件已经完成历史升级或双客户端 Live E2E。
 
 ## 自动化升级门禁
 
@@ -101,7 +101,7 @@ codex
 /plugins
 ```
 
-在 `laxpud-vibekits` marketplace 标签中逐个打开插件。Codex CLI 的 `/plugins` 浏览器支持安装、卸载，并用 `Space` 单独启停已安装插件。对一个插件执行操作后，核对另外两个插件的安装和启用状态未变化。
+在 `laxpud-vibekits` marketplace 标签中逐个打开插件。Codex CLI 的 `/plugins` 浏览器支持安装、卸载，并用 `Space` 单独启停已安装插件。对一个插件执行操作后，核对其他插件的安装和启用状态未变化。
 
 ### Claude Code
 
@@ -114,7 +114,7 @@ claude plugin update python-project@laxpud-vibekits
 claude plugin uninstall python-project
 ```
 
-替换插件 ID，逐一覆盖三个插件。`project` 或 `local` 实例应在对应项目目录并带相应 `--scope` 执行。更新后运行 `/reload-plugins` 或新建会话。
+替换插件 ID，逐一覆盖本次发布的插件。`project` 或 `local` 实例应在对应项目目录并带相应 `--scope` 执行。更新后运行 `/reload-plugins` 或新建会话。
 
 ## 报告、退出码与恢复
 
@@ -132,6 +132,6 @@ claude plugin uninstall python-project
 
 ## 无兼容迁移层
 
-原 `laxpud-vibekits` 插件 ID 和 `plugins/laxpud-vibekits/` 已直接删除。旧安装需要先在各客户端卸载旧 ID，再按 README 选择三个新插件；仓库不提供 deprecated bundle、别名、聚合依赖或 Skills 副本。
+原 `laxpud-vibekits` 插件 ID 和 `plugins/laxpud-vibekits/` 已直接删除。旧安装需要先在各客户端卸载旧 ID，再按 README 选择独立插件；仓库不提供 deprecated bundle、别名、聚合依赖或 Skills 副本。
 
 Codex 的 marketplace 和 `/plugins` 行为参考 [official OpenAI plugin documentation](https://learn.chatgpt.com/docs/plugins) 与 [plugin packaging guide](https://developers.openai.com/plugins/build/plugins)。Claude Code 生命周期命令参考 [Discover and manage plugins](https://code.claude.com/docs/en/discover-plugins)。

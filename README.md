@@ -30,7 +30,7 @@
 
 Vibekits is my personally incubated collection of reusable workflows for Codex and Claude Code. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
 
-The current source catalog contains three independently installable plugins and nine skills for code comments, Python project metadata, and repository documentation. The seven-skill redesign is implemented in the source but has not been released or applied to daily installations. Remote installation does not include unpublished changes.
+The current source catalog contains four independently installable plugins and ten skills for code comments, Python project metadata, repository documentation, and resuming authorized work after quota recovery. Source changes do not automatically update daily installations. Remote installation uses the content published on the selected branch.
 
 ## Who This Is For
 
@@ -242,6 +242,16 @@ Use $project-docs:project-docs-progress to continue the current authorized TODO 
 
 A request such as “write a plan.md” uses `docs/plans/plan-YYYY-MM-DD-HH-mm.md` by default; spec files use `docs/specs/spec-YYYY-MM-DD-HH-mm.md`. Explicit filenames or paths and established project conventions take precedence. The timestamp uses your configured timezone, or local environment time if none is configured; automatically named files use suffixes such as `-2` or `-3` on collision. A conflicting explicit destination is not silently renamed or overwritten. Existing files keep their names. A chat-only plan stays in chat, and saving a file does not create TODO/roadmap files or start implementation.
 
+### Resume Work After Quota Recovery
+
+Plugin: `task-continuation` · Skill: [`quota-resume`](plugins/task-continuation/skills/quota-resume/SKILL.md)
+
+```text
+Use $task-continuation:quota-resume to create a schedule that resumes this authorized task after its five-hour quota recovers. Track actual execution, prevent duplicate submissions, and stop when the task is complete or needs my input.
+```
+
+This skill must be invoked explicitly. It guides the agent in creating or repairing a schedule; installing the plugin does not start a background task. It checks five-hour and weekly limits, reuses the service that owns a chat or restores the original thread when no owner exists, and permits existing reset credits only within explicit user authorization and a usage cap. It accounts for queue startup and automatic approval waits when tracking execution. The included execution guidance covers Codex, with a Linux systemd path when appropriate. Loading the skill in another client does not establish support for that client's quota or scheduling APIs. Availability checks and queued messages alone do not prove that work resumed successfully.
+
 ## Troubleshooting
 
 - **A command says “not found.”** Check whether it belongs in the system terminal or the agent input area. Installer commands, `codex plugin marketplace add`, `codex`, and `claude` go in the terminal. `/plugins`, `/plugin ...`, and task prompts go inside the agent.
@@ -255,7 +265,8 @@ Vibekits currently supports the Codex and Claude Code plugin marketplaces:
 
 - `code-quality` contains one code-comment skill;
 - `python-project` contains one `pyproject.toml` skill;
-- `project-docs` contains seven documentation skills.
+- `project-docs` contains seven documentation skills;
+- `task-continuation` contains one explicitly invoked quota-recovery scheduling skill.
 
 Each plugin is installed and versioned independently, so installing, disabling, updating, or removing one does not require changing its siblings.
 

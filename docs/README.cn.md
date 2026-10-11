@@ -30,7 +30,7 @@
 
 Vibekits 是我个人孵化的一组 Codex 与 Claude Code 可复用工作流。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
 
-当前源码目录包含三个可独立安装的插件和九个 Skill，覆盖代码注释、Python 项目元数据与仓库文档。七技能改造已在源码中完成，尚未发布或更新日常安装；从远端安装不会取得未发布修改。
+当前源码目录包含四个可独立安装的插件和十个 Skill，覆盖代码注释、Python 项目元数据、仓库文档与额度恢复后续跑已授权任务。源码变化不会自动更新日常安装；远端安装使用所选分支上已发布的内容。
 
 ## 适合谁
 
@@ -242,6 +242,16 @@ Plugin：`project-docs` · Skill：[`project-docs-progress`](../plugins/project-
 
 “编写一个 plan.md”默认使用 `docs/plans/plan-YYYY-MM-DD-HH-mm.md`；spec 文件默认使用 `docs/specs/spec-YYYY-MM-DD-HH-mm.md`。明确的文件名、路径和项目既有约定优先。时间取用户配置时区，未配置时取环境本地时间；自动命名发生冲突时追加 `-2`、`-3` 等后缀；明确指定的位置冲突时不自动更名或覆盖。已有文件保留名称。仅在聊天中给出的计划留在聊天中，保存文件不创建 TODO/roadmap，也不开始实施。
 
+### 额度恢复后继续工作
+
+Plugin：`task-continuation` · Skill：[`quota-resume`](../plugins/task-continuation/skills/quota-resume/SKILL.md)
+
+```text
+使用 $task-continuation:quota-resume 创建定时任务，在五小时额度恢复后继续当前已授权工作。追踪实际执行，避免重复投递，任务完成或需要我提供信息时停止。
+```
+
+本技能仅供显式调用，指导 Agent 创建或修复调度；安装插件本身不会启动后台任务。它同时检查五小时与周额度，复用会话持有者或在确认没有持有者时恢复原线程，并只在用户明确授权及次数上限内使用已有额度重置卡。执行追踪包含队列启动和自动审批等待的处理。当前执行适配资料覆盖 Codex，并提供适用时的 Linux systemd 路径。在其他客户端加载技能不代表已支持该客户端的额度或调度接口。仅通过可用性检查或成功入队，不能证明工作已成功续跑。
+
 ## 故障排查
 
 - **提示“找不到命令”。** 先确认它应该输入系统终端还是 Agent 输入区。安装命令、`codex plugin marketplace add`、`codex` 和 `claude` 输入终端；`/plugins`、`/plugin ...` 和任务提示词输入 Agent。
@@ -255,7 +265,8 @@ Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 
 - `code-quality` 包含一个代码注释 Skill；
 - `python-project` 包含一个 `pyproject.toml` Skill；
-- `project-docs` 包含七个文档 Skill。
+- `project-docs` 包含七个文档 Skill；
+- `task-continuation` 包含一个仅显式调用的额度恢复续跑 Skill。
 
 每个 Plugin 都独立安装和维护版本，因此安装、禁用、更新或移除其中一个时，不需要改变其他 Plugin。
 

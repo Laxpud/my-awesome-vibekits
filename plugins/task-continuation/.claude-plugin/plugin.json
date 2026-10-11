@@ -1,0 +1,20 @@
+{
+  "name": "task-continuation",
+  "description": "Explicitly invoked guidance for resuming authorized work after short-term or weekly quota recovery, with execution tracking and permission-bound reset credits.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Laxpud"
+  },
+  "homepage": "https://github.com/Laxpud/my-awesome-vibekits",
+  "repository": "https://github.com/Laxpud/my-awesome-vibekits",
+  "license": "MIT",
+  "keywords": [
+    "continuation",
+    "quota",
+    "scheduling",
+    "automation"
+  ],
+  "skills": [
+    "./skills/"
+  ]
+}

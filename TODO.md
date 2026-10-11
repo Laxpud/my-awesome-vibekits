@@ -69,6 +69,10 @@
 - [x] 在 [sources/code-comment-examples](sources/code-comment-examples/README.md) 按 positive/negative 扁平归档用户提供的 7 个正例和 3 个反例，并为 code-comment-standard 补齐展示元数据、默认提示词与 YAML/frontmatter 双重手动触发配置。
   - 验证：10 个样本 SHA256 与原文件一致，调用配置、元数据、链接及 Codex 隔离安装发现与资料完整性检查通过；quick validator 不接受调用扩展字段，限制见[维护规范](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)；未发布或更新日常安装。
 
+- [x] 新增 `task-continuation:quota-resume`，指导创建五小时额度恢复后的自动续跑任务。
+  - 验收条件：技能包含五小时与周额度复查、会话持有者复用与无持有者时恢复原线程、队列启动、自动审批等待、按授权限次使用重置卡、真实执行追踪、持久去重和停止条件；frontmatter 与 `openai.yaml` 均限定手动调用；catalog、生成元数据与双语 README 同步，完成内容审阅及 Codex 隔离发现检查。
+  - 验证（2026-10-11）：内容审阅、元数据、本地安装、链接、72 项既有测试与 Codex 隔离安装发现通过；4 份技能文件及调用配置完整，quick validator 的已有调用扩展限制见[维护规范](docs/SKILL_RULE_GUIDELINES.md#技能内容的轻量验收)。真实续跑与卡兑换待使用验证，未更新日常安装。
+
 - [ ] 建立插件更新端到端测试自动化。
   - 验收条件：
     - 在隔离的测试配置中，分别通过 Codex CLI 和 Claude Code CLI 从测试 marketplace 安装旧版、刷新 marketplace 并更新到目标版本。

@@ -1,6 +1,6 @@
 # Skill、Catalog 与适配层维护规范
 
-本规范用于维护 Vibekits 的通用 Skill、插件 catalog 和平台适配层。目标是让三个插件都能被 Codex 与 Claude Code 独立安装、每个插件可拥有一个或多个职责清晰的 Skill，同时不把平台专属逻辑污染到共享 Skill 来源中。
+本规范用于维护 Vibekits 的通用 Skill、插件 catalog 和平台适配层。目标是让 catalog 中的插件都能被 Codex 与 Claude Code 独立安装、每个插件可拥有一个或多个职责清晰的 Skill，同时不把平台专属逻辑污染到共享 Skill 来源中。插件可被某客户端加载，不代表其指导的外部执行器或额度接口适用于该客户端。
 
 项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护 Skill、catalog、双平台适配层及其验证契约。
 
@@ -42,15 +42,17 @@ plugins/
 │   └── skills/code-comment-standard/
 ├── python-project/
 │   └── skills/pyproject-standard/
-└── project-docs/
-    └── skills/
-        ├── project-docs-bootstrap/
-        ├── project-docs-refactor/
-        ├── project-docs-readme/
-        ├── project-docs-planning/
-        ├── project-docs-architecture/
-        ├── project-docs-guidance/
-        └── project-docs-progress/
+├── project-docs/
+│   └── skills/
+│       ├── project-docs-bootstrap/
+│       ├── project-docs-refactor/
+│       ├── project-docs-readme/
+│       ├── project-docs-planning/
+│       ├── project-docs-architecture/
+│       ├── project-docs-guidance/
+│       └── project-docs-progress/
+└── task-continuation/
+    └── skills/quota-resume/
 ```
 
 原 `plugins/laxpud-vibekits/` 聚合包、旧 marketplace 条目、兼容别名和聚合依赖包均不得恢复。
@@ -77,7 +79,7 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs` 的全部配套资料在共享 `references/` 中维护一份，生成器只打包各入口引用的资料及其依赖。入口说明当前任务应读哪些资料；打包完整性不等于执行时全部加载，也不自动调用其他技能。
 - 新增或大改技能后，检查 catalog 描述、README 插件/技能表和生成物是否需要同步。
 
-在提供插件命名空间的平台上，九个公开 Skill 名分别是：
+在提供插件命名空间的平台上，十个公开 Skill 名分别是：
 
 - `code-quality:code-comment-standard`
 - `python-project:pyproject-standard`
@@ -88,8 +90,9 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs:project-docs-architecture`
 - `project-docs:project-docs-guidance`
 - `project-docs:project-docs-progress`
+- `task-continuation:quota-resume`
 
-Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能及 `code-comment-standard` 在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。这七个专项技能同时在 frontmatter 设置 `disable-model-invocation: true`，progress 设置 `false`。两种配置表达同一调用意图，不能互相替代；不据此宣称所有客户端都支持该扩展。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
+Skill frontmatter 中的原始 ID 保持不变，不写入平台命名空间。`project-docs-progress` 允许 Codex 隐式调用，其余六个文档技能、`code-comment-standard` 和 `quota-resume` 在 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，仅显式调用。这八个专项技能同时在 frontmatter 设置 `disable-model-invocation: true`，progress 设置 `false`。两种配置表达同一调用意图，不能互相替代；不据此宣称所有客户端都支持该扩展。描述保持简短、明确；正文以边界和按需导航为主，统一格式放入示例模板。
 
 ## 生成自包含的 project-docs 技能
 
@@ -140,7 +143,7 @@ python3 scripts/build_project_docs.py
 python scripts/sync_plugin_metadata.py
 ```
 
-从 catalog 稳定重建两端 marketplace 和六份 manifest：
+从 catalog 稳定重建两端 marketplace 和各插件的双端 manifest：
 
 ```bash
 python scripts/sync_plugin_metadata.py --all --write

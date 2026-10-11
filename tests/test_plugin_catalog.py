@@ -15,11 +15,11 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 class CatalogTests(unittest.TestCase):
-    def test_production_catalog_contains_three_self_contained_plugins(self) -> None:
+    def test_production_catalog_contains_four_self_contained_plugins(self) -> None:
         catalog = load_catalog(REPOSITORY_ROOT)
 
         self.assertEqual(
-            ["code-quality", "python-project", "project-docs"],
+            ["code-quality", "python-project", "project-docs", "task-continuation"],
             [plugin.id for plugin in catalog.plugins],
         )
         expected_skills = {
@@ -34,6 +34,7 @@ class CatalogTests(unittest.TestCase):
                 "project-docs-guidance",
                 "project-docs-progress",
             ),
+            "task-continuation": ("quota-resume",),
         }
         for plugin in catalog.plugins:
             plugin_root = REPOSITORY_ROOT / Path(plugin.directory.as_posix())
@@ -90,7 +91,7 @@ class CatalogTests(unittest.TestCase):
             root = Path(directory)
             shutil.copyfile(REPOSITORY_ROOT / "plugin-catalog.json", root / "plugin-catalog.json")
             for source in (REPOSITORY_ROOT / "plugins").iterdir():
-                if source.name in {"code-quality", "python-project", "project-docs"}:
+                if source.name in {"code-quality", "python-project", "project-docs", "task-continuation"}:
                     shutil.copytree(source, root / "plugins" / source.name)
             catalog = load_catalog(root)
 
@@ -115,7 +116,7 @@ class CatalogTests(unittest.TestCase):
             root = Path(directory)
             shutil.copyfile(REPOSITORY_ROOT / "plugin-catalog.json", root / "plugin-catalog.json")
             for source in (REPOSITORY_ROOT / "plugins").iterdir():
-                if source.name in {"code-quality", "python-project", "project-docs"}:
+                if source.name in {"code-quality", "python-project", "project-docs", "task-continuation"}:
                     shutil.copytree(source, root / "plugins" / source.name)
             catalog = load_catalog(root)
 
@@ -127,6 +128,7 @@ class CatalogTests(unittest.TestCase):
                     "code-quality": "1.1.2",
                     "python-project": "2.1.0",
                     "project-docs": "2.0.0",
+                    "task-continuation": "0.1.0",
                 },
                 {plugin.id: plugin.version for plugin in updated.plugins},
             )
@@ -136,7 +138,7 @@ class CatalogTests(unittest.TestCase):
             root = Path(directory)
             shutil.copyfile(REPOSITORY_ROOT / "plugin-catalog.json", root / "plugin-catalog.json")
             for source in (REPOSITORY_ROOT / "plugins").iterdir():
-                if source.name in {"code-quality", "python-project", "project-docs"}:
+                if source.name in {"code-quality", "python-project", "project-docs", "task-continuation"}:
                     shutil.copytree(source, root / "plugins" / source.name)
             (root / ".agents/plugins").mkdir(parents=True)
             (root / ".claude-plugin").mkdir(parents=True)
