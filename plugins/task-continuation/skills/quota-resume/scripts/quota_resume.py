@@ -92,6 +92,10 @@ class TaskConfig:
     # 停止原因策略：为 True 时，只有「因额度打满而停」才在额度恢复后继续；
     # 任务自然完成 / 用户取消 / 报错结束时直接停掉调度。
     resume_only_on_quota_limit: bool = False
+    # 终态后自动停止调度，避免 timer 永久空转（默认开启）。
+    auto_stop_on_terminal: bool = True
+    # 需要停止的 timer 单元名；留空则不停止任何单元。
+    service_unit: str = ""
 
     # 通知
     notify_command: list[str] = field(default_factory=list)
@@ -158,6 +162,8 @@ def load_config(cfg_path: Path) -> TaskConfig:
         stop_markers=[str(m) for m in (completion.get("stopMarkers") or [])],
         max_rounds_without_progress=int(completion.get("maxRoundsWithoutProgress", 3)),
         resume_only_on_quota_limit=bool(completion.get("resumeOnlyOnQuotaLimit", False)),
+        auto_stop_on_terminal=bool(raw.get("autoStopOnTerminal", True)),
+        service_unit=str(raw.get("timerUnit") or ""),
         notify_command=[str(c) for c in (notify.get("command") or [])],
         approvals_reviewer=str(delivery.get("approvalsReviewer") or "auto_review"),
     )
@@ -532,6 +538,29 @@ def queue_message(cfg: TaskConfig, message: str) -> tuple[int, str, str]:
 
 
 # --------------------------------------------------------------------------
+# 调度器自停
+# --------------------------------------------------------------------------
+
+
+def stop_timer(cfg: TaskConfig) -> bool:
+    """到达终态后停止调度，避免 timer 永久空转。
+
+    只停止 timer 本身，不使用 --now：服务此刻正在运行，stop 整个单元会连带
+    终止当前进程，也会让这次运行的结果无法落盘。停止 timer 已足以阻止后续唤醒。
+    """
+    if not cfg.service_unit:
+        return False
+    try:
+        proc = subprocess.run(
+            ["systemctl", "--user", "stop", cfg.service_unit],
+            capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=30,
+        )
+        return proc.returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+# --------------------------------------------------------------------------
 # 通知
 # --------------------------------------------------------------------------
 
@@ -564,7 +593,21 @@ def cycle(cfg: TaskConfig) -> int:
 
     state = load_state(cfg)
     if state.get("status") in TERMINAL_STATES:
-        log_event(cfg, "terminal_state", status=state["status"])
+        # 终态后必须停止空转：否则 timer 每分钟唤醒、每分钟写一条事件，永久如此。
+        # 只做一次（用标记文件保证幂等），且不在此处重复记日志以免刷屏。
+        if cfg.auto_stop_on_terminal:
+            marker = cfg.state_dir / ".timer_stopped"
+            if not marker.exists():
+                ok = stop_timer(cfg)
+                log_event(cfg, "terminal_state", status=state["status"],
+                          timerStopped=ok, serviceUnit=cfg.service_unit)
+                notify(cfg, f"[{cfg.name}] 调度已停止",
+                       f"任务到达终态（{state['status']}）。已停止 {cfg.service_unit or '定时器'}；"
+                       f"如需再次续跑，重置状态后重新启用。")
+                try:
+                    marker.write_text(str(int(time.time())), encoding="utf-8")
+                except OSError:
+                    pass
         return 0
 
     now = int(time.time())

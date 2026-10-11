@@ -68,6 +68,8 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
     "maxResetCredits": 0,
     "resetCreditAuthorized": false
   },
+  "autoStopOnTerminal": true,
+  "timerUnit": "quota-resume@<task>.timer",
   "completion": {
     "markers": ["任务完成，停止定时续跑。"],
     "resumeOnlyOnQuotaLimit": true,
@@ -80,6 +82,10 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
 - `allowance`：`natural` 只等自然恢复；`reset_credit` 才允许消耗已有的重置卡，
   且必须同时给出 `resetCreditAuthorized: true` 与 `maxResetCredits` 上限。
   购买额度、充值、切换计费路径不在授权范围内。
+- `autoStopOnTerminal`（默认 true）+ `timerUnit`：到达终态后停止 timer，避免它
+  每分钟唤醒、每分钟写一条事件的永久空转。只 `stop` timer 而不 `--now` 停整个
+  单元——服务此刻正在运行，停整个单元会连带终止当前进程、使本次结果无法落盘。
+  停止后写 `.timer_stopped` 标记，后续运行直接安静退出，不重复记录。
 - 消息文件里用 `{sentinel}` 占位符，投递时替换为 `completion.markers[0]`。
   哨兵同时出现在「投递文本」和「停止判据」两处，占位符保证它们只有一个来源，
   不会各写一份而漂移。哨兵只匹配执行端的 `last_agent_message`，不匹配用户消息，
