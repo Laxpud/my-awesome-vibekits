@@ -448,6 +448,17 @@ def match_markers(text: str, markers: list[str]) -> bool:
     return any(m and m in text for m in markers)
 
 
+def render_message(cfg: TaskConfig) -> str:
+    """渲染续跑消息：把消息文件里的 {sentinel} 换成配置中的哨兵字符串。
+
+    哨兵同时出现在「消息文本」和「停止判据」两处，必须保证它们永远一致，
+    因此消息文件只写占位符，实际字符串由配置单一提供。
+    """
+    template = cfg.message_file.read_text(encoding="utf-8")
+    sentinel = cfg.completion_markers[0] if cfg.completion_markers else ""
+    return template.replace("{sentinel}", sentinel)
+
+
 # --------------------------------------------------------------------------
 # 投递
 # --------------------------------------------------------------------------
@@ -597,7 +608,9 @@ def cycle(cfg: TaskConfig) -> int:
         return 0
 
     # 4. 额度允许且线程空闲，投递续跑消息。
-    message = cfg.message_file.read_text(encoding="utf-8")
+    #    哨兵字符串以单一来源提供：消息文件里写 {sentinel}，投递时替换为配置中的
+    #    实际哨兵。这样消息文本和停止判据不会各写一份而漂移。
+    message = render_message(cfg)
     code, submission_id, out = queue_message(cfg, message)
     if code != 0 or not submission_id:
         state.update({"status": RETRY_WAIT, "lastError": out, "nextCheckAt": now + WAITING_RECHECK_SECONDS})
