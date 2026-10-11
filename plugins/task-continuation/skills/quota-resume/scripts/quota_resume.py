@@ -505,6 +505,31 @@ def rollout_offset(cfg: TaskConfig) -> int:
         return 0
 
 
+def pending_submission_ids(cfg: TaskConfig) -> set[str] | None:
+    """读取本机队列里仍在等待消费的提交 ID。
+
+    返回 None 表示无法判定（另装实例、自定义 CODEX_HOME、库不可读等），
+    调用方必须把 None 与「空集合」区别对待：空集合是确定的"没有待消费消息"。
+    """
+    codex_home = Path(os.environ.get("CODEX_HOME") or (Path.home() / ".codex"))
+    db = codex_home / "queue_1.sqlite"
+    if not db.is_file():
+        return None
+    try:
+        import sqlite3
+
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True, timeout=5)
+        try:
+            rows = con.execute(
+                "select id from queued_items where thread_id = ?", (cfg.thread_id,)
+            ).fetchall()
+        finally:
+            con.close()
+        return {r[0] for r in rows}
+    except Exception:
+        return None
+
+
 def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
     if now > int(state.get("consumeDeadline") or 0):
         state.update({"status": NEEDS_ATTENTION, "blocker": "排队消息在规定期限内未被消费"})
@@ -513,7 +538,29 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
         notify(cfg, f"[{cfg.name}] 需要处理", "续跑消息入队后长期未被消费，请检查宿主与额度。")
         return 0
 
+    submission_id = state.get("queuedSubmissionId")
     queued_at = int(state.get("queuedAt") or now)
+
+    # 被追踪的提交可能被外部删除（人工清理、其它客户端撤销），此时它永远不会被
+    # 消费。必须区分三种情况，否则会一直等到 6 小时期限：确实还在等、已被消费、
+    # 已被删除。判据是「队列中已无此提交」且「rollout 自入队后没有任何增长」。
+    if submission_id:
+        pending = pending_submission_ids(cfg)
+        size_now = rollout_offset(cfg)
+        grew = size_now > int(state.get("rolloutOffset") or 0)
+        if pending is not None and submission_id not in pending and not grew:
+            state.update({
+                "status": RETRY_WAIT,
+                "droppedSubmissionId": submission_id,
+                "lastError": "被追踪的排队消息已不在队列中且未被消费（可能被外部删除）",
+                "nextCheckAt": now + cfg.poll_seconds,
+            })
+            save_state(cfg, state)
+            log_event(cfg, "submission_dropped", submissionId=submission_id)
+            notify(cfg, f"[{cfg.name}] 待投递消息被移除",
+                   "队列中已找不到该续跑消息，且会话未推进；将在下一个额度窗口重新评估。")
+            return 0
+
     try:
         events = tail_events(resolve_rollout(cfg))
     except Exception as exc:
