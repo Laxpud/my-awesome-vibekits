@@ -13,7 +13,7 @@ disable-model-invocation: true
 1. 确认目标任务身份、所属主机与账户、工作目录、剩余目标、完成证据，以及用户授权自动继续的范围。优先读取目标任务的当前状态，避免把已经完成或被用户停止的任务重新启动。调用本技能本身不等于授权创建定时任务；如果用户已明确要求创建并自动继续，则直接在该范围内执行，不重复确认。
 2. 查找目标任务已有的调度和状态记录，优先修复或更新现有机制。一个目标任务只能有一个负责投递续跑消息的调度器。
 3. 当前环境有适用的内置自动化工具时，优先使用它，并遵守该工具的调度、消息授权与目标线程契约。仅当用户明确选用本机调度，或没有适用工具时，才创建本机机制。不要为了绕过工具限制另建调度器。
-4. 使用 Codex 作为执行端时，读取 [Codex 执行适配](references/codex-execution.md)；采用 Linux 本机调度时，再读取 [Linux systemd 调度](references/linux-systemd.md)。当前配套资料只覆盖这两个适配，不推断其他客户端的额度接口或其他操作系统的调度方法。
+4. 使用 Codex 作为执行端时，读取 [Codex 执行适配](references/codex-execution.md)；采用 Linux 本机调度时，再读取 [Linux systemd 调度](references/linux-systemd.md)。当前配套资料只覆盖这两个适配，不推断其他客户端的额度接口或其他操作系统的调度方法。本插件带有可复用的参数化控制器（[`scripts/quota_resume.py`](scripts/quota_resume.py)，用法见 [`references/controller-usage.md`](references/controller-usage.md)）：优先适配它，新增任务一般只需任务配置与续跑指令，不必重新生成调度器。
 
 ## 设计续跑契约
 
