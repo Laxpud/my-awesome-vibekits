@@ -89,6 +89,9 @@ class TaskConfig:
     completion_markers: list[str] = field(default_factory=list)
     stop_markers: list[str] = field(default_factory=list)
     max_rounds_without_progress: int = 3
+    # 停止原因策略：为 True 时，只有「因额度打满而停」才在额度恢复后继续；
+    # 任务自然完成 / 用户取消 / 报错结束时直接停掉调度。
+    resume_only_on_quota_limit: bool = False
 
     # 通知
     notify_command: list[str] = field(default_factory=list)
@@ -154,6 +157,7 @@ def load_config(cfg_path: Path) -> TaskConfig:
         completion_markers=[str(m) for m in (completion.get("markers") or [])],
         stop_markers=[str(m) for m in (completion.get("stopMarkers") or [])],
         max_rounds_without_progress=int(completion.get("maxRoundsWithoutProgress", 3)),
+        resume_only_on_quota_limit=bool(completion.get("resumeOnlyOnQuotaLimit", False)),
         notify_command=[str(c) for c in (notify.get("command") or [])],
         approvals_reviewer=str(delivery.get("approvalsReviewer") or "auto_review"),
     )
@@ -305,25 +309,48 @@ def next_check_after_quota(quota: dict, cfg: TaskConfig) -> int:
 # --------------------------------------------------------------------------
 
 
-def resolve_rollout(cfg: TaskConfig) -> Path:
-    if cfg.rollout_path and cfg.rollout_path.is_file():
-        return cfg.rollout_path
-    index = Path.home() / ".codex" / "state_5.sqlite"
-    if index.is_file():
-        import sqlite3
+def newest_segment(index_path: Path) -> Path | None:
+    """线程历史被分页后，rollout 会拆成多个分段文件。
 
-        con = sqlite3.connect(f"file:{index}?mode=ro", uri=True)
+    实测过：会话继续时状态索引会把 rollout_path 指向新的 `_<id>` 分段，
+    而配置里记录的旧路径就冻结不再增长。读取旧分段会让控制器永远看不到进展，
+    因此必须优先相信索引。
+    """
+    pattern = f"*{index_path.stem}*.jsonl"
+    try:
+        candidates = sorted(index_path.parent.glob(pattern), key=lambda p: p.stat().st_mtime)
+    except OSError:
+        return None
+    return candidates[-1] if candidates else None
+
+
+def resolve_rollout(cfg: TaskConfig) -> Path:
+    """解析目标线程当前活跃的 rollout 文件。
+
+    优先级：状态索引（权威，会随分页更新）→ 配置路径 → 同目录最新分段。
+    不能反过来：配置里的静态路径可能已经停止增长（实际踩过）。
+    """
+    index = Path(os.environ.get("CODEX_HOME") or (Path.home() / ".codex")) / "state_5.sqlite"
+    if index.is_file():
         try:
-            row = con.execute(
-                "select rollout_path from threads where id = ?", (cfg.thread_id,)
-            ).fetchone()
-        finally:
-            con.close()
-        if row and row[0]:
-            p = Path(row[0])
-            if p.is_file():
-                return p
-    raise ConfigError("无法解析目标线程的 rollout 路径（配置未提供且索引查询失败）")
+            import sqlite3
+
+            con = sqlite3.connect(f"file:{index}?mode=ro", uri=True, timeout=5)
+            try:
+                row = con.execute(
+                    "select rollout_path from threads where id = ?", (cfg.thread_id,)
+                ).fetchone()
+            finally:
+                con.close()
+            if row and row[0] and Path(row[0]).is_file():
+                return Path(row[0])
+        except Exception:
+            pass
+
+    if cfg.rollout_path and cfg.rollout_path.is_file():
+        seg = newest_segment(cfg.rollout_path)
+        return seg if seg else cfg.rollout_path
+    raise ConfigError("无法解析目标线程的 rollout 路径（索引与配置都不可用）")
 
 
 def tail_events(rollout: Path, limit: int = 400) -> list[dict]:
@@ -379,6 +406,42 @@ def classify_turn(events: list[dict], since_epoch: int) -> dict:
         elif ptype == "message" and payload.get("role") == "user":
             result["userMessage"] = True
     return result
+
+
+def quota_limit_stop(events: list[dict], since_epoch: int) -> bool | None:
+    """判断 since_epoch 之后这一轮的停止原因是否为「额度打满」。
+
+    实测到的模式：额度用尽时 CLI 会先记一条 primary.used_percent=100 的
+    token_count，紧接着一个 last_agent_message 为空的 task_complete。
+    因此不能靠对话文本判断停止原因，只能看额度事实。
+
+    返回 True=额度打满而停，False=其它原因结束，None=看不到额度记录无法判定。
+    """
+    saw_limit = False
+    saw_any = False
+    for ev in events:
+        ts = ev.get("timestamp")
+        if not ts:
+            continue
+        epoch = int(time.mktime(time.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S"))) - time.timezone
+        if epoch < since_epoch:
+            continue
+        payload = ev.get("payload") or {}
+        if payload.get("type") != "token_count":
+            continue
+        limits = payload.get("rate_limits")
+        if not limits:
+            continue
+        saw_any = True
+        used = ((limits.get("primary") or {}).get("usedPercent")
+                if "usedPercent" in (limits.get("primary") or {})
+                else (limits.get("primary") or {}).get("used_percent"))
+        raised = limits.get("rateLimitReachedType") or limits.get("rate_limit_reached_type")
+        if (used is not None and used >= 100) or raised:
+            saw_limit = True
+    if saw_limit:
+        return True
+    return False if saw_any else None
 
 
 def match_markers(text: str, markers: list[str]) -> bool:
@@ -657,6 +720,24 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
         "nextCheckAt": now + cfg.poll_seconds,
     })
     log_event(cfg, "turn_completed", blocker=verdict.get("blocker"))
+
+    # 停止原因策略：只有「额度打满而停」才值得在额度恢复后继续。任务自然完成、
+    # 用户取消、报错结束时都不应该再注入续跑消息——那只会打扰已经收工的会话。
+    # 这个判据来自额度事实而非对话文本，因此对「task_complete 消息为空」也有效。
+    if cfg.resume_only_on_quota_limit:
+        reason = quota_limit_stop(events, queued_at)
+        if reason is False or reason is None:
+            state.update({
+                "status": COMPLETED,
+                "stopReason": "quota_limit" if reason else ("unknown" if reason is None else "other"),
+                "nextCheckAt": 0,
+            })
+            save_state(cfg, state)
+            log_event(cfg, "finished_without_quota_limit", stopReason=state["stopReason"])
+            notify(cfg, f"[{cfg.name}] 任务已结束",
+                   "该轮不是因额度打满而停，调度已停止，不再注入续跑消息。")
+            return 0
+        log_event(cfg, "stopped_by_quota_limit")
 
     if cfg.stop_markers and match_markers(last, cfg.stop_markers):
         state["status"] = STOPPED

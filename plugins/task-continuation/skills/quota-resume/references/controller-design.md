@@ -54,8 +54,7 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
   "target": {
     "threadId": "<目标线程 UUID>",
     "threadName": "会话显示名（仅记录用）",
-    "cwd": "<目标任务的工作目录>",
-    "rolloutPath": "<可选：rollout 绝对路径，缺省时查 state_5.sqlite>"
+    "cwd": "<目标任务的工作目录>"
   },
   "delivery": {
     "codexBin": "/path/to/codex",
@@ -70,8 +69,7 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
     "resetCreditAuthorized": false
   },
   "completion": {
-    "markers": ["\"status\": \"complete\""],
-    "stopMarkers": ["\"status\": \"blocked\""],
+    "resumeOnlyOnQuotaLimit": true,
     "maxRoundsWithoutProgress": 3
   },
   "notify": { "command": ["notify-send", "--app-name", "quota-resume"] }
@@ -81,6 +79,14 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
 - `allowance`：`natural` 只等自然恢复；`reset_credit` 才允许消耗已有的重置卡，
   且必须同时给出 `resetCreditAuthorized: true` 与 `maxResetCredits` 上限。
   购买额度、充值、切换计费路径不在授权范围内。
+- `completion.resumeOnlyOnQuotaLimit`：为 `true` 时按**停止原因**决定是否继续——
+  只有该轮因额度打满而停，才在额度恢复后注入续跑消息；任务自然完成、用户取消、
+  报错结束时直接转 `completed` 并停止调度。判定依据是 rollout 里的额度事实
+  （`primary.usedPercent >= 100` 或 `rateLimitReachedType`），**不是对话文本**，
+  因此对 `last_agent_message` 为空的 `task_complete` 同样有效。
+- **rollout 解析以状态索引为准**：会话继续时 `state_5.sqlite` 的 `rollout_path`
+  会指向新的 `_<id>` 分段，而配置里的静态路径就此冻结、不再增长。若读旧分段，
+  控制器会永远看不到进展（已实测踩过），因此不要依赖 `target.rolloutPath`。
 - `completion.markers` 命中续跑指令约定的完成证据才记 `completed`；
   `stopMarkers` 命中则记 `stopped`。两者都不命中时继续下一轮，但受
   `maxRoundsWithoutProgress` 限制：连续若干轮拿不到约定证据就转入
