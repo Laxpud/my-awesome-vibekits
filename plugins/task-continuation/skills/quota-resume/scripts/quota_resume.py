@@ -721,15 +721,26 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
     })
     log_event(cfg, "turn_completed", blocker=verdict.get("blocker"))
 
-    # 停止原因策略：只有「额度打满而停」才值得在额度恢复后继续。任务自然完成、
-    # 用户取消、报错结束时都不应该再注入续跑消息——那只会打扰已经收工的会话。
-    # 这个判据来自额度事实而非对话文本，因此对「task_complete 消息为空」也有效。
+    # 策略 A：显式哨兵（复用 completion.markers）。这是最可靠的停止判据——
+    # 哨兵是刻意约定的固定短语，不是对自然语言的猜测；续跑指令要求执行端在
+    # 收工时原样写出它。注意匹配的是完成陈述句本身，因此该短语不应出现在
+    # 否定语境（例如“不要写任务完成…”）里被顺带命中。
+    if cfg.completion_markers and match_markers(last, cfg.completion_markers):
+        state.update({"status": COMPLETED, "stopReason": "sentinel", "nextCheckAt": 0})
+        save_state(cfg, state)
+        log_event(cfg, "stop_sentinel_matched", evidence=last[:300])
+        notify(cfg, f"[{cfg.name}] 任务已完成", "匹配到约定的停止哨兵，调度停止。")
+        return 0
+
+    # 策略 B：按停止原因决定。只有「额度打满而停」才值得在额度恢复后继续；
+    # 任务自然完成 / 用户取消 / 报错结束都不该再注入消息，以免打扰已收工的会话。
+    # 该判据来自 rollout 里的额度事实，因此对「task_complete 消息为空」也有效。
     if cfg.resume_only_on_quota_limit:
         reason = quota_limit_stop(events, queued_at)
-        if reason is False or reason is None:
+        if reason is not True:
             state.update({
                 "status": COMPLETED,
-                "stopReason": "quota_limit" if reason else ("unknown" if reason is None else "other"),
+                "stopReason": "unknown" if reason is None else "other",
                 "nextCheckAt": 0,
             })
             save_state(cfg, state)
@@ -743,12 +754,6 @@ def track_queued(cfg: TaskConfig, state: dict, now: int) -> int:
         state["status"] = STOPPED
         save_state(cfg, state)
         notify(cfg, f"[{cfg.name}] 已停止", "续跑消息报告为停止状态。")
-        return 0
-    if cfg.completion_markers and match_markers(last, cfg.completion_markers):
-        state["status"] = COMPLETED
-        save_state(cfg, state)
-        log_event(cfg, "completed", evidence=last[:300])
-        notify(cfg, f"[{cfg.name}] 已完成", "完成证据已记录，调度停止。")
         return 0
 
     # 既非完成也非停止：继续下一轮投递（下一周期由额度门决定）。

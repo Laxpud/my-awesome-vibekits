@@ -69,6 +69,7 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
     "resetCreditAuthorized": false
   },
   "completion": {
+    "markers": ["任务完成，停止续跑控制器"],
     "resumeOnlyOnQuotaLimit": true,
     "maxRoundsWithoutProgress": 3
   },
@@ -79,6 +80,10 @@ waiting_quota ──额度允许且线程空闲、间隔满足──> queued ─
 - `allowance`：`natural` 只等自然恢复；`reset_credit` 才允许消耗已有的重置卡，
   且必须同时给出 `resetCreditAuthorized: true` 与 `maxResetCredits` 上限。
   购买额度、充值、切换计费路径不在授权范围内。
+- `completion.markers` 用作**停止哨兵**：续跑指令要求执行端在任务收工时原样写出
+  该短语（例如「任务完成，停止续跑控制器」）。哨兵是刻意约定的固定字符串，不是
+  对自然语言的猜测，判定优先级最高。局限：该短语若被引用（含否定语境）也会命中，
+  因此要选一个不会在别处出现的句子，并只在完成时要求输出。
 - `completion.resumeOnlyOnQuotaLimit`：为 `true` 时按**停止原因**决定是否继续——
   只有该轮因额度打满而停，才在额度恢复后注入续跑消息；任务自然完成、用户取消、
   报错结束时直接转 `completed` 并停止调度。判定依据是 rollout 里的额度事实
