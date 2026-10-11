@@ -60,7 +60,7 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
     "codexBin": "/path/to/codex",
     "messageFile": "<续跑指令 Markdown 绝对路径>",
     "approvalsReviewer": "auto_review",
-    "extraArgs": ["--approve-for-me", "--sandbox", "workspace-write"]
+    "extraArgs": ["--approve-for-me"]
   },
   "quota": {
     "allowance": "natural",
@@ -84,6 +84,9 @@ waiting_quota ──额度允许──> queued ──匹配轮次出现──> r
   `stopMarkers` 命中则记 `stopped`。两者都不命中时继续下一轮，但受
   `maxRoundsWithoutProgress` 限制：连续若干轮拿不到约定证据就转入
   `needs_attention` 并通知，避免一个持续返回同样结果的任务每轮重复投递、白烧额度。
+- `delivery.extraArgs` 里 **`--approve-for-me` 与 `--sandbox` 互斥**：前者本身已隐含
+  `workspace-write` 沙箱，两个一起传会被 CLI 以参数冲突拒绝（`cannot be used with`）。
+  只写 `--approve-for-me` 即可；确需自定义沙箱时改用 `--sandbox`，不要同时给。
 - `notify.command` 可为空数组，表示只写事件日志不弹通知。
 
 ## 命令

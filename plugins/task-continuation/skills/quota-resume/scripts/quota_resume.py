@@ -377,7 +377,14 @@ def match_markers(text: str, markers: list[str]) -> bool:
 # --------------------------------------------------------------------------
 
 
-def queue_message(cfg: TaskConfig, message: str) -> tuple[int, str]:
+def queue_message(cfg: TaskConfig, message: str) -> tuple[int, str, str]:
+    """投递续跑消息。
+
+    必须显式给 stdin 一个确定来源：交互式环境下 `codex queue` 可以继承 TTY，
+    但在 systemd 等无终端环境里继承 stdin 有挂起的风险。超时或启动失败一律
+    转成返回值，绝不抛出——调用方需要拿这个结果去写状态，异常逃出去会让进程
+    在写入任何回执之前死掉（实测过：state.json 完全缺失、无事件记录）。
+    """
     cmd = [
         cfg.codex_bin, "queue",
         "--thread", cfg.thread_id,
@@ -385,7 +392,20 @@ def queue_message(cfg: TaskConfig, message: str) -> tuple[int, str]:
         "-C", str(cfg.cwd),
         *cfg.extra_queue_args,
     ]
-    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(cfg.cwd), timeout=180)
+    try:
+        proc = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=str(cfg.cwd),
+            stdin=subprocess.DEVNULL,
+            timeout=120,
+        )
+    except subprocess.TimeoutExpired:
+        return 1, "", "投递超时：codex queue 未在 120 秒内返回"
+    except OSError as exc:
+        return 1, "", f"投递无法启动: {exc!r}"
+
     out = (proc.stdout or "") + (proc.stderr or "")
     match = re.search(r"Queued message ([0-9a-fA-F-]{8,64})", out)
     return proc.returncode, (match.group(1) if match else ""), out.strip()[-500:]
@@ -470,6 +490,11 @@ def cycle(cfg: TaskConfig) -> int:
     })
     save_state(cfg, state)
     log_event(cfg, "queued", submissionId=submission_id)
+    # 回执写入后立刻回读校验：进程若在写入前后被终止，外层要能看出状态未曾落盘。
+    persisted = load_state(cfg)
+    if persisted.get("queuedSubmissionId") != submission_id:
+        log_event(cfg, "queued_not_persisted", submissionId=submission_id)
+        return 1
     return 0
 
 
