@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从统一 catalog 生成或校验 Codex/Claude marketplace 与 manifest。"""
+"""从外部插件收录快照生成两端 marketplace，或显式拉取独立仓库元数据。"""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import os
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -20,7 +20,6 @@ from scripts.plugin_catalog import (
     CLAUDE_MARKETPLACE_PATH,
     CODEX_MARKETPLACE_PATH,
     CODEX_INTERFACE_METADATA_FIELDS,
-    SEMVER_PATTERN,
     CatalogError,
     PluginCatalog,
     PluginSpec,
@@ -37,8 +36,8 @@ def _json(value: dict[str, Any]) -> str:
     return json.dumps(value, ensure_ascii=False, indent=2) + "\n"
 
 
-def codex_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]:
-    """生成 Codex 专属 manifest；通用 Skill 内容保持在插件 skills/ 中。"""
+def codex_display_metadata(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]:
+    """为市场生成安装前展示字段，不生成插件 manifest 或包内路径。"""
 
     publisher = catalog.publisher
     adapter = plugin.codex
@@ -50,21 +49,20 @@ def codex_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]
             "description": plugin.description,
             **plugin.manifest_metadata,
             "keywords": list(plugin.keywords),
-            "skills": "./skills/",
             "interface": {
                 field: adapter[field] for field in CODEX_INTERFACE_METADATA_FIELDS if field in adapter
             },
         }
+    repository = f"https://github.com/{plugin.github['repo']}"
     return {
         "name": plugin.id,
         "version": plugin.version,
         "description": plugin.description,
         "author": {"name": publisher["name"], "url": publisher["url"]},
-        "homepage": publisher["homepage"],
-        "repository": publisher["repository"],
+        "homepage": repository,
+        "repository": repository,
         "license": publisher["license"],
         "keywords": list(plugin.keywords),
-        "skills": "./skills/",
         "interface": {
             "displayName": adapter["displayName"],
             "shortDescription": adapter["shortDescription"],
@@ -72,24 +70,10 @@ def codex_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]
             "developerName": publisher["name"],
             "category": plugin.category,
             "capabilities": ["Skills"],
-            "websiteURL": publisher["homepage"],
+            "websiteURL": repository,
             "defaultPrompt": adapter["defaultPrompt"],
             "brandColor": "#2563EB",
         },
-    }
-
-
-def claude_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]:
-    return {
-        "name": plugin.id,
-        "description": plugin.description,
-        "version": plugin.version,
-        "author": {"name": catalog.publisher["name"]},
-        "homepage": catalog.publisher["homepage"],
-        "repository": catalog.publisher["repository"],
-        "license": catalog.publisher["license"],
-        "keywords": list(plugin.keywords),
-        "skills": ["./skills/"],
     }
 
 
@@ -108,17 +92,8 @@ def codex_marketplace_entry(catalog: PluginCatalog, plugin: PluginSpec) -> dict[
     if not plugin.codex.get("marketplaceMetadata", False):
         return entry
 
-    # 1. 复用 catalog 中的文案与发布者信息；市场只携带元数据，不声明本地技能路径。
-    metadata = codex_manifest(catalog, plugin)
-    metadata.pop("skills")
-
-    # 2. 外部插件的网站和仓库链接属于独立仓库，不能沿用聚合市场的 publisher 链接。
-    if plugin.github is not None and plugin.manifest_metadata is None:
-        repository = f"https://github.com/{plugin.github['repo']}"
-        metadata["homepage"] = repository
-        metadata["repository"] = repository
-        metadata["interface"]["websiteURL"] = repository
-    entry.update(metadata)
+    # 展示快照与安装来源同时进入市场条目；实际技能仍由独立仓库提供。
+    entry.update(codex_display_metadata(catalog, plugin))
     return entry
 
 
@@ -153,38 +128,22 @@ def claude_marketplace(catalog: PluginCatalog) -> dict[str, Any]:
     }
 
 
-def generated_files(
-    root: Path,
-    catalog: PluginCatalog,
-    plugins: Iterable[PluginSpec] | None = None,
-) -> dict[Path, str]:
-    """生成共享市场与本地插件 manifest；外部 manifest 由各独立仓库维护。"""
+def generated_files(catalog: PluginCatalog) -> dict[Path, str]:
+    """仅生成两份共享市场；选择插件不会裁掉兄弟条目。"""
 
-    files = {
+    return {
         CODEX_MARKETPLACE_PATH: _json(codex_marketplace(catalog)),
         CLAUDE_MARKETPLACE_PATH: _json(claude_marketplace(catalog)),
     }
-    selected = catalog.plugins if plugins is None else tuple(plugins)
-    for plugin in selected:
-        if plugin.directory is None:
-            continue
-        plugin_root = Path(plugin.directory.as_posix())
-        files[plugin_root / ".codex-plugin/plugin.json"] = _json(
-            codex_manifest(catalog, plugin)
-        )
-        files[plugin_root / ".claude-plugin/plugin.json"] = _json(
-            claude_manifest(catalog, plugin)
-        )
-    return files
 
 
 def check_generated(
     root: Path,
     catalog: PluginCatalog,
-    plugins: Iterable[PluginSpec] | None = None,
 ) -> list[str]:
+    """核对两端市场与完整 catalog 是否一致，返回可操作的漂移诊断。"""
     errors: list[str] = []
-    for relative_path, expected in generated_files(root, catalog, plugins).items():
+    for relative_path, expected in generated_files(catalog).items():
         path = root / relative_path
         try:
             actual = path.read_text(encoding="utf-8")
@@ -199,10 +158,10 @@ def check_generated(
 def write_generated(
     root: Path,
     catalog: PluginCatalog,
-    plugins: Iterable[PluginSpec] | None = None,
 ) -> list[Path]:
+    """只重写发生变化的两端市场，返回本轮实际变更路径。"""
     changed: list[Path] = []
-    for relative_path, content in generated_files(root, catalog, plugins).items():
+    for relative_path, content in generated_files(catalog).items():
         path = root / relative_path
         current = path.read_text(encoding="utf-8") if path.exists() else None
         if current == content:
@@ -213,24 +172,6 @@ def write_generated(
     return changed
 
 
-def set_versions(
-    root: Path, catalog: PluginCatalog, plugins: tuple[PluginSpec, ...], version: str
-) -> None:
-    """只改选中插件的 catalog 版本，兄弟插件保持独立。"""
-
-    if not SEMVER_PATTERN.fullmatch(version):
-        raise MetadataError(f"version must be SemVer without a 'v' prefix: {version!r}")
-    if any(plugin.github is not None for plugin in plugins):
-        raise MetadataError("external plugin versions must be released in their own repositories; update the catalog snapshot afterwards")
-    path = root / CATALOG_PATH
-    data = json.loads(path.read_text(encoding="utf-8"))
-    selected = {plugin.id for plugin in plugins}
-    for item in data["plugins"]:
-        if item["id"] in selected:
-            item["version"] = version
-    path.write_text(_json(data), encoding="utf-8")
-
-
 def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: bool) -> None:
     """预览外部快照及市场差异；显式写入时先准备全部文件，再替换生成物。"""
 
@@ -238,8 +179,8 @@ def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: b
 
     # 1. 全部远端拉取成功并通过完整 catalog 校验后，才准备本地文件变更。
     data = fetch_external_metadata(root, plugins)
-    catalog = parse_catalog(root, data)
-    planned = {CATALOG_PATH: _json(data), **generated_files(root, catalog, ())}
+    catalog = parse_catalog(data)
+    planned = {CATALOG_PATH: _json(data), **generated_files(catalog)}
     changes = {}
     for relative_path, content in planned.items():
         path = root / relative_path
@@ -292,7 +233,7 @@ def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: b
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate or verify all plugin metadata from plugin-catalog.json."
+        description="Generate or verify marketplaces from external plugin snapshots."
     )
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument(
@@ -301,7 +242,6 @@ def parse_args() -> argparse.Namespace:
     )
     selection.add_argument("--all", action="store_true", help="select every plugin")
     parser.add_argument("--write", action="store_true", help="rewrite generated files")
-    parser.add_argument("--set-version", metavar="SEMVER", help="set selected version")
     parser.add_argument(
         "--fetch-external", action="store_true",
         help="fetch external manifests and preview catalog/marketplace changes; combine with --write to apply",
@@ -310,12 +250,7 @@ def parse_args() -> argparse.Namespace:
         "--root", type=Path, default=Path(__file__).resolve().parents[1],
         help="repository root",
     )
-    args = parser.parse_args()
-    if args.set_version and not (args.plugins or args.all):
-        parser.error("--set-version requires --plugin or --all")
-    if args.fetch_external and args.set_version:
-        parser.error("--fetch-external cannot be combined with --set-version")
-    return args
+    return parser.parse_args()
 
 
 def main() -> int:
@@ -332,13 +267,10 @@ def main() -> int:
             except ExternalMetadataError as error:
                 raise MetadataError(str(error)) from error
             return 0
-        if args.set_version:
-            set_versions(root, catalog, selected, args.set_version)
-            catalog = load_catalog(root)
-        if args.write or args.set_version:
-            for path in write_generated(root, catalog, selected):
+        if args.write:
+            for path in write_generated(root, catalog):
                 print(f"UPDATED: {path.as_posix()}")
-        errors = check_generated(root, catalog, selected)
+        errors = check_generated(root, catalog)
         if errors:
             for error in errors:
                 print(f"FAIL: {error}", file=sys.stderr)

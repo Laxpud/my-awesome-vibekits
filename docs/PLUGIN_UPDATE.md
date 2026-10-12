@@ -1,150 +1,42 @@
-# 多插件发布与客户端更新
+# 外部插件发布与市场更新
 
-marketplace 顶层名称继续使用 `laxpud-vibekits`。当前收录三个外部插件 `agent-docs-maintainer`、`agent-task-resume`、`agent-dev-standards`，插件内容和版本在各独立仓库发布。
+Vibekits 的 marketplace 名称为 laxpud-vibekits，收录 agent-docs-maintainer、agent-task-resume 和 agent-dev-standards。插件内容、版本和发布由各独立仓库维护，本仓库只更新市场收录快照。
 
-## 当前外部插件更新流程
+## 更新顺序
 
-1. 在对应独立仓库完成修改、生成与发布；版本以该仓库的双端 manifest 为准。
-2. 运行 `python3 scripts/sync_plugin_metadata.py --fetch-external --all` 预览外部元数据差异；确认目标后加 `--write` 回填 catalog 并生成两端市场。只更新部分插件时使用 `--plugin <id>`，可重复指定；本市场的来源与安装策略保持不变。
-3. 运行本地静态检查，按需运行 `python3 scripts/check_codex_install.py --all --check-external` 核对外部安装包；这不代表真实安装或升级已验证。
-4. 市场变更发布后，用户刷新 `laxpud-vibekits` 并安装所需的 `agent-*` 插件；原本地插件名不会自动改成新名称，按 README 的迁移说明处理旧安装。
-
-旧 `--set-version` 和 `plugin_update_e2e.py` 不用于外部插件发布或日常晋级。E2E 预检会明确拒绝外部目标，防止把市场仓库的提交和 payload 当成插件制品；跨仓库生命周期自动化留待后续适配。
-
-## 迁移前本地发布流程
-
-以下章节保留旧本地插件及 fixture 的发布契约，供回查；其中旧 ID、同仓库制品和晋级命令不适用于当前三个外部条目。
-
-## 目标选择
-
-元数据、安装检查和 E2E 命令都使用同一选择规则：
-
-- 不传选择参数：处理 catalog 中全部插件；
-- 重复 `--plugin <id>`：按给定顺序处理一个或多个插件；
-- `--all`：显式处理全部插件。
-
-迁移前合法 ID 为 `code-quality`、`python-project`、`project-docs` 和 `task-continuation`。发布、digest、安装校验、晋级和回滚的最小目标都是 `(platform, marketplace, plugin)`；一次操作不得改写兄弟插件的版本、来源或 enabled 状态。
-
-## 发布前提
-
-修改 project-docs 时先运行 `python3 scripts/build_project_docs.py --write`，将维护源生成为独立技能目录，再修改 [`plugin-catalog.json`](../plugin-catalog.json) 中目标插件的版本和元数据，再生成并验证：
+1. 在对应独立仓库读取其 AGENTS.md，完成内容修改、生成与相关验证；插件版本以该仓库双端 manifest 为准。
+2. 独立仓库发布后，在本仓库预览目标插件的元数据，再显式写入：
 
 ```bash
-python3 scripts/build_project_docs.py
-python scripts/sync_plugin_metadata.py --plugin python-project --set-version <semver>
-python scripts/sync_plugin_metadata.py
-python scripts/check_codex_install.py --all
-python -m unittest discover -s tests -p "test_*.py" -v
+python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer
+python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer --write
 ```
 
-多个插件同版发布时可以重复 `--plugin`，只有确实要求同时发版时才使用 `--all --set-version`。生成器同步两份 marketplace 与选中插件的两端 manifest；project-docs 技能内容由独立生成器维护，元数据生成器不复制或改写技能。
-
-提交并推送后执行远端检查：
+3. 检查完整市场；省略 --plugin 或传 --all 可同步全部插件，重复 --plugin 可选择多个。选择单个插件不会删除兄弟市场条目。
 
 ```bash
-python scripts/check_codex_install.py --remote --all
+python3 scripts/sync_plugin_metadata.py
+python3 scripts/check_codex_install.py --all
+python3 scripts/check_codex_install.py --all --check-external
+python3 scripts/check_markdown_links.py
+python3 -m unittest discover -s tests -p "test_*.py" -v
+git diff --check
 ```
 
-## 验证矩阵与门禁
+4. 只有用户明确要求时才提交、推送本市场。推送后可运行 `python3 scripts/check_codex_install.py --remote --all --check-external` 检查已发布入口。
 
-验证按固定顺序分层：
+展示字段、来源与策略的同步契约见 [Catalog 规范](SKILL_RULE_GUIDELINES.md)。marketplace 只携带收录与展示元数据，不复制外部 manifest 或技能源码，也不在本仓库给插件改版本。
 
-| 门禁 | 环境 | 覆盖内容 | 是否调用模型 |
-| --- | --- | --- | --- |
-| catalog 与生成物 | 普通 CI | ID/路径/Skill 冲突、完整 Skill 集合、双端 manifest、marketplace、防漂移 | 否 |
-| 隔离生命周期 fixture | 普通 CI | 三插件双端发现、逐插件安装、Claude 启停、Codex enabled 状态保留、完整 Skill 集合、升级、卸载、独立回滚、故障隔离 | 否 |
-| 客户端 schema/CLI | 有 Codex 与 Claude CLI 的环境 | catalog 中全部插件及两份 marketplace validator | 否 |
-| Live E2E | 有凭据、网络和远端写权限的 Windows runner | 真实 marketplace 刷新、逐插件安装/升级、version/source/digest、清理 | 默认否 |
-| Skill smoke | Live E2E 可选项 | 新会话发现并调用 `python-project:pyproject-standard` | 是 |
-| Codex GUI 生命周期 | Codex App 或 CLI `/plugins` | 逐插件启停和卸载，确认兄弟插件状态不变 | 否 |
+## 客户端更新与旧安装迁移
 
-普通 CI 先运行静态门禁，再运行确定性的 fake-client 生命周期测试。需要凭据、网络、GUI 或模型的门禁独立运行，不得让凭据缺失伪装成静态检查成功，也不得默认消耗 token。
+市场发布后，用户在 Codex 或 Claude Code 刷新 laxpud-vibekits，安装需要的 agent-* 插件。旧 project-docs、task-continuation、code-quality 和 python-project 不会自动改名；按 [README 迁移说明](../README.md#run-your-first-skill)安装新插件，再禁用或卸载旧插件，避免重复技能。旧插件名仅用于说明历史安装，不恢复兼容包或别名。
 
-测试 fixture 明确包括：既有 `code-quality`、`python-project`、`project-docs` 三插件样本；两个插件内同名 `shared-name` 候选 Skill 的冲突 catalog；一个越过根目录的无效路径 catalog；只升级和回滚 `python-project`、保持另外两插件不变的生命周期场景；以及 `project-docs` 从旧版单 Skill 安装升级到目标六 Skill 安装的场景。新增插件的 catalog 与安装检查不代表该插件已经完成历史升级或双客户端 Live E2E。
+客户端安装、启停、升级、卸载和回滚分别验证；操作一个插件后，核对其他插件状态未改变。静态检查或外部包克隆成功不代表客户端生命周期已经验证。真实客户端配置修改与日常安装更新只在当前任务明确授权的范围内执行。
 
-## 自动化升级门禁
+旧同仓库 E2E、临时发布分支与日常晋级工具已随内部插件移除。跨仓库生命周期自动化尚未实现，剩余工作见 [TODO](../TODO.md#未来发展方向跨-harness-兼容与分发)。
 
-`scripts/plugin_update_e2e.py` 默认按 catalog 逐个测试全部插件，也支持选择：
+## 回退与验证边界
 
-```bash
-python scripts/plugin_update_e2e.py
-python scripts/plugin_update_e2e.py --plugin python-project
-python scripts/plugin_update_e2e.py --plugin code-quality --plugin project-docs
-python scripts/plugin_update_e2e.py --all --from-ref <commit-or-tag>
-```
+市场收录变更可回退对应 catalog 修改，再生成两端 marketplace 并执行相同检查。插件内容或版本的回退在其独立仓库完成；客户端已安装版本的回退按客户端实际能力执行，不能用恢复旧内部快照代替。
 
-每个插件使用独立临时分支 `automation/plugin-e2e/<run-id>-<plugin-id>`，完成“旧版安装 → marketplace 刷新 → 目标版更新”。两端均检查目标插件的 version、marketplace/source、Skill 集合和 payload digest：baseline 按该历史 payload 中实际存在的顶层 Skill 入口验证，target 按当前 catalog 声明的完整 Skill 集合验证。退出、失败、超时或中断都清理临时分支、隔离配置和凭据副本；任一清理失败会阻止日常晋级。
-
-未指定 `--from-ref` 时，工具在目标插件自己的 manifest 历史中查找最近的不同版本祖先。目标默认是 `origin/main`。每个插件的报告数据按插件 ID 分组，避免一个条目的结果覆盖其他条目。
-
-### 可选 Skill smoke
-
-只有需要验证新会话的 Skill 发现与调用时才添加：
-
-```bash
-python scripts/plugin_update_e2e.py --plugin python-project --skill-smoke
-```
-
-该选项会调用 Codex 与 Claude 模型并消耗 token，默认关闭。当前固定 smoke 契约属于 `pyproject-standard`，因此选择全部插件时也只对 `python-project` 运行模型 smoke；安装、版本、来源、路径和 digest 检查始终不调用模型。
-
-## 更新日常安装
-
-只有所有选中插件的隔离测试和临时分支清理都成功，并且确实要更新日常安装时，才显式添加 `--promote`：
-
-```bash
-python scripts/plugin_update_e2e.py --plugin python-project --promote
-python scripts/plugin_update_e2e.py --all --promote
-```
-
-晋级额外要求工作区干净，`HEAD`、`origin/main` 和目标 ref 为同一提交，Codex 与 Claude Code 均有选中插件实例，相关客户端完全退出，且没有并发晋级进程。
-
-工具逐插件保存最小状态快照，更新 Codex 实例和 Claude Code 的全部 `user`、`project`、`local` 实例，并保持原 `scope`、`projectPath` 与 enabled 状态。单插件失败时只恢复该插件目标的两端快照；已经成功或未选择的兄弟插件不会被回滚或改写。已经达到目标 version 与 digest 的插件按幂等成功处理。
-
-成功后 Codex 新建任务；Claude Code 运行 `/reload-plugins` 或重启会话。
-
-## 手动生命周期确认
-
-### Codex
-
-刷新 marketplace：
-
-```bash
-codex plugin marketplace upgrade laxpud-vibekits
-codex
-/plugins
-```
-
-在 `laxpud-vibekits` marketplace 标签中逐个打开插件。Codex CLI 的 `/plugins` 浏览器支持安装、卸载，并用 `Space` 单独启停已安装插件。对一个插件执行操作后，核对其他插件的安装和启用状态未变化。
-
-### Claude Code
-
-```bash
-claude plugin marketplace update laxpud-vibekits
-claude plugin install python-project@laxpud-vibekits
-claude plugin disable python-project
-claude plugin enable python-project
-claude plugin update python-project@laxpud-vibekits
-claude plugin uninstall python-project
-```
-
-替换插件 ID，逐一覆盖本次发布的插件。`project` 或 `local` 实例应在对应项目目录并带相应 `--scope` 执行。更新后运行 `/reload-plugins` 或新建会话。
-
-## 报告、退出码与恢复
-
-默认报告位于 `artifacts/plugin-update-e2e/<run-id>.json`，该目录不会提交。报告记录逐插件 baseline/target commit、version、digest，两个平台结果、晋级、回滚和清理状态，不记录凭据或未脱敏配置。
-
-| 退出码 | 含义 |
-| --- | --- |
-| `0` | 所有选中插件的隔离测试成功；若请求晋级，晋级也成功。 |
-| `1` | 隔离安装、更新、校验、可选 smoke 或清理失败。 |
-| `2` | 日常晋级失败，但选中插件的两端自动回滚成功。 |
-| `3` | 自动回滚失败；报告保留 recovery path 和逐实例人工命令。 |
-| `4` | 参数、Git 状态、客户端进程、认证或安装状态不满足前提。 |
-
-任何失败都应先按报告中的 `(platform, marketplace, plugin)` 确认影响范围，再执行人工恢复。不得通过安装旧聚合插件来恢复。
-
-## 无兼容迁移层
-
-原 `laxpud-vibekits` 插件 ID 和 `plugins/laxpud-vibekits/` 已直接删除。旧安装需要先在各客户端卸载旧 ID，再按 README 选择独立插件；仓库不提供 deprecated bundle、别名、聚合依赖或 Skills 副本。
-
-Codex 的 marketplace 和 `/plugins` 行为参考 [official OpenAI plugin documentation](https://learn.chatgpt.com/docs/plugins) 与 [plugin packaging guide](https://developers.openai.com/plugins/build/plugins)。Claude Code 生命周期命令参考 [Discover and manage plugins](https://code.claude.com/docs/en/discover-plugins)。
+元数据回填默认只预览；拉取失败或候选 catalog 无效时不写文件。外部包检查只读临时 clone，不安装插件、不调用模型、不复制凭据。安装契约与远端模式见 [Codex 安装检查](CODEX_INSTALL_SMOKE_TEST.md)。

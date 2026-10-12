@@ -16,12 +16,18 @@
   "plugins": [
     {
       "id": "bad-plugin",
-      "directory": "../bad-plugin",
       "version": "1.0.0",
       "description": "Invalid fixture plugin.",
       "category": "Productivity",
-      "keywords": ["fixture"],
-      "skills": [{"id": "bad-skill", "path": "skills/bad-skill"}],
+      "keywords": [
+        "fixture"
+      ],
+      "skills": [
+        {
+          "id": "bad-skill",
+          "path": "../bad-skill"
+        }
+      ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
@@ -29,9 +35,21 @@
           "displayName": "Bad",
           "shortDescription": "Bad fixture",
           "longDescription": "Invalid fixture plugin.",
-          "defaultPrompt": ["Use the invalid fixture."]
+          "defaultPrompt": [
+            "Use the invalid fixture."
+          ]
         },
-        "claude": {"category": "workflow", "tags": ["fixture"]}
+        "claude": {
+          "category": "workflow",
+          "tags": [
+            "fixture"
+          ]
+        }
+      },
+      "source": {
+        "type": "github",
+        "repo": "example/bad-plugin",
+        "ref": "main"
       }
     }
   ]

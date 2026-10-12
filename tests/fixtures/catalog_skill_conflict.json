@@ -16,12 +16,18 @@
   "plugins": [
     {
       "id": "first-plugin",
-      "directory": "plugins/first-plugin",
       "version": "1.0.0",
       "description": "First fixture plugin.",
       "category": "Productivity",
-      "keywords": ["fixture"],
-      "skills": [{"id": "shared-name", "path": "skills/shared-name"}],
+      "keywords": [
+        "fixture"
+      ],
+      "skills": [
+        {
+          "id": "shared-name",
+          "path": "skills/shared-name"
+        }
+      ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
@@ -29,19 +35,37 @@
           "displayName": "First",
           "shortDescription": "First fixture",
           "longDescription": "First fixture plugin.",
-          "defaultPrompt": ["Use the first fixture."]
+          "defaultPrompt": [
+            "Use the first fixture."
+          ]
         },
-        "claude": {"category": "workflow", "tags": ["fixture"]}
+        "claude": {
+          "category": "workflow",
+          "tags": [
+            "fixture"
+          ]
+        }
+      },
+      "source": {
+        "type": "github",
+        "repo": "example/first-plugin",
+        "ref": "main"
       }
     },
     {
       "id": "second-plugin",
-      "directory": "plugins/second-plugin",
       "version": "1.0.0",
       "description": "Second fixture plugin.",
       "category": "Productivity",
-      "keywords": ["fixture"],
-      "skills": [{"id": "shared-name", "path": "skills/shared-name"}],
+      "keywords": [
+        "fixture"
+      ],
+      "skills": [
+        {
+          "id": "shared-name",
+          "path": "skills/shared-name"
+        }
+      ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
@@ -49,9 +73,21 @@
           "displayName": "Second",
           "shortDescription": "Second fixture",
           "longDescription": "Second fixture plugin.",
-          "defaultPrompt": ["Use the second fixture."]
+          "defaultPrompt": [
+            "Use the second fixture."
+          ]
         },
-        "claude": {"category": "workflow", "tags": ["fixture"]}
+        "claude": {
+          "category": "workflow",
+          "tags": [
+            "fixture"
+          ]
+        }
+      },
+      "source": {
+        "type": "github",
+        "repo": "example/second-plugin",
+        "ref": "main"
       }
     }
   ]

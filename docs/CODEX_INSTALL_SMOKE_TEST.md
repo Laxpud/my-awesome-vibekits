@@ -7,8 +7,8 @@
 `scripts/check_codex_install.py` 通过 [`plugin-catalog.json`](../plugin-catalog.json) 解析目标，并逐插件检查：
 
 - `.agents/plugins/marketplace.json` 可解析，顶层名称与 catalog 一致，条目集合无缺失或额外插件；
-- 本地条目的 `source.path` 精确定位 `plugins/<plugin-id>/`，且不逃出仓库；外部条目使用 `source: "url"`，URL 与 ref 均与 catalog 的 GitHub 来源一致；
-- 本地包的版本与 `.codex-plugin/plugin.json` 与 catalog 一致；外部包默认不读取，显式传入 `--check-external` 后克隆核对双端 manifest 的身份、版本、描述和仓库地址；
+- 所有条目使用 `source: "url"`，URL 与 ref 均与 catalog 的 GitHub 来源一致；
+- 外部包默认不读取，显式传入 `--check-external` 后克隆核对双端 manifest 的身份、版本、描述和仓库地址；
 - `policy.installation`、`policy.authentication` 和 `category` 完整；
 - 已读取包的 Codex manifest 中 `skills` 指向插件自己的 `./skills/`，且 catalog 声明的每个 `SKILL.md` 都存在；
 - 中英文 README 的 `codex plugin marketplace add <owner>/<repo>` 指向本聚合市场，外部插件 manifest 的 repository 则指向各自独立仓库；

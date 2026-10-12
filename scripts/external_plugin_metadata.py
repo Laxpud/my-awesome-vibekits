@@ -44,7 +44,6 @@ def _update_entry(entry: dict[str, Any], plugin: PluginSpec, plugin_root: Path) 
 
     codex = _read_manifest(plugin_root, ".codex-plugin/plugin.json")
     claude = _read_manifest(plugin_root, ".claude-plugin/plugin.json")
-    assert plugin.github is not None
 
     # 1. 同一 checkout 中的两个 manifest 必须指向同一个插件和版本，不能混合发布。
     if codex.get("name") != plugin.id:
@@ -103,12 +102,10 @@ def fetch_external_metadata(root: Path, plugins: tuple[PluginSpec, ...]) -> dict
 
     data = json.loads((root / CATALOG_PATH).read_text(encoding="utf-8"))
     entries = {entry["id"]: entry for entry in data["plugins"]}
-    external = [plugin for plugin in plugins if plugin.github is not None]
-    if not external:
+    if not plugins:
         raise ExternalMetadataError("no external plugins selected")
     with tempfile.TemporaryDirectory(prefix="vibekits-external-metadata-") as directory:
-        for plugin in external:
-            assert plugin.github is not None
+        for plugin in plugins:
             print(
                 f"FETCH: {plugin.id} ({plugin.github['repo']}, "
                 f"ref={plugin.github.get('ref', 'default')})", flush=True,

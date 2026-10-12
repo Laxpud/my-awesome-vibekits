@@ -230,7 +230,7 @@ Plugin：`agent-dev-standards` · Skill：[`pyproject-standard`](https://github.
 使用 pyproject-standard 审查这个 Python 项目的 pyproject.toml。识别有仓库证据支持的改动，向我展示拟议配置，并在编辑前询问。
 ```
 
-在 Codex 中，`project-docs-progress` 可自动用于已有任务的进度维护，以及新建、保存或链接项目 plan/spec 文件的请求；其余六个文档技能需要显式调用。Bootstrap 和 refactor 必须读取与专项技能相同的对应文档规范，在用户指定范围内应用。普通小改不会自动建立文档体系，完成任务默认只勾选。具体用法见[使用说明](usage.md)。
+在 Codex 中，`project-docs-progress` 可自动用于已有任务的进度维护，以及新建、保存或链接项目 plan/spec 文件的请求；其余六个文档技能需要显式调用。Bootstrap 和 refactor 必须读取与专项技能相同的对应文档规范，在用户指定范围内应用。普通小改不会自动建立文档体系，完成任务默认只勾选。具体用法见[使用说明](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md)。
 
 ### 维护当前任务的最小进度
 
@@ -285,4 +285,4 @@ Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
-从[技术文档索引](index.md)、[插件 Catalog](../plugin-catalog.json)和[当前路线图](../TODO.md)开始。发布、生成元数据、验证和回滚细节保留在这些维护文档中，不放进新手路径。
+从[技术文档索引](index.md)、[插件 Catalog](../plugin-catalog.json)和[当前路线图](../TODO.md)开始。市场更新、快照同步、验证和回退细节见维护文档；插件源码、例库、设计和审查资料在各自独立仓库维护。

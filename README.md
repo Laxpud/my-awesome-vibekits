@@ -230,7 +230,7 @@ Plugin: `agent-dev-standards` · Skill: [`pyproject-standard`](https://github.co
 Use pyproject-standard to review this Python project's pyproject.toml. Identify evidence-backed changes, show me the proposed configuration, and ask before editing.
 ```
 
-In Codex, `project-docs-progress` can run automatically for existing project tasks and requests to create, save, or link project plan/spec files. Explicitly invoke the other six documentation skills. Bootstrap and refactor must read the same document-specific rules as the focused skills and apply them within the requested scope. Small edits do not create a documentation system; completed tasks normally need only a checkbox. See the [usage guide](docs/usage.md).
+In Codex, `project-docs-progress` can run automatically for existing project tasks and requests to create, save, or link project plan/spec files. Explicitly invoke the other six documentation skills. Bootstrap and refactor must read the same document-specific rules as the focused skills and apply them within the requested scope. Small edits do not create a documentation system; completed tasks normally need only a checkbox. See the [usage guide](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md).
 
 ### Keep Current Progress Minimal
 
@@ -285,4 +285,4 @@ To maintain the marketplace, clone this repository. Contribute plugin content in
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
 
-Start with the [technical documentation index](docs/index.md), [plugin catalog](plugin-catalog.json), and [active roadmap](TODO.md). Release, generated metadata, validation, and rollback details live in the linked maintainer documentation rather than this newcomer path.
+Start with the [technical documentation index](docs/index.md), [plugin catalog](plugin-catalog.json), and [active roadmap](TODO.md). Marketplace updates, snapshot synchronization, validation, and rollback details live in the linked maintainer documentation. Plugin sources, examples, design notes, and reviews are maintained in their independent repositories.
