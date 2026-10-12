@@ -91,15 +91,16 @@
 
 ## 未来发展方向：跨 Harness 兼容与分发
 
-本方向不属于本轮技能改造。2026-09-26 用户确认后续增加 `npx skills` 支持；2026-10-12 确认继续维护 Codex 与 Claude Code 的插件市场支持，取消原仅支持 Codex 的收敛方向。本轮不修改现有分发方式或平台支持。进入实施前重新核对相关协议与工具，并确定具体支持范围。下列其他跨平台探索保留为候选，不作为本轮或上述分发调整的默认门槛。
+本方向不属于本轮技能改造。2026-09-26 用户确认后续增加 `npx skills` 支持；2026-10-12 确认继续维护 Codex 与 Claude Code 的插件市场支持，取消原仅支持 Codex 的收敛方向。独立仓库迁移已开始实施，继续保留两端平台支持；其他分发方向进入实施前再核对相关协议与工具，并确定具体支持范围。下列其他跨平台探索保留为候选，不作为本轮或上述分发调整的默认门槛。
 
 - [ ] 将插件迁移至外部独立仓库，本仓库保留 marketplace 聚合分发入口。
   - `project-docs` 和 `task-continuation` 分别迁移至独立仓库；将 `code-comment-standard` 和 `pyproject-standard` 合并为一个插件，再迁移至另一个独立仓库。
   - 将 Codex 与 Claude Code 两端 `marketplace.json` 中各插件的来源地址改为对应外部仓库地址，使插件在各自仓库独立维护与分发。
-  - 当前状态：仅记录后续方向，迁移尚未启动。
+  - 当前状态：三个目录已搬出并创建独立仓库：[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)、[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)、[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)。两端 marketplace 已切换到各仓库的 `main` 分支；真实客户端安装待用户测试，旧本地源码暂存且不再收录。
+  - 验证与剩余：元数据、市场格式、链接与外部双端 manifest / 十技能入口检查通过；既有 72 项回归中 68 项通过，4 项仍固定依赖旧本地 catalog，待适配，未新增或改写测试。
 
 - [ ] 独立仓库迁移后继续维护 Codex 与 Claude Code 的插件市场支持。
-  - 当前状态：后续工作；迁移时保留两端 marketplace 入口、插件元数据与安装更新流程。
+  - 当前状态：已保留两端市场入口并生成外部来源；真实安装与跨仓库生命周期验证仍待完成。
 
 - [ ] 验证通过 `npx skills` 分发当前 Skill。
   - 当前状态：仅作为未来分发方向记录；README 不提供可复制安装命令，也不宣称已经支持。

@@ -28,9 +28,9 @@
 
 </div>
 
-Vibekits 是我个人孵化的一组 Codex 与 Claude Code 可复用工作流。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
+Vibekits 是我维护的 Codex 与 Claude Code 插件市场，收录的可复用工作流分别在独立 GitHub 仓库维护。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
 
-当前源码目录包含四个可独立安装的插件和十个 Skill，覆盖代码注释、Python 项目元数据、仓库文档与额度恢复后续跑已授权任务。源码变化不会自动更新日常安装；远端安装使用所选分支上已发布的内容。
+当前市场收录三个可独立安装的插件和十个 Skill，覆盖代码注释、Python 项目元数据、仓库文档与额度恢复后续跑已授权任务。插件内容从各独立仓库的 `main` 分支获取；市场变更不会自动更新日常安装。
 
 ## 适合谁
 
@@ -105,7 +105,7 @@ claude
 
 ## 快速开始
 
-第一次体验只安装 `project-docs`，并让 `project-docs-readme` 对 README 做只读审查。选择你已经在用的客户端即可，不需要同时安装两个。
+第一次体验只安装 `agent-docs-maintainer`，并让 `project-docs-readme` 对 README 做只读审查。选择你已经在用的客户端即可，不需要同时安装两个。
 
 ### 在 Codex 中安装
 
@@ -122,7 +122,7 @@ codex
 /plugins
 ```
 
-找到 `project-docs`，安装并启用它。然后为同一个项目新建 Codex 任务，让刚安装的 Skill 被加载。
+找到 `agent-docs-maintainer`，安装并启用它。然后为同一个项目新建 Codex 任务，让刚安装的 Skill 被加载。
 
 ### 在 Claude Code 中安装
 
@@ -130,7 +130,7 @@ codex
 
 ```text
 /plugin marketplace add https://github.com/Laxpud/my-awesome-vibekits
-/plugin install project-docs@laxpud-vibekits
+/plugin install agent-docs-maintainer@laxpud-vibekits
 ```
 
 然后为同一个项目新建 Claude Code 会话，让刚安装的 Skill 被加载。
@@ -140,7 +140,7 @@ codex
 把下面这段话粘贴到新的 Codex 任务或 Claude Code 会话：
 
 ```text
-使用 $project-docs:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
 ```
 
 ### 成功时会看到什么
@@ -158,7 +158,7 @@ Agent 应该报告：
 计划没有问题。请开始实施，保持正式翻译同步，并验证所有改动过的链接和命令。
 ```
 
-> **正在从原聚合 Plugin 迁移？** 先在客户端中移除 `laxpud-vibekits`，再安装你需要的独立 Plugin。旧 Plugin 不提供兼容别名或 deprecated bundle。新用户可以忽略这段说明。
+> **从原有插件迁移？** 市场现在使用 `agent-docs-maintainer`、`agent-task-resume` 和 `agent-dev-standards`；最后一个合并了原 `code-quality` 与 `python-project`。按需安装新插件，再禁用或移除对应旧插件，避免重复技能。Skill ID 保持不变，插件调用前缀按下方示例更新。
 
 ## 按目标选择 Skill
 
@@ -166,65 +166,65 @@ Agent 应该报告：
 
 ### 编辑前审查 README
 
-Plugin：`project-docs` · Skill：[`project-docs-readme`](../plugins/project-docs/skills/project-docs-readme/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
 ```
 
 ### 创建缺失的文档基线
 
-Plugin：`project-docs` · Skill：[`project-docs-bootstrap`](../plugins/project-docs/skills/project-docs-bootstrap/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-bootstrap 检查这个仓库。如果它缺少可用的文档基线，提出一组基于证据的最小文档，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-bootstrap 检查这个仓库。如果它缺少可用的文档基线，提出一组基于证据的最小文档，并在我确认前不要编辑文件。
 ```
 
 ### 重组现有文档
 
-Plugin：`project-docs` · Skill：[`project-docs-refactor`](../plugins/project-docs/skills/project-docs-refactor/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-refactor 审查这个仓库的文档所有权、导航和重复内容。给出按顺序排列的迁移计划，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-refactor 审查这个仓库的文档所有权、导航和重复内容。给出按顺序排列的迁移计划，并在我确认前不要编辑文件。
 ```
 
 ### 改进规划文档
 
-Plugin：`project-docs` · Skill：[`project-docs-planning`](../plugins/project-docs/skills/project-docs-planning/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-planning 审查这个仓库的活动规划文档。识别权威规划入口、含糊的承诺或就绪状态，以及缺失的验收条件，然后在编辑前提出修改方案。
+使用 $agent-docs-maintainer:project-docs-planning 审查这个仓库的活动规划文档。识别权威规划入口、含糊的承诺或就绪状态，以及缺失的验收条件，然后在编辑前提出修改方案。
 ```
 
 ### 记录架构与决策
 
-Plugin：`project-docs` · Skill：[`project-docs-architecture`](../plugins/project-docs/skills/project-docs-architecture/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-architecture 根据代码证据记录这个仓库的当前架构。区分当前状态和目标状态，提出真正需要的最小图表或 ADR，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-architecture 根据代码证据记录这个仓库的当前架构。区分当前状态和目标状态，提出真正需要的最小图表或 ADR，并在我确认前不要编辑文件。
 ```
 
 ### 精简 Agent 指导
 
-Plugin：`project-docs` · Skill：[`project-docs-guidance`](../plugins/project-docs/skills/project-docs-guidance/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
+使用 $agent-docs-maintainer:project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
 ```
 
 ### 审查或改进代码注释
 
-Plugin：`code-quality` · Skill：[`code-comment-standard`](../plugins/code-quality/skills/code-comment-standard/SKILL.md)
+Plugin：`agent-dev-standards` · Skill：[`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md)
 
 ```text
-使用 $code-quality:code-comment-standard 审查这些文件的代码注释。找出缺失的处理步骤、含糊的数据说明和缺乏依据的结论，解释具体阅读障碍并给出聚焦的改写示例，不编辑文件。
+使用 $agent-dev-standards:code-comment-standard 审查这些文件的代码注释。找出缺失的处理步骤、含糊的数据说明和缺乏依据的结论，解释具体阅读障碍并给出聚焦的改写示例，不编辑文件。
 ```
 
-本技能仅供显式调用。需要直接修改时，要求技能在指定范围内落实改进并保持代码行为。技能提供[带解释的正反改写案例](../plugins/code-quality/skills/code-comment-standard/references/comment-examples.md)。日常注释习惯由全局或项目指令约定；这个技能提供专门的审查与整改流程。
+本技能仅供显式调用。需要直接修改时，要求技能在指定范围内落实改进并保持代码行为。技能提供[带解释的正反改写案例](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md)。日常注释习惯由全局或项目指令约定；这个技能提供专门的审查与整改流程。
 
 ### 创建或审查 pyproject.toml
 
-Plugin：`python-project` · Skill：[`pyproject-standard`](../plugins/python-project/skills/pyproject-standard/SKILL.md)
+Plugin：`agent-dev-standards` · Skill：[`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md)
 
 ```text
 使用 pyproject-standard 审查这个 Python 项目的 pyproject.toml。识别有仓库证据支持的改动，向我展示拟议配置，并在编辑前询问。
@@ -234,20 +234,20 @@ Plugin：`python-project` · Skill：[`pyproject-standard`](../plugins/python-pr
 
 ### 维护当前任务的最小进度
 
-Plugin：`project-docs` · Skill：[`project-docs-progress`](../plugins/project-docs/skills/project-docs-progress/SKILL.md)
+Plugin：`agent-docs-maintainer` · Skill：[`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md)
 
 ```text
-使用 $project-docs:project-docs-progress 继续 TODO 中当前已授权的任务；完成后只更新勾选和必要阻塞。
+使用 $agent-docs-maintainer:project-docs-progress 继续 TODO 中当前已授权的任务；完成后只更新勾选和必要阻塞。
 ```
 
 “编写一个 plan.md”默认使用 `docs/plans/plan-YYYY-MM-DD-HH-mm.md`；spec 文件默认使用 `docs/specs/spec-YYYY-MM-DD-HH-mm.md`。明确的文件名、路径和项目既有约定优先。时间取用户配置时区，未配置时取环境本地时间；自动命名发生冲突时追加 `-2`、`-3` 等后缀；明确指定的位置冲突时不自动更名或覆盖。已有文件保留名称。仅在聊天中给出的计划留在聊天中，保存文件不创建 TODO/roadmap，也不开始实施。
 
 ### 额度恢复后继续工作
 
-Plugin：`task-continuation` · Skill：[`quota-resume`](../plugins/task-continuation/skills/quota-resume/SKILL.md)
+Plugin：`agent-task-resume` · Skill：[`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md)
 
 ```text
-使用 $task-continuation:quota-resume 创建定时任务，在五小时额度恢复后继续当前已授权工作。追踪实际执行，避免重复投递，任务完成或需要我提供信息时停止。
+使用 $agent-task-resume:quota-resume 创建定时任务，在五小时额度恢复后继续当前已授权工作。追踪实际执行，避免重复投递，任务完成或需要我提供信息时停止。
 ```
 
 本技能仅供显式调用，指导 Agent 创建或修复调度；安装插件本身不会启动后台任务。它同时检查五小时与周额度，复用会话持有者或在确认没有持有者时恢复原线程，并只在用户明确授权及次数上限内使用已有额度重置卡。执行追踪包含队列启动和自动审批等待的处理。当前执行适配资料覆盖 Codex，并提供适用时的 Linux systemd 路径。在其他客户端加载技能不代表已支持该客户端的额度或调度接口。仅通过可用性检查或成功入队，不能证明工作已成功续跑。
@@ -263,10 +263,9 @@ Plugin：`task-continuation` · Skill：[`quota-resume`](../plugins/task-continu
 
 Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 
-- `code-quality` 包含一个代码注释 Skill；
-- `python-project` 包含一个 `pyproject.toml` Skill；
-- `project-docs` 包含七个文档 Skill；
-- `task-continuation` 包含一个仅显式调用的额度恢复续跑 Skill。
+- **[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)**（`agent-docs-maintainer`）包含七个文档 Skill；
+- **[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)**（`agent-task-resume`）包含一个仅显式调用的额度恢复续跑 Skill；
+- **[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)**（`agent-dev-standards`）包含代码注释与 `pyproject.toml` 两个 Skill。
 
 每个 Plugin 都独立安装和维护版本，因此安装、禁用、更新或移除其中一个时，不需要改变其他 Plugin。
 
@@ -280,7 +279,7 @@ Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
 
 如果现有功能还不能满足你的需求，欢迎提出使用场景，也欢迎一起维护仓库、提交代码或改进文档。
 
-如需浏览源码或参与贡献：
+维护市场时克隆本仓库；修改插件内容时前往上方对应的独立仓库：
 
 ```bash
 git clone https://github.com/Laxpud/my-awesome-vibekits.git

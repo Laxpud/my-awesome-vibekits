@@ -1,13 +1,13 @@
 # 文档技能使用说明
 
-适用范围：当前源码中的 project-docs 七技能改造，尚未发布。以下调用设置本轮只核对 Codex，其他客户端未验证。安装入口见 [README](../README.md#quick-start)，中文说明见[中文 README](README.cn.md#快速开始)。
+适用范围：[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer) 的七个文档技能，安装名为 `agent-docs-maintainer`。下文说明预期使用方式，当前市场接入尚待用户完成两端真实安装验证。安装入口见 [README](../README.md#quick-start)，中文说明见[中文 README](README.cn.md#快速开始)。
 
 ## 继续已有任务
 
 项目已有 TODO 时，可以直接要求 Codex 继续当前已授权任务。轻量技能 `project-docs-progress` 可自动参与，也可以显式指定：
 
 ```text
-使用 $project-docs:project-docs-progress 继续 TODO 中当前任务。完成后只勾选；必要验证最多保留一句结论，不写工作日志。
+使用 $agent-docs-maintainer:project-docs-progress 继续 TODO 中当前任务。完成后只勾选；必要验证最多保留一句结论，不写工作日志。
 ```
 
 预期结果：更新原有条目中的完成情况、必要阻塞或下一步。不另建报告；没有 TODO 时不自动创建文档体系。结束当前里程碑也不代表自动开始下一个。
@@ -18,12 +18,12 @@
 
 | 需要做什么 | 可直接使用的提示词 |
 | --- | --- |
-| 缺少基本文档 | 使用 $project-docs:project-docs-bootstrap 建立这个项目当前真正需要的最小文档入口。 |
-| 文档太多、重复或难找 | 使用 $project-docs:project-docs-refactor 整理活动文档与导航，保留旧历史原文。 |
-| 新用户不知道怎么用 | 使用 $project-docs:project-docs-readme 改进 README 和正式翻译；常用操作需要展开时补使用说明。 |
-| 建立任务与未来方向 | 使用 $project-docs:project-docs-planning 组织 TODO 和 roadmap，保留讨论过的初步方案与链接。 |
-| 理解系统和源码关系 | 使用 $project-docs:project-docs-architecture 更新本里程碑影响的技术说明，用 C4 和源码映射展示关系。 |
-| AI 规则太长或重复 | 使用 $project-docs:project-docs-guidance 精简 AGENTS 的阅读路由，保留真实约束，把 CLAUDE 改为相对软链。 |
+| 缺少基本文档 | 使用 $agent-docs-maintainer:project-docs-bootstrap 建立这个项目当前真正需要的最小文档入口。 |
+| 文档太多、重复或难找 | 使用 $agent-docs-maintainer:project-docs-refactor 整理活动文档与导航，保留旧历史原文。 |
+| 新用户不知道怎么用 | 使用 $agent-docs-maintainer:project-docs-readme 改进 README 和正式翻译；常用操作需要展开时补使用说明。 |
+| 建立任务与未来方向 | 使用 $agent-docs-maintainer:project-docs-planning 组织 TODO 和 roadmap，保留讨论过的初步方案与链接。 |
+| 理解系统和源码关系 | 使用 $agent-docs-maintainer:project-docs-architecture 更新本里程碑影响的技术说明，用 C4 和源码映射展示关系。 |
+| AI 规则太长或重复 | 使用 $agent-docs-maintainer:project-docs-guidance 精简 AGENTS 的阅读路由，保留真实约束，把 CLAUDE 改为相对软链。 |
 
 预期结果是所选范围的文档修改。Bootstrap 和 refactor 在处理 README、使用说明、guidance、规划、技术说明或 ADR 前，必须读取与专项技能相同的对应规范；创建或实质重写时读取相关模板。局部修订只处理受影响内容，修链接不触发全文改版；全库整理保留历史原文和有效独有信息。
 
@@ -34,7 +34,7 @@
 Agent 按用户需求生成 plan/spec 正文，插件只管理保存、链接和归档，不强制正文模板。用户要求新建、保存或链接项目 plan/spec 文件时，progress 可自动参与；也可以显式要求：
 
 ```text
-使用 $project-docs:project-docs-progress 编写一个 plan.md，记录刚才讨论的方案，本次不开始实施。
+使用 $agent-docs-maintainer:project-docs-progress 编写一个 plan.md，记录刚才讨论的方案，本次不开始实施。
 ```
 
 | 用户要求 | 保存方式 |
@@ -52,7 +52,7 @@ Agent 按用户需求生成 plan/spec 正文，插件只管理保存、链接和
 若要调整规划结构或把候选方案纳入 Backlog，显式使用 planning：
 
 ```text
-使用 $project-docs:project-docs-planning 把刚才讨论的候选方案关联到 roadmap 的 Backlog。需要长期引用的 plan/spec 保存到项目中，不改写正文；本次不开始实施。
+使用 $agent-docs-maintainer:project-docs-planning 把刚才讨论的候选方案关联到 roadmap 的 Backlog。需要长期引用的 plan/spec 保存到项目中，不改写正文；本次不开始实施。
 ```
 
 相关实施工作结束后，plan/spec 原文移入统一 `docs/archive/` 并修正链接；共享材料等全部相关工作结束再归档。不是每个任务都需要 plan/spec。
@@ -70,7 +70,7 @@ Agent 按用户需求生成 plan/spec 正文，插件只管理保存、链接和
 
 ## 技能没有出现或行为不符
 
-先检查插件已安装并启用，再新建 Codex 任务。本轮改造未发布，远端已安装版本可能仍只有六个技能。技能可见后，专项工作使用 `$project-docs:project-docs-readme` 等显式名称。
+先检查插件已安装并启用，再新建 Codex 任务。确认安装的是 `agent-docs-maintainer`；仍使用旧 `project-docs` 的安装不会自动迁移到新插件名。技能可见后，专项工作使用 `$agent-docs-maintainer:project-docs-readme` 等显式名称。
 
 这些规则限制预期行为，不能保证模型每次都遵守。若实际仍产生冗长日志，保留触发提示词与对应条目作为反馈即可，不必为此生成一份完整验证报告。
 

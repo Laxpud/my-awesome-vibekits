@@ -82,6 +82,7 @@ def _validate_plugin(
     plugin: PluginSpec,
     entry: dict[str, Any],
     marketplace_path: Path,
+    check_external: bool = False,
 ) -> tuple[str, str]:
     """逐条校验并在诊断中保留 marketplace、插件 ID 和字段。"""
 
@@ -89,34 +90,10 @@ def _validate_plugin(
     source = entry.get("source")
     if not isinstance(source, dict):
         raise SmokeTestError(f"{prefix}: source must be an object")
-    if source.get("source") != "local":
-        raise SmokeTestError(f"{prefix}: source.source must be 'local'")
-    source_path = require_string(source.get("path"), f"{prefix}: source.path")
-    if source_path != plugin.source:
+    if source != plugin.codex_source:
         raise SmokeTestError(
-            f"{prefix}: source.path is {source_path!r}; expected {plugin.source!r}"
+            f"{prefix}: source is {source!r}; expected {plugin.codex_source!r}"
         )
-
-    plugin_root = (root / source_path).resolve()
-    try:
-        plugin_root.relative_to(root.resolve())
-    except ValueError as error:
-        raise SmokeTestError(f"{prefix}: source.path escapes repository root") from error
-    manifest_path = plugin_root / ".codex-plugin/plugin.json"
-    manifest = load_json(manifest_path)
-    for field, expected in (
-        ("name", plugin.id),
-        ("version", plugin.version),
-        ("description", plugin.description),
-        ("skills", "./skills/"),
-    ):
-        actual = manifest.get(field)
-        if actual != expected:
-            raise SmokeTestError(
-                f"{prefix}: manifest.{field} is {actual!r}; expected {expected!r}"
-            )
-    if plugin_root.name != plugin.id:
-        raise SmokeTestError(f"{prefix}: plugin directory name does not match ID")
 
     policy = entry.get("policy")
     if not isinstance(policy, dict):
@@ -130,18 +107,82 @@ def _validate_plugin(
     if entry.get("category") != plugin.category:
         raise SmokeTestError(f"{prefix}: category does not match catalog")
 
+    # 外部来源默认只检查引用；显式联网检查才读取独立仓库中的真实安装包。
+    if plugin.github is not None:
+        slug = plugin.github["repo"]
+        if not check_external:
+            return slug, f"{slug} (external source configured; payload not fetched)"
+        with tempfile.TemporaryDirectory(prefix="codex-external-plugin-") as directory:
+            plugin_root = Path(directory) / "plugin"
+            clone_remote(source["url"], plugin.github.get("ref"), plugin_root)
+            _validate_payload(plugin_root, plugin, prefix, slug, external=True)
+        return slug, f"{slug} (external manifests and all skills verified)"
+
+    source_path = require_string(source.get("path"), f"{prefix}: source.path")
+    plugin_root = (root / source_path).resolve()
+    try:
+        plugin_root.relative_to(root.resolve())
+    except ValueError as error:
+        raise SmokeTestError(f"{prefix}: source.path escapes repository root") from error
+    if plugin_root.name != plugin.id:
+        raise SmokeTestError(f"{prefix}: plugin directory name does not match ID")
+    slug = _validate_payload(plugin_root, plugin, prefix)
+    return slug, str((plugin_root / ".codex-plugin/plugin.json").relative_to(root))
+
+
+def _validate_payload(
+    plugin_root: Path,
+    plugin: PluginSpec,
+    prefix: str,
+    expected_slug: str | None = None,
+    *,
+    external: bool = False,
+) -> str:
+    """核对实际 manifest 和技能入口；外部仓库同时核对 Claude manifest。"""
+    manifest = load_json(plugin_root / ".codex-plugin/plugin.json")
+    expected_fields = {
+        "name": plugin.id,
+        "version": plugin.version,
+        "description": plugin.description,
+        "skills": "./skills/",
+    }
+    for field, expected in expected_fields.items():
+        if manifest.get(field) != expected:
+            raise SmokeTestError(
+                f"{prefix}: manifest.{field} is {manifest.get(field)!r}; expected {expected!r}"
+            )
+    slug = repository_slug(
+        require_string(manifest.get("repository"), f"{prefix}: manifest.repository")
+    )
+    if expected_slug is not None and slug != expected_slug:
+        raise SmokeTestError(f"{prefix}: manifest.repository does not match source repository")
+    if external:
+        claude = load_json(plugin_root / ".claude-plugin/plugin.json")
+        for field in ("name", "version", "description"):
+            if claude.get(field) != expected_fields[field]:
+                raise SmokeTestError(f"{prefix}: Claude manifest.{field} does not match catalog")
+        claude_slug = repository_slug(require_string(
+            claude.get("repository"), f"{prefix}: Claude manifest.repository"
+        ))
+        if claude_slug != slug:
+            raise SmokeTestError(f"{prefix}: Claude manifest.repository does not match source repository")
+
     missing_skills = [
         skill for skill in plugin.required_skills if not (plugin_root / skill).is_file()
     ]
     if missing_skills:
         missing = ", ".join(str(skill) for skill in missing_skills)
         raise SmokeTestError(f"{prefix}: missing required skill(s): {missing}")
-    return repository_slug(require_string(manifest.get("repository"), f"{prefix}: manifest.repository")), str(
-        manifest_path.relative_to(root)
-    )
+    for skill in plugin.required_skills:
+        if not (plugin_root / skill).resolve().is_relative_to(plugin_root.resolve()):
+            raise SmokeTestError(f"{prefix}: skill path escapes plugin root: {skill}")
+    return slug
 
 
-def validate_repository(root: Path, plugin_ids: list[str] | None = None) -> list[str]:
+def validate_repository(
+    root: Path, plugin_ids: list[str] | None = None, *, check_external: bool = False
+) -> list[str]:
+    """检查市场引用和 README；按需下载外部包，不写客户端安装配置。"""
     catalog = load_catalog(root)
     selected = catalog.select(plugin_ids)
     marketplace_path = CODEX_MARKETPLACE_PATH
@@ -159,17 +200,16 @@ def validate_repository(root: Path, plugin_ids: list[str] | None = None) -> list
             f"{marketplace_path}: plugin IDs differ from catalog; missing={missing}, extra={extra}"
         )
 
-    slugs: set[str] = set()
+    # 安装命令始终添加聚合市场；外部插件各有自己的 repository。
+    slug = repository_slug(catalog.publisher["repository"])
     checks: list[str] = []
     for plugin in selected:
-        slug, manifest_path = _validate_plugin(
-            root, plugin, entries[plugin.id], marketplace_path
+        plugin_slug, manifest_path = _validate_plugin(
+            root, plugin, entries[plugin.id], marketplace_path, check_external
         )
-        slugs.add(slug)
+        if plugin.github is None and plugin_slug != slug:
+            raise SmokeTestError(f"{plugin.id}: local manifest repository does not match marketplace repository")
         checks.append(f"{plugin.id}: marketplace resolves to {manifest_path}")
-    if len(slugs) != 1:
-        raise SmokeTestError("selected plugin manifests do not share one repository")
-    slug = next(iter(slugs))
 
     install_command = f"codex plugin marketplace add {slug}"
     selected_ids = {plugin.id for plugin in selected}
@@ -205,11 +245,13 @@ def clone_remote(url: str, ref: str | None, destination: Path) -> None:
         command.extend(["--branch", ref])
     command.extend([url, str(destination)])
     try:
-        subprocess.run(command, check=True, text=True)
+        subprocess.run(command, check=True, text=True, timeout=120)
     except FileNotFoundError as error:
-        raise SmokeTestError("git is required for --remote") from error
+        raise SmokeTestError("git is required for remote source checks") from error
     except subprocess.CalledProcessError as error:
         raise SmokeTestError(f"remote clone failed with exit code {error.returncode}") from error
+    except subprocess.TimeoutExpired as error:
+        raise SmokeTestError("remote clone timed out after 120 seconds") from error
 
 
 def parse_args() -> argparse.Namespace:
@@ -221,6 +263,10 @@ def parse_args() -> argparse.Namespace:
     selection.add_argument("--all", action="store_true", help="validate every plugin")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--remote", action="store_true")
+    parser.add_argument(
+        "--check-external", action="store_true",
+        help="clone external plugin sources and check both manifests and every skill",
+    )
     parser.add_argument("--ref")
     args = parser.parse_args()
     if args.ref and not args.remote:
@@ -238,7 +284,7 @@ def main() -> int:
             temporary = tempfile.TemporaryDirectory(prefix="codex-install-smoke-")
             target = Path(temporary.name) / "repository"
             clone_remote(repository_url(root), args.ref, target)
-        checks = validate_repository(target, args.plugins)
+        checks = validate_repository(target, args.plugins, check_external=args.check_external)
         mode = "remote GitHub checkout" if args.remote else "local checkout"
         print(f"PASS: Codex install smoke test ({mode})")
         for check in checks:

@@ -83,13 +83,21 @@ class ReleasePreflight:
         if status.strip():
             raise PreflightError("working tree must be clean before plugin E2E")
 
+        # 外部插件的提交与 payload 位于各自仓库，不能沿用市场仓库的发布制品。
+        catalog = load_catalog(self.root)
+        selected = catalog.select(plugin_ids)
+        external_ids = [plugin.id for plugin in selected if plugin.github is not None]
+        if external_ids:
+            raise PreflightError(
+                "external plugins require lifecycle validation in their own repositories: "
+                + ", ".join(external_ids)
+            )
+
         self.runner.run(
             ["git", "fetch", "origin", "main"],
             cwd=self.root,
             retry=RetryPolicy(),
         )
-        catalog = load_catalog(self.root)
-        selected = catalog.select(plugin_ids)
         first_root = Path(selected[0].directory.as_posix())
         commit_resolver = self.repository or GitRepository(
             self.root, plugin_root=first_root

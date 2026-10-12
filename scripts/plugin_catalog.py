@@ -1,7 +1,7 @@
 """读取并校验仓库级插件 catalog。
 
-catalog 是插件身份、目录、独立版本和双平台分发元数据的唯一事实来源。
-生成器、安装检查和更新流程都通过本模块解析目标，避免各自维护插件常量。
+catalog 是本市场的来源与收录元数据入口；外部插件的发布以独立仓库为准。
+生成器、安装检查和更新流程都通过本模块解析本地或外部目标，避免各自维护插件常量。
 """
 
 from __future__ import annotations
@@ -65,10 +65,10 @@ class SkillSpec:
 
 @dataclass(frozen=True)
 class PluginSpec:
-    """生成 manifest、marketplace 和生命周期目标所需的插件契约。"""
+    """市场收录契约；外部来源的 directory 为 None，不在本仓库生成 manifest。"""
 
     id: str
-    directory: PurePosixPath
+    directory: PurePosixPath | None
     version: str
     description: str
     category: str
@@ -76,14 +76,30 @@ class PluginSpec:
     skills: tuple[SkillSpec, ...]
     codex: dict[str, Any]
     claude: dict[str, Any]
+    github: dict[str, str] | None = None
 
     @property
-    def source(self) -> str:
+    def source(self) -> str | dict[str, str]:
+        """返回 Claude 来源；GitHub 条目指向独立仓库根目录。"""
+        if self.github is not None:
+            return {"source": "github", **self.github}
+        assert self.directory is not None
         return f"./{self.directory.as_posix()}"
 
     @property
+    def codex_source(self) -> dict[str, str]:
+        """将同一 catalog 来源转换成 Codex 的 local 或 url 格式。"""
+        if self.github is not None:
+            return {
+                "source": "url",
+                "url": f"https://github.com/{self.github['repo']}.git",
+                **({"ref": self.github["ref"]} if "ref" in self.github else {}),
+            }
+        return {"source": "local", "path": str(self.source)}
+
+    @property
     def required_skills(self) -> tuple[Path, ...]:
-        """Return every skill entrypoint promised by the catalog."""
+        """列出 catalog 承诺的全部技能入口，路径相对于各插件根目录。"""
 
         return tuple(
             Path(skill.path.as_posix()) / "SKILL.md" for skill in self.skills
@@ -157,25 +173,54 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
             raise CatalogError(f"{field}.id: duplicate plugin ID {plugin_id!r}")
         plugin_ids.add(plugin_id)
 
-        directory = _safe_relative(
-            _string(item.get("directory"), f"{field}.directory"),
-            f"{field}.directory",
-        )
-        expected_directory = PurePosixPath("plugins") / plugin_id
-        if directory != expected_directory:
-            raise CatalogError(
-                f"{field}.directory: expected {expected_directory.as_posix()!r}"
+        # 1. 本地条目检查实际目录；外部条目只描述 GitHub 来源，离线不伪造包检查。
+        github = None
+        directory = None
+        plugin_root = None
+        if "source" in item:
+            source = _mapping(item["source"], f"{field}.source")
+            if set(source) - {"type", "repo", "ref"} or source.get("type") != "github":
+                raise CatalogError(f"{field}.source: expected GitHub repo and optional ref")
+            if "directory" in item:
+                raise CatalogError(f"{field}: source and directory are mutually exclusive")
+            repo = _string(source.get("repo"), f"{field}.source.repo")
+            repo_pattern = r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?/[A-Za-z0-9_.-]+"
+            if (
+                not re.fullmatch(repo_pattern, repo)
+                or repo.split("/")[1] in {".", ".."}
+                or repo.endswith(".git")
+            ):
+                raise CatalogError(
+                    f"{field}.source.repo: expected GitHub owner/repo without .git"
+                )
+            github = {"repo": repo}
+            if "ref" in source:
+                ref = _string(source["ref"], f"{field}.source.ref")
+                if ref.startswith("-") or any(
+                    char.isspace() or ord(char) < 32 for char in ref
+                ):
+                    raise CatalogError(f"{field}.source.ref: invalid Git ref")
+                github["ref"] = ref
+        else:
+            directory = _safe_relative(
+                _string(item.get("directory"), f"{field}.directory"),
+                f"{field}.directory",
             )
-        if directory in directories:
-            raise CatalogError(f"{field}.directory: duplicate directory")
-        directories.add(directory)
-        plugin_root = (root / Path(directory.as_posix())).resolve()
-        try:
-            plugin_root.relative_to(root.resolve())
-        except ValueError as error:
-            raise CatalogError(f"{field}.directory: escapes repository root") from error
-        if not plugin_root.is_dir():
-            raise CatalogError(f"{field}.directory: directory does not exist")
+            expected_directory = PurePosixPath("plugins") / plugin_id
+            if directory != expected_directory:
+                raise CatalogError(
+                    f"{field}.directory: expected {expected_directory.as_posix()!r}"
+                )
+            if directory in directories:
+                raise CatalogError(f"{field}.directory: duplicate directory")
+            directories.add(directory)
+            plugin_root = (root / Path(directory.as_posix())).resolve()
+            try:
+                plugin_root.relative_to(root.resolve())
+            except ValueError as error:
+                raise CatalogError(f"{field}.directory: escapes repository root") from error
+            if not plugin_root.is_dir():
+                raise CatalogError(f"{field}.directory: directory does not exist")
 
         version = _string(item.get("version"), f"{field}.version")
         if not SEMVER_PATTERN.fullmatch(version):
@@ -184,6 +229,7 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         category = _string(item.get("category"), f"{field}.category")
         keywords = _string_list(item.get("keywords"), f"{field}.keywords")
 
+        # 2. 两种来源共用完整技能清单；外部文件检查交给显式联网的安装检查。
         raw_skills = item.get("skills")
         if not isinstance(raw_skills, list) or not raw_skills:
             raise CatalogError(f"{field}.skills: expected a non-empty array")
@@ -210,9 +256,10 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
                 raise CatalogError(
                     f"{skill_field}.path: expected {expected_skill_path.as_posix()!r}"
                 )
-            skill_file = plugin_root / Path(skill_path.as_posix()) / "SKILL.md"
-            if not skill_file.is_file():
-                raise CatalogError(f"{skill_field}.path: missing {skill_file}")
+            if plugin_root is not None:
+                skill_file = plugin_root / Path(skill_path.as_posix()) / "SKILL.md"
+                if not skill_file.is_file():
+                    raise CatalogError(f"{skill_field}.path: missing {skill_file}")
             skills.append(SkillSpec(skill_id, skill_path))
 
         platforms = _mapping(item.get("platforms"), f"{field}.platforms")
@@ -227,8 +274,8 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         _string(claude.get("category"), f"{field}.platforms.claude.category")
         _string_list(claude.get("tags"), f"{field}.platforms.claude.tags")
 
-        # 发布包必须自包含；显式拒绝最常见的跨插件共享目录逃逸写法。
-        for content_path in plugin_root.rglob("*"):
+        # 3. 本地发布包必须自包含；外部仓库不能借用本地旧副本完成这项检查。
+        for content_path in plugin_root.rglob("*") if plugin_root is not None else ():
             if not content_path.is_file() or content_path.suffix.lower() not in {
                 ".md", ".json", ".py", ".toml", ".yaml", ".yml"
             }:
@@ -251,6 +298,7 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
                 tuple(skills),
                 codex,
                 claude,
+                github,
             )
         )
 

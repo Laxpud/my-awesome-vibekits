@@ -28,9 +28,9 @@
 
 </div>
 
-Vibekits is my personally incubated collection of reusable workflows for Codex and Claude Code. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
+Vibekits is my plugin marketplace for reusable workflows in Codex and Claude Code, maintained in independent GitHub repositories. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
 
-The current source catalog contains four independently installable plugins and ten skills for code comments, Python project metadata, repository documentation, and resuming authorized work after quota recovery. Source changes do not automatically update daily installations. Remote installation uses the content published on the selected branch.
+The current marketplace lists three independently installable plugins and ten skills for code comments, Python project metadata, repository documentation, and resuming authorized work after quota recovery. Plugin payloads are fetched from each independent repository on its `main` branch. Changes to this marketplace do not automatically update daily installations.
 
 ## Who This Is For
 
@@ -105,7 +105,7 @@ Follow the browser sign-in instructions if prompted. Success means the version c
 
 ## Quick Start
 
-This first run installs only `project-docs` and asks `project-docs-readme` for a read-only README review. Choose the client you already use; you do not need both.
+This first run installs only `agent-docs-maintainer` and asks `project-docs-readme` for a read-only README review. Choose the client you already use; you do not need both.
 
 ### Install in Codex
 
@@ -122,7 +122,7 @@ In the Codex input area, enter:
 /plugins
 ```
 
-Find `project-docs`, then install and enable it. Start a new Codex task for the same project so the newly installed skills are loaded.
+Find `agent-docs-maintainer`, then install and enable it. Start a new Codex task for the same project so the newly installed skills are loaded.
 
 ### Install in Claude Code
 
@@ -130,7 +130,7 @@ Start Claude Code from your project folder. In the **Claude Code input area**, e
 
 ```text
 /plugin marketplace add https://github.com/Laxpud/my-awesome-vibekits
-/plugin install project-docs@laxpud-vibekits
+/plugin install agent-docs-maintainer@laxpud-vibekits
 ```
 
 Start a new Claude Code session for the same project so the newly installed skills are loaded.
@@ -140,7 +140,7 @@ Start a new Claude Code session for the same project so the newly installed skil
 Paste this into the new Codex task or Claude Code session:
 
 ```text
-Use $project-docs:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
 ```
 
 ### What Success Looks Like
@@ -158,7 +158,7 @@ It should **not edit files yet**. Review the plan first. If it looks right, repl
 The plan looks good. Apply it, keep official translations aligned, and verify every changed link and command.
 ```
 
-> **Updating from the former aggregate plugin?** Remove `laxpud-vibekits` in your client, then install the individual plugins you need. The old plugin has no compatibility alias or deprecated bundle. New users can ignore this note.
+> **Updating from the previous plugins?** The marketplace now uses `agent-docs-maintainer`, `agent-task-resume`, and `agent-dev-standards`. The latter combines the former `code-quality` and `python-project` plugins. Install the new plugins you need, then disable or remove their old counterparts to avoid duplicate skills. Skill IDs stay the same; plugin namespaces change as shown below.
 
 ## Choose a Skill by Goal
 
@@ -166,65 +166,65 @@ Before trying another prompt, install its named plugin from the same marketplace
 
 ### Review a README Before Editing
 
-Plugin: `project-docs` · Skill: [`project-docs-readme`](plugins/project-docs/skills/project-docs-readme/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
 ```
 
 ### Create a Missing Documentation Baseline
 
-Plugin: `project-docs` · Skill: [`project-docs-bootstrap`](plugins/project-docs/skills/project-docs-bootstrap/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-bootstrap to inspect this repository. If it lacks a usable documentation baseline, propose the smallest evidence-based set of documents and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-bootstrap to inspect this repository. If it lacks a usable documentation baseline, propose the smallest evidence-based set of documents and wait for my confirmation before editing.
 ```
 
 ### Reorganize Existing Documentation
 
-Plugin: `project-docs` · Skill: [`project-docs-refactor`](plugins/project-docs/skills/project-docs-refactor/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-refactor to audit this repository's documentation ownership, navigation, and duplicated content. Propose an ordered migration plan and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-refactor to audit this repository's documentation ownership, navigation, and duplicated content. Propose an ordered migration plan and wait for my confirmation before editing.
 ```
 
 ### Improve Planning Documents
 
-Plugin: `project-docs` · Skill: [`project-docs-planning`](plugins/project-docs/skills/project-docs-planning/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-planning to review this repository's active planning documents. Identify the authoritative planning entry, unclear commitment or readiness, and missing acceptance criteria, then propose changes before editing.
+Use $agent-docs-maintainer:project-docs-planning to review this repository's active planning documents. Identify the authoritative planning entry, unclear commitment or readiness, and missing acceptance criteria, then propose changes before editing.
 ```
 
 ### Document Architecture and Decisions
 
-Plugin: `project-docs` · Skill: [`project-docs-architecture`](plugins/project-docs/skills/project-docs-architecture/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-architecture to document this repository's current architecture from code evidence. Separate current and target states, propose the minimum useful diagrams or ADRs, and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-architecture to document this repository's current architecture from code evidence. Separate current and target states, propose the minimum useful diagrams or ADRs, and wait for my confirmation before editing.
 ```
 
 ### Refine Agent Guidance
 
-Plugin: `project-docs` · Skill: [`project-docs-guidance`](plugins/project-docs/skills/project-docs-guidance/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
+Use $agent-docs-maintainer:project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
 ```
 
 ### Review or Improve Code Comments
 
-Plugin: `code-quality` · Skill: [`code-comment-standard`](plugins/code-quality/skills/code-comment-standard/SKILL.md)
+Plugin: `agent-dev-standards` · Skill: [`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md)
 
 ```text
-Use $code-quality:code-comment-standard to review comments in these files. Identify missing processing steps, unclear data meaning, and unsupported claims. Explain the reading gaps and show focused rewrites without editing files.
+Use $agent-dev-standards:code-comment-standard to review comments in these files. Identify missing processing steps, unclear data meaning, and unsupported claims. Explain the reading gaps and show focused rewrites without editing files.
 ```
 
-Invoke this skill explicitly. For an edit, ask the skill to apply the improvements within the requested scope while preserving code behavior. The skill includes [before-and-after examples with explanations](plugins/code-quality/skills/code-comment-standard/references/comment-examples.md). Everyday commenting preferences belong in your global or project instructions; this skill provides a focused review and editing workflow.
+Invoke this skill explicitly. For an edit, ask the skill to apply the improvements within the requested scope while preserving code behavior. The skill includes [before-and-after examples with explanations](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md). Everyday commenting preferences belong in your global or project instructions; this skill provides a focused review and editing workflow.
 
 ### Create or Review pyproject.toml
 
-Plugin: `python-project` · Skill: [`pyproject-standard`](plugins/python-project/skills/pyproject-standard/SKILL.md)
+Plugin: `agent-dev-standards` · Skill: [`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md)
 
 ```text
 Use pyproject-standard to review this Python project's pyproject.toml. Identify evidence-backed changes, show me the proposed configuration, and ask before editing.
@@ -234,20 +234,20 @@ In Codex, `project-docs-progress` can run automatically for existing project tas
 
 ### Keep Current Progress Minimal
 
-Plugin: `project-docs` · Skill: [`project-docs-progress`](plugins/project-docs/skills/project-docs-progress/SKILL.md)
+Plugin: `agent-docs-maintainer` · Skill: [`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md)
 
 ```text
-Use $project-docs:project-docs-progress to continue the current authorized TODO task; update only checkboxes and necessary blockers.
+Use $agent-docs-maintainer:project-docs-progress to continue the current authorized TODO task; update only checkboxes and necessary blockers.
 ```
 
 A request such as “write a plan.md” uses `docs/plans/plan-YYYY-MM-DD-HH-mm.md` by default; spec files use `docs/specs/spec-YYYY-MM-DD-HH-mm.md`. Explicit filenames or paths and established project conventions take precedence. The timestamp uses your configured timezone, or local environment time if none is configured; automatically named files use suffixes such as `-2` or `-3` on collision. A conflicting explicit destination is not silently renamed or overwritten. Existing files keep their names. A chat-only plan stays in chat, and saving a file does not create TODO/roadmap files or start implementation.
 
 ### Resume Work After Quota Recovery
 
-Plugin: `task-continuation` · Skill: [`quota-resume`](plugins/task-continuation/skills/quota-resume/SKILL.md)
+Plugin: `agent-task-resume` · Skill: [`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md)
 
 ```text
-Use $task-continuation:quota-resume to create a schedule that resumes this authorized task after its five-hour quota recovers. Track actual execution, prevent duplicate submissions, and stop when the task is complete or needs my input.
+Use $agent-task-resume:quota-resume to create a schedule that resumes this authorized task after its five-hour quota recovers. Track actual execution, prevent duplicate submissions, and stop when the task is complete or needs my input.
 ```
 
 This skill must be invoked explicitly. It guides the agent in creating or repairing a schedule; installing the plugin does not start a background task. It checks five-hour and weekly limits, reuses the service that owns a chat or restores the original thread when no owner exists, and permits existing reset credits only within explicit user authorization and a usage cap. It accounts for queue startup and automatic approval waits when tracking execution. The included execution guidance covers Codex, with a Linux systemd path when appropriate. Loading the skill in another client does not establish support for that client's quota or scheduling APIs. Availability checks and queued messages alone do not prove that work resumed successfully.
@@ -263,10 +263,9 @@ This skill must be invoked explicitly. It guides the agent in creating or repair
 
 Vibekits currently supports the Codex and Claude Code plugin marketplaces:
 
-- `code-quality` contains one code-comment skill;
-- `python-project` contains one `pyproject.toml` skill;
-- `project-docs` contains seven documentation skills;
-- `task-continuation` contains one explicitly invoked quota-recovery scheduling skill.
+- **[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)** (`agent-docs-maintainer`) contains seven documentation skills;
+- **[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)** (`agent-task-resume`) contains one explicitly invoked quota-recovery scheduling skill;
+- **[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)** (`agent-dev-standards`) contains the code-comment and `pyproject.toml` skills.
 
 Each plugin is installed and versioned independently, so installing, disabling, updating, or removing one does not require changing its siblings.
 
@@ -280,7 +279,7 @@ For feature requests or usage feedback, [open an issue](https://github.com/Laxpu
 
 If the project does not yet cover your needs, share your use case or help maintain it by contributing code or documentation.
 
-To browse or contribute to the source:
+To maintain the marketplace, clone this repository. Contribute plugin content in its independent repository linked above:
 
 ```bash
 git clone https://github.com/Laxpud/my-awesome-vibekits.git

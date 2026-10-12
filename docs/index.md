@@ -10,7 +10,7 @@
 | [`README.cn.md`](README.cn.md) | 根 README 的中文翻译，与英文版同步维护。 |
 | [`使用说明`](usage.md) | 文档技能的选择、进度维护方式与按需操作示例。 |
 | [`TODO.md`](../TODO.md) | 当前里程碑、活动任务、验收条件、必要验证结论和状态维护规则。 |
-| [`plugin-catalog.json`](../plugin-catalog.json) | 插件身份、独立版本、Skill 路径和双端分发元数据的唯一事实来源。 |
+| [`plugin-catalog.json`](../plugin-catalog.json) | 本市场的外部来源、版本与 Skill 收录快照，以及双端市场元数据；插件发布以独立仓库为准。 |
 
 ## 维护文档
 

@@ -59,7 +59,9 @@ def build_files(root: Path) -> dict[Path, bytes]:
     """计算完整输出；从技能入口递归收集共享资料，不修改源文件或安装目录。"""
     source = (root / 'sources/project-docs').resolve()
     catalog = json.loads((root / 'plugin-catalog.json').read_text(encoding='utf-8'))
-    plugin = next(item for item in catalog['plugins'] if item['id'] == 'project-docs')
+    plugin = next((item for item in catalog['plugins'] if item['id'] == 'project-docs'), None)
+    if plugin is None:
+        raise BundleError('project-docs is maintained in agent-docs-maintainer; run its generator in that repository')
     output = root / plugin['directory'] / 'skills'
     names = {item['id'] for item in plugin['skills']}
     actual = {p.name for p in (source / 'skills').iterdir() if p.is_dir()}

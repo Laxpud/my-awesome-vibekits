@@ -82,7 +82,7 @@ def codex_marketplace(catalog: PluginCatalog) -> dict[str, Any]:
         "plugins": [
             {
                 "name": plugin.id,
-                "source": {"source": "local", "path": plugin.source},
+                "source": plugin.codex_source,
                 "policy": {
                     "installation": plugin.codex["installation"],
                     "authentication": plugin.codex["authentication"],
@@ -119,7 +119,7 @@ def generated_files(
     catalog: PluginCatalog,
     plugins: Iterable[PluginSpec] | None = None,
 ) -> dict[Path, str]:
-    """返回共享 marketplace 与选中插件 manifest 的稳定生成物。"""
+    """生成共享市场与本地插件 manifest；外部 manifest 由各独立仓库维护。"""
 
     files = {
         CODEX_MARKETPLACE_PATH: _json(codex_marketplace(catalog)),
@@ -127,6 +127,8 @@ def generated_files(
     }
     selected = catalog.plugins if plugins is None else tuple(plugins)
     for plugin in selected:
+        if plugin.directory is None:
+            continue
         plugin_root = Path(plugin.directory.as_posix())
         files[plugin_root / ".codex-plugin/plugin.json"] = _json(
             codex_manifest(catalog, plugin)
@@ -179,6 +181,8 @@ def set_versions(
 
     if not SEMVER_PATTERN.fullmatch(version):
         raise MetadataError(f"version must be SemVer without a 'v' prefix: {version!r}")
+    if any(plugin.github is not None for plugin in plugins):
+        raise MetadataError("external plugin versions must be released in their own repositories; update the catalog snapshot afterwards")
     path = root / CATALOG_PATH
     data = json.loads(path.read_text(encoding="utf-8"))
     selected = {plugin.id for plugin in plugins}

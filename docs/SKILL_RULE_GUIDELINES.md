@@ -4,6 +4,36 @@
 
 项目文档所有权和入口见 [`docs/index.md`](index.md)。本文件只维护 Skill、catalog、双平台适配层及其验证契约。
 
+## 当前市场与外部仓库
+
+当前正式收录 `agent-docs-maintainer`、`agent-task-resume` 和 `agent-dev-standards`，技能与 manifest 由各自独立仓库维护。本仓库的 `plugin-catalog.json` 维护外部来源、版本和 Skill 收录快照，生成器只写两端 marketplace，不生成或覆盖外部 manifest。原 `plugins/` 与 `sources/` 暂存为迁移前快照，不参与当前市场分发。
+
+catalog 每条插件必须选择一种来源：
+
+- 本地包使用 `directory: "plugins/<plugin-id>"`，继续检查真实目录、技能入口和自包含约定。
+- 独立 GitHub 仓库使用 `source: {"type": "github", "repo": "Laxpud/agent-docs-maintainer", "ref": "main"}`，不能同时填写 `directory`。`repo` 只接受 `owner/repo`，`ref` 可省略以采用默认分支；当前三个仓库显式跟随 `main`。
+- 插件 ID、Skill ID 仍要求唯一，Skill 路径仍为 `skills/<skill-id>`。外部文件是否存在需要联网检查；离线解析不会把旧本地副本当成外部安装包。
+
+两端来源由同一条 catalog 转换：[Codex](https://developers.openai.com/plugins/build/plugins#marketplace-metadata) 使用 `{"source": "url", "url": "https://github.com/Laxpud/agent-docs-maintainer.git", "ref": "main"}`；[Claude Code](https://code.claude.com/docs/en/plugin-marketplaces#choose-a-plugin-source) 使用 `{"source": "github", "repo": "Laxpud/agent-docs-maintainer", "ref": "main"}`。均从仓库根目录读取插件。
+
+修改收录信息后运行：
+
+```bash
+python3 scripts/sync_plugin_metadata.py --write
+python3 scripts/sync_plugin_metadata.py
+python3 scripts/check_codex_install.py --all
+python3 scripts/check_markdown_links.py
+git diff --check
+```
+
+需要核对外部包时再运行 `python3 scripts/check_codex_install.py --all --check-external`。该命令只克隆到临时目录，检查双端 manifest 的身份、版本、描述、仓库地址与完整 Skill 入口；不安装插件、不调用模型。真实安装和更新仍需在目标客户端验证。
+
+版本先在独立仓库发布，再核对并同步本市场快照。`--set-version` 不接受外部条目，避免只改市场就宣称插件已经发布。旧 `plugin_update_e2e.py` 仍只支持本地插件制品，遇到外部条目会在 fetch 和任何发布动作前明确拒绝；外部插件生命周期适配尚未完成。
+
+## 迁移前本地插件维护资料
+
+以下规则与命令仅供保留的本地源码布局、旧 fixture 和历史发布流程回查。当前市场接入不运行旧 project-docs 生成器，不按下方旧插件 ID 发布外部插件；涉及技能内容的修改请转到对应独立仓库并读取其 AGENTS.md。
+
 ## 权威位置
 
 | 内容 | 权威位置 |
@@ -34,7 +64,7 @@
 - manifest、marketplace 与 catalog 的名称、版本、描述、路径或平台字段漂移；
 - 插件内容中的 `../shared` 运行时引用。
 
-当前正式目录只包含：
+迁移前的本地目录布局为：
 
 ```text
 plugins/
@@ -79,7 +109,7 @@ plugins/<plugin-id>/skills/<skill-id>/
 - `project-docs` 的全部配套资料在共享 `references/` 中维护一份，生成器只打包各入口引用的资料及其依赖。入口说明当前任务应读哪些资料；打包完整性不等于执行时全部加载，也不自动调用其他技能。
 - 新增或大改技能后，检查 catalog 描述、README 插件/技能表和生成物是否需要同步。
 
-在提供插件命名空间的平台上，十个公开 Skill 名分别是：
+迁移前本地插件的十个 Skill 调用名分别是：
 
 - `code-quality:code-comment-standard`
 - `python-project:pyproject-standard`

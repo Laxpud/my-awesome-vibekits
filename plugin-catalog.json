@@ -15,117 +15,187 @@
   },
   "plugins": [
     {
-      "id": "code-quality",
-      "directory": "plugins/code-quality",
-      "version": "1.1.2",
-      "description": "Focused review and improvement of code comments, docstrings, and API explanations, with practical before-and-after examples.",
-      "category": "Productivity",
-      "keywords": ["code-quality", "comments", "documentation"],
-      "skills": [
-        {"id": "code-comment-standard", "path": "skills/code-comment-standard"}
-      ],
-      "platforms": {
-        "codex": {
-          "installation": "AVAILABLE",
-          "authentication": "ON_INSTALL",
-          "displayName": "Code Quality",
-          "shortDescription": "Review and improve code comments",
-          "longDescription": "Review, complete, and rewrite comments to explain code responsibilities, processing steps, data meaning, and interface contracts without changing behavior.",
-          "defaultPrompt": ["Use $code-quality:code-comment-standard to review comments in the requested files. Explain specific reading gaps and show focused rewrites without editing files."]
-        },
-        "claude": {
-          "category": "workflow",
-          "tags": ["code-quality", "comments", "documentation"]
-        }
-      }
-    },
-    {
-      "id": "python-project",
-      "directory": "plugins/python-project",
-      "version": "1.1.2",
-      "description": "Standards for uv and hatchling pyproject.toml configuration and Python project metadata.",
-      "category": "Productivity",
-      "keywords": ["python", "uv", "hatchling", "pyproject"],
-      "skills": [
-        {"id": "pyproject-standard", "path": "skills/pyproject-standard"}
-      ],
-      "platforms": {
-        "codex": {
-          "installation": "AVAILABLE",
-          "authentication": "ON_INSTALL",
-          "displayName": "Python Project",
-          "shortDescription": "uv and hatchling project standards",
-          "longDescription": "Create or review pyproject.toml metadata, dependencies, dynamic versions, licenses, scripts, classifiers, and uv index configuration.",
-          "defaultPrompt": ["Use pyproject-standard when creating or editing pyproject.toml."]
-        },
-        "claude": {
-          "category": "workflow",
-          "tags": ["python", "uv", "hatchling", "pyproject"]
-        }
-      }
-    },
-    {
-      "id": "project-docs",
-      "directory": "plugins/project-docs",
+      "id": "agent-docs-maintainer",
       "version": "2.0.0",
       "description": "Minimal project progress and plan/spec storage, with shared document rules for explicit README, planning, architecture, guidance, and organization workflows.",
       "category": "Productivity",
-      "keywords": ["documentation", "readme", "refactor", "planning", "todo", "roadmap", "milestone", "backlog", "architecture", "mermaid", "adr", "agents", "claude", "project-guidance"],
+      "keywords": [
+        "documentation",
+        "readme",
+        "refactor",
+        "planning",
+        "todo",
+        "roadmap",
+        "milestone",
+        "backlog",
+        "architecture",
+        "mermaid",
+        "adr",
+        "agents",
+        "claude",
+        "project-guidance"
+      ],
       "skills": [
-        {"id": "project-docs-bootstrap", "path": "skills/project-docs-bootstrap"},
-        {"id": "project-docs-refactor", "path": "skills/project-docs-refactor"},
-        {"id": "project-docs-readme", "path": "skills/project-docs-readme"},
-        {"id": "project-docs-planning", "path": "skills/project-docs-planning"},
-        {"id": "project-docs-architecture", "path": "skills/project-docs-architecture"},
-        {"id": "project-docs-guidance", "path": "skills/project-docs-guidance"},
-        {"id": "project-docs-progress", "path": "skills/project-docs-progress"}
+        {
+          "id": "project-docs-bootstrap",
+          "path": "skills/project-docs-bootstrap"
+        },
+        {
+          "id": "project-docs-refactor",
+          "path": "skills/project-docs-refactor"
+        },
+        {
+          "id": "project-docs-readme",
+          "path": "skills/project-docs-readme"
+        },
+        {
+          "id": "project-docs-planning",
+          "path": "skills/project-docs-planning"
+        },
+        {
+          "id": "project-docs-architecture",
+          "path": "skills/project-docs-architecture"
+        },
+        {
+          "id": "project-docs-guidance",
+          "path": "skills/project-docs-guidance"
+        },
+        {
+          "id": "project-docs-progress",
+          "path": "skills/project-docs-progress"
+        }
       ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
-          "displayName": "Project Docs",
+          "displayName": "Agent Docs Maintainer",
           "shortDescription": "Minimal progress, plan storage, and documentation",
           "longDescription": "Track project progress and handle plan/spec file requests. Explicit skills cover documentation setup, refactoring, README and usage, planning, architecture and ADRs, and project guidance using shared references.",
           "defaultPrompt": [
-            "Use $project-docs:project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
-            "Use $project-docs:project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
-            "Use $project-docs:project-docs-readme to create or maintain the README, official translations, and task-based usage guide.",
-            "Use $project-docs:project-docs-planning to organize TODO, roadmap, milestones, backlog, and plan/spec storage and archiving without rewriting plan/spec content.",
-            "Use $project-docs:project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
-            "Use $project-docs:project-docs-guidance to create or refine AGENTS.md, scoped rules, and the CLAUDE.md symlink.",
-            "Use $project-docs:project-docs-progress to continue the current task with minimal progress, or create, save, and link a project plan/spec file using project storage conventions."
+            "Use $agent-docs-maintainer:project-docs-bootstrap to initialize a minimal documentation baseline for this repository.",
+            "Use $agent-docs-maintainer:project-docs-refactor to audit or reorganize this repository's documentation structure and ownership.",
+            "Use $agent-docs-maintainer:project-docs-readme to create or maintain the README, official translations, and task-based usage guide.",
+            "Use $agent-docs-maintainer:project-docs-planning to organize TODO, roadmap, milestones, backlog, and plan/spec storage and archiving without rewriting plan/spec content.",
+            "Use $agent-docs-maintainer:project-docs-architecture to maintain current or target architecture, Mermaid diagrams, and ADRs.",
+            "Use $agent-docs-maintainer:project-docs-guidance to create or refine AGENTS.md, scoped rules, and the CLAUDE.md symlink.",
+            "Use $agent-docs-maintainer:project-docs-progress to continue the current task with minimal progress, or create, save, and link a project plan/spec file using project storage conventions."
           ]
         },
         "claude": {
           "category": "workflow",
-          "tags": ["documentation", "readme", "planning", "architecture", "adr", "project-guidance"]
+          "tags": [
+            "documentation",
+            "readme",
+            "planning",
+            "architecture",
+            "adr",
+            "project-guidance"
+          ]
         }
+      },
+      "source": {
+        "type": "github",
+        "repo": "Laxpud/agent-docs-maintainer",
+        "ref": "main"
       }
     },
     {
-      "id": "task-continuation",
-      "directory": "plugins/task-continuation",
+      "id": "agent-task-resume",
       "version": "0.1.0",
       "description": "Explicitly invoked guidance for resuming authorized work after short-term or weekly quota recovery, with execution tracking and permission-bound reset credits.",
       "category": "Productivity",
-      "keywords": ["continuation", "quota", "scheduling", "automation"],
+      "keywords": [
+        "continuation",
+        "quota",
+        "scheduling",
+        "automation"
+      ],
       "skills": [
-        {"id": "quota-resume", "path": "skills/quota-resume"}
+        {
+          "id": "quota-resume",
+          "path": "skills/quota-resume"
+        }
       ],
       "platforms": {
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
-          "displayName": "Task Continuation",
+          "displayName": "Agent Task Resume",
           "shortDescription": "Resume authorized work after quota recovery",
           "longDescription": "Create or repair continuation schedules with five-hour and weekly quota checks, existing-session routing, execution tracking, and duplicate prevention. Use reset credits only within explicit user authorization and stop on completion or required user action. Includes Codex and Linux systemd guidance; installation alone starts no scheduler.",
-          "defaultPrompt": ["Use $task-continuation:quota-resume to schedule this authorized task to resume after its five-hour quota recovers, track execution, and stop on completion or required user action."]
+          "defaultPrompt": [
+            "Use $agent-task-resume:quota-resume to schedule this authorized task to resume after its five-hour quota recovers, track execution, and stop on completion or required user action."
+          ]
         },
         "claude": {
           "category": "workflow",
-          "tags": ["continuation", "quota", "scheduling"]
+          "tags": [
+            "continuation",
+            "quota",
+            "scheduling"
+          ]
         }
+      },
+      "source": {
+        "type": "github",
+        "repo": "Laxpud/agent-task-resume",
+        "ref": "main"
+      }
+    },
+    {
+      "id": "agent-dev-standards",
+      "version": "1.2.0",
+      "description": "Development standards and practices for AI coding agents, tailored to personal preferences.",
+      "category": "Productivity",
+      "keywords": [
+        "code-quality",
+        "comments",
+        "documentation",
+        "python",
+        "uv",
+        "hatchling",
+        "pyproject"
+      ],
+      "skills": [
+        {
+          "id": "code-comment-standard",
+          "path": "skills/code-comment-standard"
+        },
+        {
+          "id": "pyproject-standard",
+          "path": "skills/pyproject-standard"
+        }
+      ],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "displayName": "Agent Dev Standards",
+          "shortDescription": "Development standards and personal preferences",
+          "longDescription": "Development standards and practices for AI coding agents, tailored to personal preferences. Currently includes code-comment review and uv/hatchling Python project configuration.",
+          "defaultPrompt": [
+            "Use $agent-dev-standards:code-comment-standard to review comments in the requested files. Explain specific reading gaps and show focused rewrites without editing files.",
+            "Use $agent-dev-standards:pyproject-standard to review this Python project configuration."
+          ]
+        },
+        "claude": {
+          "category": "workflow",
+          "tags": [
+            "code-quality",
+            "comments",
+            "documentation",
+            "python",
+            "uv",
+            "hatchling",
+            "pyproject"
+          ]
+        }
+      },
+      "source": {
+        "type": "github",
+        "repo": "Laxpud/agent-dev-standards",
+        "ref": "main"
       }
     }
   ]
