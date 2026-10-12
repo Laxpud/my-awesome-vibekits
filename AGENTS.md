@@ -25,7 +25,7 @@
 
 - 当前市场收录三个外部插件；技能、manifest、版本与插件发布在对应独立仓库维护，入口见 README 的插件列表。
 - 本仓库只维护 `plugin-catalog.json` 中的来源与收录元数据，运行 `python3 scripts/sync_plugin_metadata.py --write` 生成两端 marketplace；不在本仓库生成外部插件 manifest。
-- `plugins/`、`sources/` 与旧技能生成器暂时保留为迁移前快照，当前市场不引用这些内容；不要用本地快照替代外部插件的维护源。
+- `plugins/`、`sources/` 与旧技能生成器暂时保留为迁移前快照，当前市场不引用这些内容；`plugins/` 中旧 manifest 和 `SKILL.md` 已加 `.disabled` 后缀以停用发现入口。不要恢复这些入口或运行旧生成器重建安装文件，也不要用本地快照替代外部插件的维护源；需要回查时只读备份。
 - 交付前运行元数据、Codex 安装契约、Markdown 链接与 diff 检查；需要核对外部包时显式运行 `python3 scripts/check_codex_install.py --all --check-external`，真实客户端安装由当前任务约定决定。
 
 ### Codex 外部插件展示元数据

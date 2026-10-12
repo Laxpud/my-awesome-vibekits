@@ -7,7 +7,7 @@
 ## A5：局部文档重构仍要求完整盘点
 
 - **所属类别**：三、操作步骤过于僵化。
-- **原文与位置**：[project-docs-refactor/SKILL.md](../../plugins/project-docs/skills/project-docs-refactor/SKILL.md) 第 50–53 行：“建立完整盘点”；“读取文档内容而不是只看文件名，并检查 README、规划入口、`docs/`、项目指导文件、manifest、关键源码和 Git 状态”；“标记每份文档的受众、主题、当前或历史状态、入站链接以及是否包含未解决工作”。
+- **原文与位置**：[project-docs-refactor/SKILL.md](../../plugins/project-docs/skills/project-docs-refactor/SKILL.md.disabled) 第 50–53 行：“建立完整盘点”；“读取文档内容而不是只看文件名，并检查 README、规划入口、`docs/`、项目指导文件、manifest、关键源码和 Git 状态”；“标记每份文档的受众、主题、当前或历史状态、入站链接以及是否包含未解决工作”。
 - **原有目的**：避免误判文档所有权、遗漏迁移影响或隐藏活动工作。
 - **标记理由**：技能覆盖目录 README 等局部任务，主流程却没有缩小仓库级盘点范围的分支；配套文档已有“相关文档”和“附近证据”的范围限定。
 - **处理建议**：跨文档结构重构才执行完整盘点；局部任务先检查目标、附近权威材料和入站引用，发现跨边界影响再扩大范围。保留读取内容、核对所有权和保护未解决工作的要求。
@@ -15,7 +15,7 @@
 ## A6：指导文件维护的默认读取范围过大
 
 - **所属类别**：三、操作步骤过于僵化。
-- **原文与位置**：[project-docs-guidance/SKILL.md](../../plugins/project-docs/skills/project-docs-guidance/SKILL.md) 第 30 行：“读取现有 `AGENTS.md`、`CLAUDE.md` 和其他 agent 指导文件，以及 README、活动规划入口、具名技术文档、关键代码和配置入口。”[references/guidance-rules.md](../../plugins/project-docs/skills/project-docs-guidance/references/guidance-rules.md) 第 27 行有类似要求。
+- **原文与位置**：[project-docs-guidance/SKILL.md](../../plugins/project-docs/skills/project-docs-guidance/SKILL.md.disabled) 第 30 行：“读取现有 `AGENTS.md`、`CLAUDE.md` 和其他 agent 指导文件，以及 README、活动规划入口、具名技术文档、关键代码和配置入口。”[references/guidance-rules.md](../../plugins/project-docs/skills/project-docs-guidance/references/guidance-rules.md) 第 27 行有类似要求。
 - **原有目的**：确保指导文件有项目证据，避免误用发现、继承和平台规则。
 - **标记理由**：修正局部链接或维护一条路由，也可能被套入多类材料的默认盘点。问题位于技能流程，不是根 `AGENTS.md` 要求每次通读仓库，因此不归第四类。
 - **处理建议**：先读受影响文件、适用上级指导及直接权威来源；涉及项目事实、代码边界、目录继承或跨平台行为时，再加载对应证据。保留创建或依赖目录级指导时的平台语义核对。
@@ -23,7 +23,7 @@
 ## A7：架构验证没有按变更类型区分
 
 - **所属类别**：三、操作步骤过于僵化。
-- **原文与位置**：[project-docs-architecture/SKILL.md](../../plugins/project-docs/skills/project-docs-architecture/SKILL.md) 第 65–66 行：“仓库已有 Mermaid renderer 时执行语法渲染；没有时至少检查 fenced block、节点引用和明显语法，并报告未完成的渲染验证”；“搜索过期组件名、旧 ADR 状态和已移动设计路径”。
+- **原文与位置**：[project-docs-architecture/SKILL.md](../../plugins/project-docs/skills/project-docs-architecture/SKILL.md.disabled) 第 65–66 行：“仓库已有 Mermaid renderer 时执行语法渲染；没有时至少检查 fenced block、节点引用和明显语法，并报告未完成的渲染验证”；“搜索过期组件名、旧 ADR 状态和已移动设计路径”。
 - **原有目的**：发现图语法错误、架构漂移、旧状态和断链。
 - **标记理由**：图、ADR、组件与路径变更共用检查清单，未明确各项的触发条件；仅更新 ADR 状态时无需重新渲染未变化的架构图。
 - **处理建议**：图变更检查节点关系和渲染；ADR 变更检查状态、编号和替代关系；组件重命名或路径迁移才搜索旧名称、旧路径。保留相关链接和修改范围检查，不删除有效验证目标。

@@ -8,6 +8,8 @@
 
 当前正式收录 `agent-docs-maintainer`、`agent-task-resume` 和 `agent-dev-standards`，技能与 manifest 由各自独立仓库维护。本仓库的 `plugin-catalog.json` 维护外部来源、版本和 Skill 收录快照，生成器只写两端 marketplace，不生成或覆盖外部 manifest。原 `plugins/` 与 `sources/` 暂存为迁移前快照，不参与当前市场分发。
 
+为停用旧插件的标准发现入口，`plugins/` 中四个旧插件的双端 manifest 已改名为 `plugin.json.disabled`，十个技能入口已改名为 `SKILL.md.disabled`；文件正文保留。源模板原有的 `SKILL.md.in` 继续保留。两端根 marketplace 仍使用正式名称并只收录外部仓库；回查旧快照时不要恢复入口或运行旧生成器重建安装文件。实际客户端是否仍显示缓存中的旧插件，由用户刷新后验证。
+
 catalog 每条插件必须选择一种来源：
 
 - 本地包使用 `directory: "plugins/<plugin-id>"`，继续检查真实目录、技能入口和自包含约定。

@@ -9,7 +9,7 @@
 ## A4：所有配置任务套用逐项元数据问答
 
 - 主要类别：六、过度谨慎的请示与审批措辞
-- 原文与位置：[`SKILL.md`](../../plugins/python-project/skills/pyproject-standard/SKILL.md) 第 12-18 行：`MUST follow the flow below`，并要求 `Every prompt to the user must include a "Skip" option`；随后固定询问项目名、描述、作者信息、仓库 URL 和依赖分析。
+- 原文与位置：[`SKILL.md`](../../plugins/python-project/skills/pyproject-standard/SKILL.md.disabled) 第 12-18 行：`MUST follow the flow below`，并要求 `Every prompt to the user must include a "Skip" option`；随后固定询问项目名、描述、作者信息、仓库 URL 和依赖分析。
 - 原有目的（推断）：避免猜测项目元数据，让用户确认名称、描述、作者和依赖；在跳过时用占位符保留待补信息。
 - 问题：调用流程没有区分创建、审查和局部修改；已有可靠元数据时，仍可能重新询问项目名、作者和地址。跳过后保留占位符的规则也没有区分新模板与有效的现有配置。
 - 已有建议方向：按任务意图分支，已有可靠信息直接沿用，只集中询问会实质影响结果的缺失信息。保留用户要求的编辑前确认，不重复确认已授权范围；`Skip` 不应覆盖有效字段。
