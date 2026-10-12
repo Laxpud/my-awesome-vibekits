@@ -4,8 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -16,11 +19,13 @@ from scripts.plugin_catalog import (
     CATALOG_PATH,
     CLAUDE_MARKETPLACE_PATH,
     CODEX_MARKETPLACE_PATH,
+    CODEX_INTERFACE_METADATA_FIELDS,
     SEMVER_PATTERN,
     CatalogError,
     PluginCatalog,
     PluginSpec,
     load_catalog,
+    parse_catalog,
 )
 
 
@@ -37,6 +42,19 @@ def codex_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]
 
     publisher = catalog.publisher
     adapter = plugin.codex
+    if plugin.manifest_metadata is not None:
+        # 已拉取的外部快照使用实际发布者和 interface，不补回远端已删除的默认字段。
+        return {
+            "name": plugin.id,
+            "version": plugin.version,
+            "description": plugin.description,
+            **plugin.manifest_metadata,
+            "keywords": list(plugin.keywords),
+            "skills": "./skills/",
+            "interface": {
+                field: adapter[field] for field in CODEX_INTERFACE_METADATA_FIELDS if field in adapter
+            },
+        }
     return {
         "name": plugin.id,
         "version": plugin.version,
@@ -95,7 +113,7 @@ def codex_marketplace_entry(catalog: PluginCatalog, plugin: PluginSpec) -> dict[
     metadata.pop("skills")
 
     # 2. 外部插件的网站和仓库链接属于独立仓库，不能沿用聚合市场的 publisher 链接。
-    if plugin.github is not None:
+    if plugin.github is not None and plugin.manifest_metadata is None:
         repository = f"https://github.com/{plugin.github['repo']}"
         metadata["homepage"] = repository
         metadata["repository"] = repository
@@ -125,7 +143,7 @@ def claude_marketplace(catalog: PluginCatalog) -> dict[str, Any]:
                 "name": plugin.id,
                 "description": plugin.description,
                 "version": plugin.version,
-                "author": {"name": catalog.publisher["name"]},
+                "author": plugin.claude.get("author", {"name": catalog.publisher["name"]}),
                 "source": plugin.source,
                 "category": plugin.claude["category"],
                 "tags": plugin.claude["tags"],
@@ -213,6 +231,65 @@ def set_versions(
     path.write_text(_json(data), encoding="utf-8")
 
 
+def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: bool) -> None:
+    """预览外部快照及市场差异；显式写入时先准备全部文件，再替换生成物。"""
+
+    from scripts.external_plugin_metadata import fetch_external_metadata
+
+    # 1. 全部远端拉取成功并通过完整 catalog 校验后，才准备本地文件变更。
+    data = fetch_external_metadata(root, plugins)
+    catalog = parse_catalog(root, data)
+    planned = {CATALOG_PATH: _json(data), **generated_files(root, catalog, ())}
+    changes = {}
+    for relative_path, content in planned.items():
+        path = root / relative_path
+        original = path.read_text(encoding="utf-8") if path.exists() else None
+        if original != content:
+            changes[relative_path] = (original, content)
+            print("".join(difflib.unified_diff(
+                (original or "").splitlines(keepends=True), content.splitlines(keepends=True),
+                fromfile=f"a/{relative_path.as_posix()}", tofile=f"b/{relative_path.as_posix()}",
+            )), end="")
+    if not write:
+        print(f"PREVIEW: {len(changes)} file(s) would change; rerun with --write to apply this selection")
+        return
+
+    # 2. 同目录临时文件验证所有目标可写；权限失败时还没有替换 catalog 或市场。
+    staged: dict[Path, Path] = {}
+    replaced: list[Path] = []
+    try:
+        for relative_path, (_, content) in changes.items():
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", newline="", dir=target.parent,
+                prefix=f".{target.name}.", suffix=".tmp", delete=False,
+            ) as handle:
+                staged[relative_path] = Path(handle.name)
+                handle.write(content)
+            if target.exists():
+                os.chmod(staged[relative_path], target.stat().st_mode & 0o777)
+        for relative_path, temporary_path in staged.items():
+            temporary_path.replace(root / relative_path)
+            replaced.append(relative_path)
+    except OSError:
+        # 替换过程中失败时恢复已经替换的文件；临时文件始终在 finally 中清理。
+        for relative_path in reversed(replaced):
+            original, _ = changes[relative_path]
+            target = root / relative_path
+            if original is None:
+                target.unlink()
+            else:
+                target.write_text(original, encoding="utf-8", newline="")
+        raise
+    finally:
+        for temporary_path in staged.values():
+            temporary_path.unlink(missing_ok=True)
+    for relative_path in changes:
+        print(f"UPDATED: {relative_path.as_posix()}")
+    print("PASS: external metadata and marketplaces are synchronized")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate or verify all plugin metadata from plugin-catalog.json."
@@ -226,12 +303,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--write", action="store_true", help="rewrite generated files")
     parser.add_argument("--set-version", metavar="SEMVER", help="set selected version")
     parser.add_argument(
+        "--fetch-external", action="store_true",
+        help="fetch external manifests and preview catalog/marketplace changes; combine with --write to apply",
+    )
+    parser.add_argument(
         "--root", type=Path, default=Path(__file__).resolve().parents[1],
         help="repository root",
     )
     args = parser.parse_args()
     if args.set_version and not (args.plugins or args.all):
         parser.error("--set-version requires --plugin or --all")
+    if args.fetch_external and args.set_version:
+        parser.error("--fetch-external cannot be combined with --set-version")
     return args
 
 
@@ -241,6 +324,14 @@ def main() -> int:
     try:
         catalog = load_catalog(root)
         selected = catalog.select(args.plugins)
+        if args.fetch_external:
+            from scripts.external_plugin_metadata import ExternalMetadataError
+
+            try:
+                sync_external_metadata(root, selected, args.write)
+            except ExternalMetadataError as error:
+                raise MetadataError(str(error)) from error
+            return 0
         if args.set_version:
             set_versions(root, catalog, selected, args.set_version)
             catalog = load_catalog(root)

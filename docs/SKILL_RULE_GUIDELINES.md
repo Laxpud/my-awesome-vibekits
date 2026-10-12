@@ -18,6 +18,24 @@ catalog 每条插件必须选择一种来源：
 
 `platforms.codex.marketplaceMetadata: true` 让生成器把 catalog 中的文案、发布者和 `interface` 展示信息附到 Codex 市场条目；默认不启用，目前仅为 `agent-docs-maintainer` 试用。外部插件的 `homepage`、`repository` 和 `interface.websiteURL` 指向独立仓库；更新收录快照时需核对其实际 manifest。此开关不修改外部包或 Claude Code 市场，也不提供安装前的技能列表。
 
+### 从独立仓库更新收录快照
+
+独立仓库发布后，可以显式联网拉取元数据。先预览一个插件的差异，再按需要写入：
+
+```bash
+python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer
+python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer --write
+```
+
+省略 `--plugin` 或使用 `--all` 时拉取全部外部条目；也可以重复 `--plugin`。不传 `--fetch-external` 时，原有生成与校验仍完全离线。
+
+- 拉取按本市场配置的仓库与 `ref` 克隆到临时目录，只读取同一 checkout 内的双端 manifest 和实际技能目录，不执行插件仓库的脚本。
+- 两端 manifest 的身份、版本、描述和仓库地址必须一致。更新 catalog 的版本、描述、关键词、Skill 清单和 Codex 展示字段；`manifestMetadata` 保存实际作者、网站、仓库和许可证，Claude 作者信息单独保存在其适配层。
+- 保留本市场的来源、`ref`、安装与认证策略、展示开关，以及 Claude 分类和标签；拉取不会自动为其他插件开启展示元数据。
+- 只同步可独立携带的展示字段；包内图标和截图路径不进入市场快照。接口字段以 `scripts/plugin_catalog.py` 的 `CODEX_INTERFACE_METADATA_FIELDS` 为准。
+- 默认打印 catalog 和两端市场的差异，不写文件；所有选中远端包及完整候选 catalog 校验通过后，`--write` 才写入。拉取或校验失败返回非零，不覆盖现有快照。
+- 本命令只更新本地文件，不推送外部仓库、不安装插件，也不自动提交本市场。读取或写入完成后，继续执行下方检查。
+
 修改收录信息后运行：
 
 ```bash

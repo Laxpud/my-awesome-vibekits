@@ -96,12 +96,13 @@
 - [ ] 将插件迁移至外部独立仓库，本仓库保留 marketplace 聚合分发入口。
   - `project-docs` 和 `task-continuation` 分别迁移至独立仓库；将 `code-comment-standard` 和 `pyproject-standard` 合并为一个插件，再迁移至另一个独立仓库。
   - 将 Codex 与 Claude Code 两端 `marketplace.json` 中各插件的来源地址改为对应外部仓库地址，使插件在各自仓库独立维护与分发。
-  - 当前状态：三个目录已搬出并创建独立仓库：[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)、[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)、[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)。两端 marketplace 已切换到各仓库的 `main` 分支；真实客户端安装待用户测试，旧本地源码暂存且不再收录。
+  - 当前状态：三个目录已搬出并创建独立仓库：[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)、[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)、[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)。两端 marketplace 已切换到各仓库的 `main` 分支；Agent Docs Maintainer 已由用户确认在 Codex 安装成功，其余客户端安装待验证；旧本地源码暂存且不再收录。
   - 验证与剩余：元数据、市场格式、链接与外部双端 manifest / 十技能入口检查通过；既有 72 项回归中 68 项通过，4 项仍固定依赖旧本地 catalog，待适配，未新增或改写测试。
 
 - [ ] 独立仓库迁移后继续维护 Codex 与 Claude Code 的插件市场支持。
-  - 当前状态：已保留两端市场入口并生成外部来源；真实安装与跨仓库生命周期验证仍待完成。
-  - 展示试用：仅为 Agent Docs Maintainer 补齐 Codex 聚合市场展示元数据，内容沿用独立仓库 manifest；客户端刷新后的展示效果待用户确认。
+  - 当前状态：已保留两端市场入口并生成外部来源；Agent Docs Maintainer 的 Codex 展示与安装已由用户确认成功，其余插件、Claude Code 与跨仓库生命周期验证仍待完成。
+  - 展示试用：仅为 Agent Docs Maintainer 启用 Codex 聚合市场展示元数据，内容沿用独立仓库 manifest；维护要点已写入 AGENTS.md。
+  - 自动回填：已支持 `--fetch-external` 预览与 `--write` 回填，保留来源和市场策略；三仓库联网预览、Agent Docs Maintainer 实际回填、重复零改动及外部双端 manifest / 七技能入口检查通过。
 
 - [ ] 验证通过 `npx skills` 分发当前 Skill。
   - 当前状态：仅作为未来分发方向记录；README 不提供可复制安装命令，也不宣称已经支持。

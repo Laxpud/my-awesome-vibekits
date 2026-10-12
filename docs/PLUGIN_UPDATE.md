@@ -5,7 +5,7 @@ marketplace 顶层名称继续使用 `laxpud-vibekits`。当前收录三个外�
 ## 当前外部插件更新流程
 
 1. 在对应独立仓库完成修改、生成与发布；版本以该仓库的双端 manifest 为准。
-2. 核对 `plugin-catalog.json` 中的来源、版本、描述与 Skill 集合，运行 `python3 scripts/sync_plugin_metadata.py --write` 生成两端市场。
+2. 运行 `python3 scripts/sync_plugin_metadata.py --fetch-external --all` 预览外部元数据差异；确认目标后加 `--write` 回填 catalog 并生成两端市场。只更新部分插件时使用 `--plugin <id>`，可重复指定；本市场的来源与安装策略保持不变。
 3. 运行本地静态检查，按需运行 `python3 scripts/check_codex_install.py --all --check-external` 核对外部安装包；这不代表真实安装或升级已验证。
 4. 市场变更发布后，用户刷新 `laxpud-vibekits` 并安装所需的 `agent-*` 插件；原本地插件名不会自动改成新名称，按 README 的迁移说明处理旧安装。
 

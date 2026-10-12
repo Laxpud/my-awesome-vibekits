@@ -22,6 +22,14 @@ SEMVER_PATTERN = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+# 市场展示只接收可独立携带的字段；包内图片路径仍由安装后的 manifest 解析。
+CODEX_INTERFACE_METADATA_FIELDS = (
+    "displayName", "shortDescription", "longDescription", "developerName",
+    "category", "capabilities", "websiteURL", "websiteUrl", "defaultPrompt",
+    "brandColor", "privacyPolicyURL", "privacyPolicyUrl", "termsOfServiceURL",
+    "termsOfServiceUrl", "composerIconUrl", "logoUrl", "logoUrlDark", "screenshotUrls",
+)
+MANIFEST_METADATA_FIELDS = ("author", "homepage", "repository", "license")
 
 
 class CatalogError(RuntimeError):
@@ -77,6 +85,7 @@ class PluginSpec:
     codex: dict[str, Any]
     claude: dict[str, Any]
     github: dict[str, str] | None = None
+    manifest_metadata: dict[str, Any] | None = None
 
     @property
     def source(self) -> str | dict[str, str]:
@@ -143,7 +152,13 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         raise CatalogError(
             f"invalid JSON: {path}:{error.lineno}:{error.colno}: {error.msg}"
         ) from error
-    data = _mapping(raw, str(path))
+    return parse_catalog(root, raw)
+
+
+def parse_catalog(root: Path, raw: Any) -> PluginCatalog:
+    """校验内存中的完整候选 catalog，使外部同步可在写入前发现跨插件冲突。"""
+
+    data = _mapping(raw, str(CATALOG_PATH))
     if data.get("schemaVersion") != 1:
         raise CatalogError("schemaVersion: expected 1")
     marketplace = _mapping(data.get("marketplace"), "marketplace")
@@ -228,6 +243,20 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         description = _string(item.get("description"), f"{field}.description")
         category = _string(item.get("category"), f"{field}.category")
         keywords = _string_list(item.get("keywords"), f"{field}.keywords")
+        manifest_metadata = None
+        if "manifestMetadata" in item:
+            manifest_metadata = _mapping(item["manifestMetadata"], f"{field}.manifestMetadata")
+            if set(manifest_metadata) - set(MANIFEST_METADATA_FIELDS):
+                raise CatalogError(f"{field}.manifestMetadata: unsupported manifest field")
+            for metadata_field, value in manifest_metadata.items():
+                metadata_path = f"{field}.manifestMetadata.{metadata_field}"
+                if metadata_field == "author":
+                    author = _mapping(value, metadata_path)
+                    _string(author.get("name"), f"{metadata_path}.name")
+                    for author_field, author_value in author.items():
+                        _string(author_value, f"{metadata_path}.{author_field}")
+                else:
+                    _string(value, metadata_path)
 
         # 2. 两种来源共用完整技能清单；外部文件检查交给显式联网的安装检查。
         raw_skills = item.get("skills")
@@ -275,8 +304,25 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         ):
             _string(codex.get(codex_field), f"{field}.platforms.codex.{codex_field}")
         _string_list(codex.get("defaultPrompt"), f"{field}.platforms.codex.defaultPrompt")
+        for interface_field in CODEX_INTERFACE_METADATA_FIELDS:
+            if interface_field not in codex:
+                continue
+            value = codex[interface_field]
+            interface_path = f"{field}.platforms.codex.{interface_field}"
+            if interface_field in {"defaultPrompt", "capabilities", "screenshotUrls"}:
+                if not isinstance(value, list):
+                    raise CatalogError(f"{interface_path}: expected a string array")
+                for index, item_value in enumerate(value):
+                    _string(item_value, f"{interface_path}[{index}]")
+            else:
+                _string(value, interface_path)
         _string(claude.get("category"), f"{field}.platforms.claude.category")
         _string_list(claude.get("tags"), f"{field}.platforms.claude.tags")
+        if "author" in claude:
+            author = _mapping(claude["author"], f"{field}.platforms.claude.author")
+            _string(author.get("name"), f"{field}.platforms.claude.author.name")
+            for author_field, author_value in author.items():
+                _string(author_value, f"{field}.platforms.claude.author.{author_field}")
 
         # 3. 本地发布包必须自包含；外部仓库不能借用本地旧副本完成这项检查。
         for content_path in plugin_root.rglob("*") if plugin_root is not None else ():
@@ -303,6 +349,7 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
                 codex,
                 claude,
                 github,
+                manifest_metadata,
             )
         )
 
