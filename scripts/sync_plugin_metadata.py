@@ -75,20 +75,41 @@ def claude_manifest(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any
     }
 
 
+def codex_marketplace_entry(catalog: PluginCatalog, plugin: PluginSpec) -> dict[str, Any]:
+    """生成安装来源；按 catalog 开关附带安装前可读取的展示元数据。"""
+
+    entry = {
+        "name": plugin.id,
+        "source": plugin.codex_source,
+        "policy": {
+            "installation": plugin.codex["installation"],
+            "authentication": plugin.codex["authentication"],
+        },
+        "category": plugin.category,
+    }
+    if not plugin.codex.get("marketplaceMetadata", False):
+        return entry
+
+    # 1. 复用 catalog 中的文案与发布者信息；市场只携带元数据，不声明本地技能路径。
+    metadata = codex_manifest(catalog, plugin)
+    metadata.pop("skills")
+
+    # 2. 外部插件的网站和仓库链接属于独立仓库，不能沿用聚合市场的 publisher 链接。
+    if plugin.github is not None:
+        repository = f"https://github.com/{plugin.github['repo']}"
+        metadata["homepage"] = repository
+        metadata["repository"] = repository
+        metadata["interface"]["websiteURL"] = repository
+    entry.update(metadata)
+    return entry
+
+
 def codex_marketplace(catalog: PluginCatalog) -> dict[str, Any]:
     return {
         "name": catalog.marketplace_id,
         "interface": {"displayName": catalog.marketplace["displayName"]},
         "plugins": [
-            {
-                "name": plugin.id,
-                "source": plugin.codex_source,
-                "policy": {
-                    "installation": plugin.codex["installation"],
-                    "authentication": plugin.codex["authentication"],
-                },
-                "category": plugin.category,
-            }
+            codex_marketplace_entry(catalog, plugin)
             for plugin in catalog.plugins
         ],
     }

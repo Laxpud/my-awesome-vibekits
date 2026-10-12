@@ -16,6 +16,8 @@ catalog 每条插件必须选择一种来源：
 
 两端来源由同一条 catalog 转换：[Codex](https://developers.openai.com/plugins/build/plugins#marketplace-metadata) 使用 `{"source": "url", "url": "https://github.com/Laxpud/agent-docs-maintainer.git", "ref": "main"}`；[Claude Code](https://code.claude.com/docs/en/plugin-marketplaces#choose-a-plugin-source) 使用 `{"source": "github", "repo": "Laxpud/agent-docs-maintainer", "ref": "main"}`。均从仓库根目录读取插件。
 
+`platforms.codex.marketplaceMetadata: true` 让生成器把 catalog 中的文案、发布者和 `interface` 展示信息附到 Codex 市场条目；默认不启用，目前仅为 `agent-docs-maintainer` 试用。外部插件的 `homepage`、`repository` 和 `interface.websiteURL` 指向独立仓库；更新收录快照时需核对其实际 manifest。此开关不修改外部包或 Claude Code 市场，也不提供安装前的技能列表。
+
 修改收录信息后运行：
 
 ```bash

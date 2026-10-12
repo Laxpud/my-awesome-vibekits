@@ -265,6 +265,10 @@ def load_catalog(root: Path, path: Path = CATALOG_PATH) -> PluginCatalog:
         platforms = _mapping(item.get("platforms"), f"{field}.platforms")
         codex = _mapping(platforms.get("codex"), f"{field}.platforms.codex")
         claude = _mapping(platforms.get("claude"), f"{field}.platforms.claude")
+        if not isinstance(codex.get("marketplaceMetadata", False), bool):
+            raise CatalogError(
+                f"{field}.platforms.codex.marketplaceMetadata: expected a boolean"
+            )
         for codex_field in (
             "installation", "authentication", "displayName", "shortDescription",
             "longDescription",

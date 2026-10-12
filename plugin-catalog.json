@@ -69,6 +69,7 @@
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
+          "marketplaceMetadata": true,
           "displayName": "Agent Docs Maintainer",
           "shortDescription": "Minimal progress, plan storage, and documentation",
           "longDescription": "Track project progress and handle plan/spec file requests. Explicit skills cover documentation setup, refactoring, README and usage, planning, architecture and ADRs, and project guidance using shared references.",
