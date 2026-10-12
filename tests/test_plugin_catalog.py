@@ -91,7 +91,8 @@ class CatalogTests(unittest.TestCase):
             marketplace.write_text(json.dumps(data), encoding="utf-8")
             errors = check_generated(root, catalog)
             self.assertEqual(1, len(errors))
-            self.assertIn(".agents/plugins/marketplace.json", errors[0])
+            # 诊断使用运行平台的 Path 格式，Windows 与 POSIX 的分隔符不同。
+            self.assertIn(str(Path(".agents/plugins/marketplace.json")), errors[0])
             self.assertIn("--write", errors[0])
 
 
