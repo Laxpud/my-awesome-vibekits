@@ -101,8 +101,8 @@
 
 - [ ] 独立仓库迁移后继续维护 Codex 与 Claude Code 的插件市场支持。
   - 当前状态：已保留两端市场入口并生成外部来源；Agent Docs Maintainer 的 Codex 展示与安装已由用户确认成功，其余插件、Claude Code 与跨仓库生命周期验证仍待完成。
-  - 展示试用：仅为 Agent Docs Maintainer 启用 Codex 聚合市场展示元数据，内容沿用独立仓库 manifest；维护要点已写入 AGENTS.md。
-  - 自动回填：已支持 `--fetch-external` 预览与 `--write` 回填，保留来源和市场策略；三仓库联网预览、Agent Docs Maintainer 实际回填、重复零改动及外部双端 manifest / 七技能入口检查通过。
+  - 展示元数据：三个插件均已启用 Codex 聚合市场展示元数据，内容沿用各独立仓库 manifest；维护要点已写入 AGENTS.md，Agent Task Resume 与 Agent Dev Standards 的客户端展示仍待用户验证。
+  - 自动回填：已支持 `--fetch-external` 预览与 `--write` 回填，保留来源和市场策略；三个插件均已实际回填，重复同步零改动及外部双端 manifest / 完整技能入口检查通过。
 
 - [ ] 验证通过 `npx skills` 分发当前 Skill。
   - 当前状态：仅作为未来分发方向记录；README 不提供可复制安装命令，也不宣称已经支持。

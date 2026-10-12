@@ -44,7 +44,7 @@ python scripts/check_codex_install.py --all --check-external
 
 需要回填外部更新时，先运行 `python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer` 预览，再加 `--write` 写入 catalog 和两端市场；省略插件选择时处理全部外部条目。此流程会在写入前读取双端 manifest、核对身份和版本并校验完整候选 catalog，随后仍需运行元数据同步检查和本安装契约检查。
 
-`agent-docs-maintainer` 的 Codex 市场条目已启用展示元数据快照，由 `sync_plugin_metadata.py` 检查生成一致性。客户端刷新后需人工确认名称、简介、详细介绍、推荐提示词及独立仓库网站链接；外部插件安装前的技能列表仍依赖客户端加载实际包，不能用这些静态检查代替界面验证。
+当前三个外部插件的 Codex 市场条目均已启用展示元数据快照，由 `sync_plugin_metadata.py` 检查生成一致性。客户端刷新后需人工确认名称、简介、详细介绍、推荐提示词及独立仓库网站链接；外部插件安装前的技能列表仍依赖客户端加载实际包，不能用这些静态检查代替界面验证。
 
 ## 已发布远端检查
 

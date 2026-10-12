@@ -141,12 +141,20 @@
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
+          "marketplaceMetadata": true,
           "displayName": "Agent Task Resume",
           "shortDescription": "Resume authorized work after quota recovery",
           "longDescription": "Create or repair continuation schedules with five-hour and weekly quota checks, existing-session routing, execution tracking, and duplicate prevention. Use reset credits only within explicit user authorization and stop on completion or required user action. Includes Codex and Linux systemd guidance; installation alone starts no scheduler.",
+          "developerName": "Laxpud",
+          "category": "Productivity",
+          "capabilities": [
+            "Skills"
+          ],
+          "websiteURL": "https://github.com/Laxpud/agent-task-resume",
           "defaultPrompt": [
             "Use $agent-task-resume:quota-resume to schedule this authorized task to resume after its five-hour quota recovers, track execution, and stop on completion or required user action."
-          ]
+          ],
+          "brandColor": "#2563EB"
         },
         "claude": {
           "category": "workflow",
@@ -154,13 +162,25 @@
             "continuation",
             "quota",
             "scheduling"
-          ]
+          ],
+          "author": {
+            "name": "Laxpud"
+          }
         }
       },
       "source": {
         "type": "github",
         "repo": "Laxpud/agent-task-resume",
         "ref": "main"
+      },
+      "manifestMetadata": {
+        "author": {
+          "name": "Laxpud",
+          "url": "https://github.com/Laxpud"
+        },
+        "homepage": "https://github.com/Laxpud/agent-task-resume",
+        "repository": "https://github.com/Laxpud/agent-task-resume",
+        "license": "MIT"
       }
     },
     {
@@ -191,13 +211,21 @@
         "codex": {
           "installation": "AVAILABLE",
           "authentication": "ON_INSTALL",
+          "marketplaceMetadata": true,
           "displayName": "Agent Dev Standards",
           "shortDescription": "Development standards and personal preferences",
           "longDescription": "Development standards and practices for AI coding agents, tailored to personal preferences. Currently includes code-comment review and uv/hatchling Python project configuration.",
+          "developerName": "Laxpud",
+          "category": "Productivity",
+          "capabilities": [
+            "Skills"
+          ],
+          "websiteURL": "https://github.com/Laxpud/agent-dev-standards",
           "defaultPrompt": [
             "Use $agent-dev-standards:code-comment-standard to review comments in the requested files. Explain specific reading gaps and show focused rewrites without editing files.",
             "Use $agent-dev-standards:pyproject-standard to review this Python project configuration."
-          ]
+          ],
+          "brandColor": "#2563EB"
         },
         "claude": {
           "category": "workflow",
@@ -209,13 +237,25 @@
             "uv",
             "hatchling",
             "pyproject"
-          ]
+          ],
+          "author": {
+            "name": "Laxpud"
+          }
         }
       },
       "source": {
         "type": "github",
         "repo": "Laxpud/agent-dev-standards",
         "ref": "main"
+      },
+      "manifestMetadata": {
+        "author": {
+          "name": "Laxpud",
+          "url": "https://github.com/Laxpud"
+        },
+        "homepage": "https://github.com/Laxpud/agent-dev-standards",
+        "repository": "https://github.com/Laxpud/agent-dev-standards",
+        "license": "MIT"
       }
     }
   ]
