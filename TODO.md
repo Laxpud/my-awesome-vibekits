@@ -14,4 +14,4 @@
 
 ## 当前工作
 
-当前无进行中的里程碑。维护体验与发布可靠性已[完成归档](docs/archive/milestone-2026-10-12-17-59-marketplace-maintenance.md)；后续工作保留在[路线图](docs/roadmap.md)，等待用户选择推进范围。
+当前无进行中的里程碑。维护体验与发布可靠性已[完成归档](docs/archive/milestone-2026-10-12-17-59-marketplace-maintenance.md)；超出市场职责的[外部市场与客户端生命周期](docs/roadmap.md#外部市场与客户端生命周期)已取消。下一里程碑为[独立 Skill 分发](docs/roadmap.md#独立-skill-分发)，等待用户授权启动。

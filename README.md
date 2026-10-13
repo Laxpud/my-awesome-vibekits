@@ -44,6 +44,8 @@ A **skill** is a reusable task workflow; a **plugin** packages related skills; t
 
 Both plugin marketplaces are maintained. The quota-resume execution guidance covers Codex; loading that skill in another client does not establish support for its quota or scheduling APIs. Direct installation through `npx skills` remains [planned](docs/roadmap.md#独立-skill-分发).
 
+This marketplace maintains plugin sources, release snapshots, generated catalogs, and installation/update instructions. Clients perform installation and manage installed plugins; full client lifecycle testing is outside this repository's delivery requirements.
+
 ## Prerequisites
 
 Choose one client and open it in the project you want to work on. You need a working client installation, sign-in and network access to GitHub; you do not need to clone Vibekits to use its marketplace.
@@ -183,7 +185,7 @@ Use $agent-dev-standards:pyproject-standard to review this project's pyproject.t
 
 - [Documentation index](docs/index.md): user and maintainer reading paths; maintainer guides are in Chinese.
 - [Market architecture](docs/tech/architecture.md) and [maintenance guide](docs/maintenance.md): implementation, snapshot updates, validation and rollback.
-- [Current work](TODO.md) and [roadmap](docs/roadmap.md): current tasks, future distribution and client verification.
+- [Current work](TODO.md) and [roadmap](docs/roadmap.md): marketplace maintenance progress and future distribution.
 
 Marketplace publication does not automatically update daily plugin installations. Plugin content, examples, designs and reviews remain in each independent repository.
 
