@@ -8,8 +8,8 @@
 
 <h1>Vibekits</h1>
 
-<p><strong>面向 AI 编程的可复用工程技能</strong><br />
-<sub>代码注释 · Python 项目 · 项目文档</sub></p>
+<p><strong>面向 AI 工程工作流的插件市场</strong><br />
+<sub>项目文档 · 代码注释 · Python 项目 · 任务续跑</sub></p>
 
 <p>
   <a href="#codex-cli"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@FFFFFF)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@111111)" alt="Codex CLI" /></picture></a>
@@ -22,267 +22,177 @@
 <p><sub>
   <a href="#快速开始">快速开始</a> ·
   <a href="#按目标选择-skill">浏览技能</a> ·
-  <a href="index.md">技术文档</a> ·
+  <a href="index.md">文档</a> ·
   <a href="https://github.com/Laxpud/my-awesome-vibekits/issues">反馈问题</a>
 </sub></p>
 
 </div>
 
-Vibekits 是我维护的 Codex 与 Claude Code 插件市场，收录的可复用工作流分别在独立 GitHub 仓库维护。它不是一个需要单独运行的应用：安装与你目标对应的插件，再让编码 Agent 使用其中的 Skill 即可。
+Vibekits 是 Codex 与 Claude Code 的插件市场，收录可复用的工程工作流。添加市场、安装适合当前任务的插件，再让编码 Agent 使用其中的技能。
 
-当前市场收录三个可独立安装的插件和十个 Skill，覆盖代码注释、Python 项目元数据、仓库文档与额度恢复后续跑已授权任务。插件内容从各独立仓库的 `main` 分支获取；市场变更不会自动更新日常安装。
+## 适合做什么
 
-## 适合谁
+当前市场收录三个独立插件和十个技能：
 
-如果你的电脑上已经有一个项目，并且会使用——或愿意安装——Codex CLI 或 Claude Code 中的任意一个，就可以从这里开始。按照快速开始操作前，不需要理解 marketplace、plugin 或 Skill。
+| 插件 | 用途 | 技能数 |
+| --- | --- | --- |
+| [Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)（`agent-docs-maintainer`） | README、文档结构、规划、架构、Agent 指导与进度维护。 | 7 |
+| [Agent Task Resume](https://github.com/Laxpud/agent-task-resume)（`agent-task-resume`） | 额度恢复后，安排继续执行已授权工作。 | 1 |
+| [Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)（`agent-dev-standards`） | 代码注释与 Python 项目元数据。 | 2 |
 
-Vibekits 的作用是让编码 Agent 遵循可重复的工作流。它不能替代 Codex 或 Claude Code，也不提供自己的图形应用。
+**Skill** 是可复用的任务工作流，**Plugin** 将相关技能打包，**Marketplace** 告诉客户端从哪里获取插件。插件内容和版本在上述独立仓库维护，目前从各仓库的 `main` 分支获取。
 
-## 工作方式
+本市场维护两端插件市场支持。额度续跑技能的执行资料覆盖 Codex，在其他客户端加载技能不代表支持其额度或调度接口。通过 `npx skills` 直接安装仍属于[未来安排](roadmap.md#独立-skill-分发)。
 
-- **Agent：** Codex 或 Claude Code，也就是读取你的项目并执行请求的工具。
-- **Skill：** 针对一类任务的可复用指令，例如审查 README。
-- **Plugin：** 包含一个或多个相关 Skill 的可安装软件包。
-- **Marketplace：** 告诉 Agent 去哪里查找这些 Plugin 的目录。
+## 环境准备
 
-你只需添加一次这个仓库的 marketplace，按需安装一个 Plugin，然后用自然语言描述任务。第一次使用或希望指定工作流时，显式写出 Skill 名最稳妥。
-
-## 前置条件
-
-从下面选择**一个**客户端。如果它已经能在你的项目中正常打开，可以直接跳到[快速开始](#快速开始)。
-
-**终端**是输入安装和启动命令的窗口：macOS 使用“终端”，Linux 使用终端应用，Windows 使用 PowerShell。以 `/` 开头的命令稍后要输入 Codex 或 Claude Code，而不是这个系统终端。
+选择一个客户端，在你希望处理的项目中打开它。你需要可用的客户端、登录状态及访问 GitHub 的网络；使用市场无需先克隆 Vibekits。
 
 ### Codex CLI
 
-通过 [Codex CLI 官方指南](https://learn.chatgpt.com/docs/codex/cli)查看最新要求和其他安装方式。按你的系统选择官方独立安装命令。
-
-**macOS 或 Linux——终端**
-
-```bash
-curl -fsSL https://chatgpt.com/codex/install.sh | sh
-```
-
-**Windows——PowerShell**
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"
-```
-
-在你的项目目录中打开终端，验证安装，然后启动 Codex：
-
-```bash
-codex --version
-codex
-```
-
-第一次运行时按照提示登录。版本命令能输出版本，并且 Codex 输入界面的工作目录是你的项目，就表示准备完成。
+按 [Codex CLI 官方指南](https://learn.chatgpt.com/docs/codex/cli)完成安装和登录。在系统终端中，`codex --version` 应输出版本，`codex` 应能打开你的项目。
 
 ### Claude Code
 
-通过 [Claude Code 官方安装指南](https://code.claude.com/docs/en/installation)查看最新要求、账户权限和其他安装方式。按你的系统选择官方推荐的原生安装命令。
-
-**macOS、Linux 或 WSL——终端**
-
-```bash
-curl -fsSL https://claude.ai/install.sh | bash
-```
-
-**Windows——PowerShell**
-
-```powershell
-irm https://claude.ai/install.ps1 | iex
-```
-
-在你的项目目录中打开终端，验证安装，然后启动 Claude Code：
-
-```bash
-claude --version
-claude
-```
-
-如果出现提示，按照浏览器流程登录。版本命令能输出版本，并且 Claude Code 输入界面打开的是你的项目，就表示准备完成。
+按 [Claude Code 官方安装指南](https://code.claude.com/docs/en/installation)完成准备。在系统终端中，`claude --version` 应输出版本，`claude` 应能打开你的项目。
 
 ## 快速开始
 
-第一次体验只安装 `agent-docs-maintainer`，并让 `project-docs-readme` 对 README 做只读审查。选择你已经在用的客户端即可，不需要同时安装两个。
+第一次体验安装 `agent-docs-maintainer`，让它审查你的 README。选择下面一个客户端即可。
 
 ### 在 Codex 中安装
 
-在系统终端中添加这个 marketplace，并从项目目录启动 Codex：
+在**系统终端**添加市场，并从你的项目目录启动 Codex：
 
 ```bash
 codex plugin marketplace add Laxpud/my-awesome-vibekits
 codex
 ```
 
-在 Codex 输入区中输入：
+在 **Codex 输入区**输入：
 
 ```text
 /plugins
 ```
 
-找到 `agent-docs-maintainer`，安装并启用它。然后为同一个项目新建 Codex 任务，让刚安装的 Skill 被加载。
+在 `laxpud-vibekits` 中找到 `agent-docs-maintainer`，安装并启用，然后为同一项目启动新会话以加载技能。客户端细节见[官方插件指南](https://learn.chatgpt.com/docs/plugins)。
 
 ### 在 Claude Code 中安装
 
-从项目目录启动 Claude Code。在 **Claude Code 输入区**中逐条输入：
+从你的项目目录启动 Claude Code，在 **Claude Code 输入区**逐条输入：
 
 ```text
 /plugin marketplace add https://github.com/Laxpud/my-awesome-vibekits
 /plugin install agent-docs-maintainer@laxpud-vibekits
 ```
 
-然后为同一个项目新建 Claude Code 会话，让刚安装的 Skill 被加载。
+按客户端提示完成安装，然后为这次首次体验启动新会话。插件管理细节见[官方指南](https://code.claude.com/docs/en/discover-plugins)。
 
-### 运行第一个 Skill
+### 运行第一个技能
 
-把下面这段话粘贴到新的 Codex 任务或 Claude Code 会话：
-
-```text
-使用 $agent-docs-maintainer:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
-```
-
-### 成功时会看到什么
-
-Agent 应该报告：
-
-1. README 面向谁；
-2. 哪些前置条件缺失或不清楚；
-3. 新用户真正能走通的最短路径；
-4. 按顺序排列的修改计划。
-
-此时它**不应编辑文件**。先检查计划；如果没有问题，可以明确回复：
+在新会话中粘贴：
 
 ```text
-计划没有问题。请开始实施，保持正式翻译同步，并验证所有改动过的链接和命令。
+使用 $agent-docs-maintainer:project-docs-readme 从新用户的视角审查这个仓库的 README。识别缺失的前置条件和最短可用路径，提出修改方案；在我确认前不要编辑文件。
 ```
 
-> **从原有插件迁移？** 市场现在使用 `agent-docs-maintainer`、`agent-task-resume` 和 `agent-dev-standards`；最后一个合并了原 `code-quality` 与 `python-project`。按需安装新插件，再禁用或移除对应旧插件，避免重复技能。Skill ID 保持不变，插件调用前缀按下方示例更新。
+成功时，Agent 会说明 README 的读者、前置条件和首次使用路径，然后提出方案，此时不编辑文件。审阅方案后，再授权你希望落实的修改。
+
+> **仍在使用旧插件？** 先安装新插件并确认可用，再禁用或移除对应旧插件。Skill ID 保持不变，插件调用前缀有变化，见[迁移对应表](maintenance.md#客户端更新与旧安装迁移)。
 
 ## 按目标选择 Skill
 
-尝试下面的其他提示词前，先从同一个 marketplace 安装对应 Plugin。在 Codex 中打开 `/plugins` 并选择它；在 Claude Code 输入区中输入 `/plugin install <plugin-id>@laxpud-vibekits`。
+先安装提示词对应的插件：Codex 中通过 `/plugins` 选择；Claude Code 中输入 `/plugin install <plugin-id>@laxpud-vibekits`。每个插件都可以独立管理。
 
-### 编辑前审查 README
+### Agent Docs Maintainer
 
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md)
+**审查 README**——[`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md)：使用上方[首次体验提示词](#运行第一个技能)。
 
-```text
-使用 $agent-docs-maintainer:project-docs-readme 从首次访问者的视角审查这个仓库的根 README。识别目标读者、缺失的前置条件和当前最短已验证路径，然后给出按优先级排序的修改计划；在我确认前不要编辑文件。
-```
-
-### 创建缺失的文档基线
-
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md)
+**创建缺失的文档基线**——[`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-bootstrap 检查这个仓库。如果它缺少可用的文档基线，提出一组基于证据的最小文档，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-bootstrap 检查这个仓库，在编辑前提出最小且有用的文档基线方案。
 ```
 
-### 重组现有文档
-
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md)
+**重组已有文档**——[`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-refactor 审查这个仓库的文档所有权、导航和重复内容。给出按顺序排列的迁移计划，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-refactor 审查文档职责、导航和重复内容，在编辑前提出迁移方案。
 ```
 
-### 改进规划文档
-
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md)
+**改进规划文档**——[`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-planning 审查这个仓库的活动规划文档。识别权威规划入口、含糊的承诺或就绪状态，以及缺失的验收条件，然后在编辑前提出修改方案。
+使用 $agent-docs-maintainer:project-docs-planning 审查当前与未来任务、实施承诺和验收条件，在编辑前提出修改方案。
 ```
 
-### 记录架构与决策
-
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md)
+**记录架构**——[`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-architecture 根据代码证据记录这个仓库的当前架构。区分当前状态和目标状态，提出真正需要的最小图表或 ADR，并在我确认前不要编辑文件。
+使用 $agent-docs-maintainer:project-docs-architecture 检查当前实现，在编辑前提出架构总览及有用的图示方案。
 ```
 
-### 精简 Agent 指导
-
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md)
+**精简 Agent 指导**——[`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-guidance 审查这个仓库的 AGENTS.md 和 CLAUDE.md。找出重复事实、缺失路由和高风险边界，然后在编辑前提出精简的指导结构。
+使用 $agent-docs-maintainer:project-docs-guidance 审查 AGENTS.md 与 CLAUDE.md，在编辑前提出清晰的阅读路由和必要项目边界。
 ```
 
-### 审查或改进代码注释
-
-Plugin：`agent-dev-standards` · Skill：[`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md)
+**维护当前进度**——[`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md)：
 
 ```text
-使用 $agent-dev-standards:code-comment-standard 审查这些文件的代码注释。找出缺失的处理步骤、含糊的数据说明和缺乏依据的结论，解释具体阅读障碍并给出聚焦的改写示例，不编辑文件。
+使用 $agent-docs-maintainer:project-docs-progress 继续 TODO 中当前已授权的任务，只更新勾选和必要阻塞。
 ```
 
-本技能仅供显式调用。需要直接修改时，要求技能在指定范围内落实改进并保持代码行为。技能提供[带解释的正反改写案例](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md)。日常注释习惯由全局或项目指令约定；这个技能提供专门的审查与整改流程。
+Progress 在 Codex 中可自动用于已有任务和项目 plan/spec 文件请求；其余六个文档技能需要显式调用。详细写作规则与文件保存约定见插件的[使用说明](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md)。
 
-### 创建或审查 pyproject.toml
+### Agent Task Resume
 
-Plugin：`agent-dev-standards` · Skill：[`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md)
+**额度恢复后继续已授权工作**——[`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md)：
 
 ```text
-使用 pyproject-standard 审查这个 Python 项目的 pyproject.toml。识别有仓库证据支持的改动，向我展示拟议配置，并在编辑前询问。
+使用 $agent-task-resume:quota-resume 安排五小时额度恢复后继续当前已授权任务。追踪实际执行，避免重复投递，完成或需要我提供信息时停止。
 ```
 
-在 Codex 中，`project-docs-progress` 可自动用于已有任务的进度维护，以及新建、保存或链接项目 plan/spec 文件的请求；其余六个文档技能需要显式调用。Bootstrap 和 refactor 必须读取与专项技能相同的对应文档规范，在用户指定范围内应用。普通小改不会自动建立文档体系，完成任务默认只勾选。具体用法见[使用说明](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md)。
+此技能需要显式调用。安装插件本身不会启动后台任务；执行资料和授权限制在[插件仓库](https://github.com/Laxpud/agent-task-resume)维护。
 
-### 维护当前任务的最小进度
+### Agent Dev Standards
 
-Plugin：`agent-docs-maintainer` · Skill：[`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md)
+**审查代码注释**——[`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md)：
 
 ```text
-使用 $agent-docs-maintainer:project-docs-progress 继续 TODO 中当前已授权的任务；完成后只更新勾选和必要阻塞。
+使用 $agent-dev-standards:code-comment-standard 审查这些文件的注释。解释不清楚的处理步骤和数据含义，展示聚焦的改写示例，不编辑文件。
 ```
 
-“编写一个 plan.md”默认使用 `docs/plans/plan-YYYY-MM-DD-HH-mm.md`；spec 文件默认使用 `docs/specs/spec-YYYY-MM-DD-HH-mm.md`。明确的文件名、路径和项目既有约定优先。时间取用户配置时区，未配置时取环境本地时间；自动命名发生冲突时追加 `-2`、`-3` 等后缀；明确指定的位置冲突时不自动更名或覆盖。已有文件保留名称。仅在聊天中给出的计划留在聊天中，保存文件不创建 TODO/roadmap，也不开始实施。
+此技能需要显式调用，用于专项审查或整改，参见[注释案例](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md)；日常注释偏好由全局或项目指令维护。
 
-### 额度恢复后继续工作
-
-Plugin：`agent-task-resume` · Skill：[`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md)
+**审查 Python 项目元数据**——[`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md)：
 
 ```text
-使用 $agent-task-resume:quota-resume 创建定时任务，在五小时额度恢复后继续当前已授权工作。追踪实际执行，避免重复投递，任务完成或需要我提供信息时停止。
+使用 $agent-dev-standards:pyproject-standard 审查这个项目的 pyproject.toml，在编辑前展示有实际依据的配置修改。
 ```
 
-本技能仅供显式调用，指导 Agent 创建或修复调度；安装插件本身不会启动后台任务。它同时检查五小时与周额度，复用会话持有者或在确认没有持有者时恢复原线程，并只在用户明确授权及次数上限内使用已有额度重置卡。执行追踪包含队列启动和自动审批等待的处理。当前执行适配资料覆盖 Codex，并提供适用时的 Linux systemd 路径。在其他客户端加载技能不代表已支持该客户端的额度或调度接口。仅通过可用性检查或成功入队，不能证明工作已成功续跑。
+## 常见问题
 
-## 故障排查
+- **找不到命令：** 确认输入位置。`codex ...` 和 `claude ...` 输入系统终端；`/plugins`、`/plugin ...` 和任务提示词输入客户端。
+- **找不到插件：** 确认市场已添加，目标插件已安装并启用；使用旧快照时先刷新市场。
+- **没有使用技能：** 安装后启动新会话，在提示词中明确写出插件和技能名。
+- **安装或登录失败：** 按上方官方客户端指南排查；市场元数据检查不验证你的账户或客户端安装。
 
-- **提示“找不到命令”。** 先确认它应该输入系统终端还是 Agent 输入区。安装命令、`codex plugin marketplace add`、`codex` 和 `claude` 输入终端；`/plugins`、`/plugin ...` 和任务提示词输入 Agent。
-- **插件没有出现在列表里。** 确认添加 marketplace 的命令已经成功，再检查所需 Plugin 是否已经安装并启用。
-- **Agent 没有使用 Skill。** 安装后新建任务或会话，并在提示词中显式写出 Skill 名。
-- **客户端安装或登录失败。** 按最新的 [Codex CLI](https://learn.chatgpt.com/docs/codex/cli) 或 [Claude Code](https://code.claude.com/docs/en/installation) 官方指南处理，不要尝试非官方来源中的命令。
+## 更多文档
 
-## 当前范围
+- [文档索引](index.md)：用户与维护者的阅读路径；维护文档使用中文。
+- [市场架构](tech/architecture.md)与[维护指南](maintenance.md)：实现、快照更新、验证及回退。
+- [当前工作](../TODO.md)与[路线图](roadmap.md)：当前任务、未来分发和客户端验证安排。
 
-Vibekits 当前支持 Codex 和 Claude Code 的 Plugin Marketplace：
+市场发布不会自动更新日常插件安装。插件内容、例库、设计和审查继续由各独立仓库维护。
 
-- **[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)**（`agent-docs-maintainer`）包含七个文档 Skill；
-- **[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)**（`agent-task-resume`）包含一个仅显式调用的额度恢复续跑 Skill；
-- **[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)**（`agent-dev-standards`）包含代码注释与 `pyproject.toml` 两个 Skill。
+## 参与贡献
 
-每个 Plugin 都独立安装和维护版本，因此安装、禁用、更新或移除其中一个时，不需要改变其他 Plugin。
+欢迎提出尚未覆盖的使用场景或[提交 Issue](https://github.com/Laxpud/my-awesome-vibekits/issues)。市场维护向本仓库贡献，技能内容向对应独立插件仓库贡献。
 
-## 路线图
-
-未来计划支持通过 `npx skills` 直接安装，但它目前还不是受支持或经过验证的安装路径。所需的发现、安装、更新、移除与跨客户端门禁记录在[路线图](../TODO.md#未来发展方向跨-harness-兼容与分发)中。
-
-如果有功能建议或使用反馈，欢迎[提交 Issue](https://github.com/Laxpud/my-awesome-vibekits/issues)。
-
-## 面向维护者与贡献者
-
-如果现有功能还不能满足你的需求，欢迎提出使用场景，也欢迎一起维护仓库、提交代码或改进文档。
-
-维护市场时克隆本仓库；修改插件内容时前往上方对应的独立仓库：
+开发市场时克隆本仓库，从[架构总览](tech/architecture.md)、[catalog](../plugin-catalog.json)和[维护指南](maintenance.md)开始：
 
 ```bash
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
-
-从[技术文档索引](index.md)、[插件 Catalog](../plugin-catalog.json)和[当前路线图](../TODO.md)开始。市场更新、快照同步、验证和回退细节见维护文档；插件源码、例库、设计和审查资料在各自独立仓库维护。

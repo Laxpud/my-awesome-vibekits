@@ -1,36 +1,34 @@
-# 项目文档索引
+# 项目文档
 
-Vibekits 维护外部插件市场。用户介绍与安装入口在根 README，活动任务在 TODO；插件技能、使用说明、设计与审查分别在独立仓库维护。
+Vibekits 维护外部插件的 Codex 与 Claude Code 聚合市场。按你要完成的事情选择入口；每类信息只在下表所列位置维护。
 
-## 项目入口
+## 使用插件
 
-| 文档 | 用途 |
+从 [README](../README.md) 或[中文 README](README.cn.md)选择插件、完成安装并复制首次使用提示词。十个技能的用途与最小提示词也在其中。
+
+技能的详细操作、模板、写作规则与执行资料见下方独立插件资料。旧安装迁移见[维护指南的迁移对应表](maintenance.md#客户端更新与旧安装迁移)。
+
+## 维护市场
+
+先读[架构总览](tech/architecture.md)理解独立仓库、catalog 和两端 marketplace 的关系，再按[维护指南](maintenance.md)更新收录、验证或回退。修改插件内容时转到对应独立仓库。
+
+| 维护位置 | 唯一负责的内容 |
 | --- | --- |
-| [README.md](../README.md) / [中文 README](README.cn.md) | 项目定位、插件与技能选择、安装和旧安装迁移。 |
-| [TODO.md](../TODO.md) | 当前任务、验收条件、未来方向及必要状态。 |
-| [plugin-catalog.json](../plugin-catalog.json) | 外部来源、版本与完整 Skill 收录快照，以及双端市场展示配置。 |
+| [plugin-catalog.json](../plugin-catalog.json) | 本市场的来源、收录快照、完整技能清单与平台策略。 |
+| [架构总览](tech/architecture.md) | 当前实现、字段契约、生成与回填机理、源码映射和检查边界。 |
+| [维护指南](maintenance.md) | 更新、新增、验证、市场发布、客户端迁移与回退操作。 |
+| [AGENTS.md](../AGENTS.md) / [CLAUDE.md](../CLAUDE.md) | AI 阅读路由和必要项目边界，共用一份正文。 |
 
-## 市场维护
+## 查看进展
 
-| 文档 | 用途 |
-| --- | --- |
-| [Catalog 与适配层规范](SKILL_RULE_GUIDELINES.md) | 外部来源、展示元数据、快照回填与两端生成契约。 |
-| [发布与市场更新](PLUGIN_UPDATE.md) | 独立仓库发布、本市场更新、旧安装迁移和验证边界。 |
-| [Codex 安装检查](CODEX_INSTALL_SMOKE_TEST.md) | 本地市场、外部包与已发布入口的检查流程。 |
-| [AGENTS.md](../AGENTS.md) / [CLAUDE.md](../CLAUDE.md) | AI 工作路由；CLAUDE.md 为相对软链。 |
+[TODO](../TODO.md)维护当前任务、完成条件与状态规则；[路线图](roadmap.md)维护未来工作、候选方向和已完成里程碑入口。完成清单及旧历史保存在 `docs/archive/`，不作为当前维护操作说明。
 
 ## 独立插件资料
 
-| 插件 | 维护入口 |
+| 插件 | 内容维护入口 |
 | --- | --- |
-| Agent Docs Maintainer | [仓库](https://github.com/Laxpud/agent-docs-maintainer)；[使用说明、设计与历史审查](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/index.md)。 |
-| Agent Task Resume | [仓库与执行资料](https://github.com/Laxpud/agent-task-resume)。 |
-| Agent Dev Standards | [仓库](https://github.com/Laxpud/agent-dev-standards)；[原始例库与历史审查](https://github.com/Laxpud/agent-dev-standards/blob/main/docs/index.md)。 |
+| Agent Docs Maintainer | [仓库](https://github.com/Laxpud/agent-docs-maintainer)、[使用说明](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md)、[技术资料与历史设计、审查](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/index.md)。 |
+| Agent Task Resume | [仓库、技能与执行资料](https://github.com/Laxpud/agent-task-resume)。 |
+| Agent Dev Standards | [仓库](https://github.com/Laxpud/agent-dev-standards)、[原始例库与历史审查](https://github.com/Laxpud/agent-dev-standards/blob/main/docs/index.md)。 |
 
-## 里程碑归档
-
-[2026-08-13 多插件目录与分发](archive/2026-08-13-codex-claude-multi-plugin-distribution.md)保留当时的完成清单与布局，不作为当前插件维护规则。
-
-## 文档所有权
-
-README 维护公开介绍，TODO 维护活动状态，docs/ 的具名文件维护稳定市场规则，AGENTS.md 仅保留路由与高风险边界。插件内容与其专属资料只在独立仓库维护；本市场不保留第二份技能包、维护源或历史审查副本。
+本市场不复制插件正文、例库或专属设计。历史原文通过独立仓库和 Git 历史查阅，旧插件名称只在迁移说明及历史记录中使用。

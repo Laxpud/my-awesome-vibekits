@@ -8,8 +8,8 @@
 
 <h1>Vibekits</h1>
 
-<p><strong>Reusable engineering skills for AI coding</strong><br />
-<sub>Code comments · Python projects · Project documentation</sub></p>
+<p><strong>A plugin marketplace for AI engineering workflows</strong><br />
+<sub>Documentation · Code comments · Python projects · Task resumption</sub></p>
 
 <p>
   <a href="#codex-cli"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@FFFFFF)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@111111)" alt="Codex CLI" /></picture></a>
@@ -28,261 +28,171 @@
 
 </div>
 
-Vibekits is my plugin marketplace for reusable workflows in Codex and Claude Code, maintained in independent GitHub repositories. It is not an application you run: install the plugin that matches your goal, then ask your coding agent to use one of its skills.
+Vibekits is a Codex and Claude Code plugin marketplace for reusable engineering workflows. Add the marketplace, install the plugin that fits your task, and ask your coding agent to use its skills.
 
-The current marketplace lists three independently installable plugins and ten skills for code comments, Python project metadata, repository documentation, and resuming authorized work after quota recovery. Plugin payloads are fetched from each independent repository on its `main` branch. Changes to this marketplace do not automatically update daily installations.
+## What You Can Do
 
-## Who This Is For
+The marketplace lists three independent plugins and ten skills:
 
-Start here if you have a project on your computer and can use—or are willing to install—either Codex CLI or Claude Code. You do not need to know how marketplaces, plugins, or skills work before following the quick start.
+| Plugin | Use it for | Skills |
+| --- | --- | --- |
+| [Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer) (`agent-docs-maintainer`) | README, documentation structure, planning, architecture, agent guidance and progress. | 7 |
+| [Agent Task Resume](https://github.com/Laxpud/agent-task-resume) (`agent-task-resume`) | Scheduling continuation of authorized work after quota recovery. | 1 |
+| [Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards) (`agent-dev-standards`) | Code comments and Python project metadata. | 2 |
 
-Vibekits helps the coding agent follow a repeatable workflow. It does not replace Codex or Claude Code, and it does not provide a graphical application of its own.
+A **skill** is a reusable task workflow; a **plugin** packages related skills; this **marketplace** tells the client where to fetch each plugin. Plugin content and versions are maintained in the linked independent repositories, currently fetched from their `main` branches.
 
-## How It Works
-
-- **Agent:** Codex or Claude Code—the tool that reads your project and carries out your request.
-- **Skill:** reusable instructions for one kind of task, such as reviewing a README.
-- **Plugin:** an installable package containing one or more related skills.
-- **Marketplace:** a catalog that tells your agent where it can find those plugins.
-
-You add this repository as a marketplace once, install only the plugin you need, and then describe your task in normal language. Naming the skill explicitly is useful for your first run and whenever you want a specific workflow.
+Both plugin marketplaces are maintained. The quota-resume execution guidance covers Codex; loading that skill in another client does not establish support for its quota or scheduling APIs. Direct installation through `npx skills` remains [planned](docs/roadmap.md#独立-skill-分发).
 
 ## Prerequisites
 
-Choose **one** client below. If it already opens successfully in your project, skip to [Quick Start](#quick-start).
-
-A **terminal** is the window where you type installation and startup commands: Terminal on macOS, a terminal app on Linux, or PowerShell on Windows. Commands beginning with `/` are entered later inside Codex or Claude Code, not in this terminal.
+Choose one client and open it in the project you want to work on. You need a working client installation, sign-in and network access to GitHub; you do not need to clone Vibekits to use its marketplace.
 
 ### Codex CLI
 
-Use the [official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli) for current requirements and alternative installation methods. Choose the official standalone installer for your system.
-
-**macOS or Linux — Terminal**
-
-```bash
-curl -fsSL https://chatgpt.com/codex/install.sh | sh
-```
-
-**Windows — PowerShell**
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"
-```
-
-Open a terminal in your project folder, verify the installation, and start Codex:
-
-```bash
-codex --version
-codex
-```
-
-On the first run, follow the sign-in instructions. Success means the version command prints a version and the Codex prompt opens with your project as its working directory.
+Follow the [official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli) to install and sign in. In your system terminal, `codex --version` should print a version and `codex` should open your project.
 
 ### Claude Code
 
-Use the [official Claude Code installation guide](https://code.claude.com/docs/en/installation) for current requirements, account access, and alternative installation methods. Choose the recommended native installer for your system.
-
-**macOS, Linux, or WSL — Terminal**
-
-```bash
-curl -fsSL https://claude.ai/install.sh | bash
-```
-
-**Windows — PowerShell**
-
-```powershell
-irm https://claude.ai/install.ps1 | iex
-```
-
-Open a terminal in your project folder, verify the installation, and start Claude Code:
-
-```bash
-claude --version
-claude
-```
-
-Follow the browser sign-in instructions if prompted. Success means the version command prints a version and the Claude Code prompt opens for that project.
+Follow the [official Claude Code installation guide](https://code.claude.com/docs/en/installation). In your system terminal, `claude --version` should print a version and `claude` should open your project.
 
 ## Quick Start
 
-This first run installs only `agent-docs-maintainer` and asks `project-docs-readme` for a read-only README review. Choose the client you already use; you do not need both.
+For a first run, install `agent-docs-maintainer` and ask it to review your README. Choose one client below.
 
 ### Install in Codex
 
-In your system terminal, add this marketplace and start Codex from your project:
+In your **system terminal**, add the marketplace and start Codex from your project directory:
 
 ```bash
 codex plugin marketplace add Laxpud/my-awesome-vibekits
 codex
 ```
 
-In the Codex input area, enter:
+In the **Codex input area**, enter:
 
 ```text
 /plugins
 ```
 
-Find `agent-docs-maintainer`, then install and enable it. Start a new Codex task for the same project so the newly installed skills are loaded.
+Find `agent-docs-maintainer` in `laxpud-vibekits`, install and enable it, then start a new session for the same project to load its skills. See the [official plugin guide](https://learn.chatgpt.com/docs/plugins) for client details.
 
 ### Install in Claude Code
 
-Start Claude Code from your project folder. In the **Claude Code input area**, enter these commands one at a time:
+Start Claude Code from your project directory. In the **Claude Code input area**, enter these commands one at a time:
 
 ```text
 /plugin marketplace add https://github.com/Laxpud/my-awesome-vibekits
 /plugin install agent-docs-maintainer@laxpud-vibekits
 ```
 
-Start a new Claude Code session for the same project so the newly installed skills are loaded.
+Follow the client prompts to finish installation, then start a new session for this first run. Plugin management details are in the [official guide](https://code.claude.com/docs/en/discover-plugins).
 
 ### Run Your First Skill
 
-Paste this into the new Codex task or Claude Code session:
+Paste this into the new session:
 
 ```text
-Use $agent-docs-maintainer:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-readme to review this repository's README for a new user. Identify missing prerequisites and the shortest usable path. Propose changes and wait for my confirmation before editing.
 ```
 
-### What Success Looks Like
+Success means the agent explains the README's audience, prerequisites and first-use path, then proposes changes without editing files. Review the proposal and authorize the changes you want.
 
-The agent should report:
-
-1. who the README is for;
-2. which prerequisites are missing or unclear;
-3. the shortest path a new user can actually follow;
-4. an ordered change plan.
-
-It should **not edit files yet**. Review the plan first. If it looks right, reply with a clear instruction such as:
-
-```text
-The plan looks good. Apply it, keep official translations aligned, and verify every changed link and command.
-```
-
-> **Updating from the previous plugins?** The marketplace now uses `agent-docs-maintainer`, `agent-task-resume`, and `agent-dev-standards`. The latter combines the former `code-quality` and `python-project` plugins. Install the new plugins you need, then disable or remove their old counterparts to avoid duplicate skills. Skill IDs stay the same; plugin namespaces change as shown below.
+> **Using the previous plugins?** Install the new plugin, confirm it works, then disable or remove its old counterpart. Skill IDs stay the same; plugin prefixes change. See the [migration mapping](docs/maintenance.md#客户端更新与旧安装迁移).
 
 ## Choose a Skill by Goal
 
-Before trying another prompt, install its named plugin from the same marketplace. In Codex, open `/plugins` and select it. In Claude Code, enter `/plugin install <plugin-id>@laxpud-vibekits` in the Claude Code input area.
+Install the named plugin before using its prompt: select it through `/plugins` in Codex, or run `/plugin install <plugin-id>@laxpud-vibekits` inside Claude Code. Each plugin can be managed independently.
 
-### Review a README Before Editing
+### Agent Docs Maintainer
 
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md)
+**Review a README** — [`project-docs-readme`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-readme/SKILL.md): use the [first-run prompt](#run-your-first-skill).
 
-```text
-Use $agent-docs-maintainer:project-docs-readme to review this repository's root README for a first-time user. Identify its intended audience, missing prerequisites, and shortest verified path. Then propose an ordered change plan and wait for my confirmation before editing.
-```
-
-### Create a Missing Documentation Baseline
-
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md)
+**Create a missing documentation baseline** — [`project-docs-bootstrap`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-bootstrap/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-bootstrap to inspect this repository. If it lacks a usable documentation baseline, propose the smallest evidence-based set of documents and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-bootstrap to inspect this repository and propose the smallest useful documentation baseline before editing.
 ```
 
-### Reorganize Existing Documentation
-
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md)
+**Reorganize existing documentation** — [`project-docs-refactor`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-refactor/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-refactor to audit this repository's documentation ownership, navigation, and duplicated content. Propose an ordered migration plan and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-refactor to review documentation ownership, navigation and duplication. Propose a migration plan before editing.
 ```
 
-### Improve Planning Documents
-
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md)
+**Improve planning documents** — [`project-docs-planning`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-planning/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-planning to review this repository's active planning documents. Identify the authoritative planning entry, unclear commitment or readiness, and missing acceptance criteria, then propose changes before editing.
+Use $agent-docs-maintainer:project-docs-planning to review current and future tasks, commitments and acceptance criteria. Propose changes before editing.
 ```
 
-### Document Architecture and Decisions
-
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md)
+**Document architecture** — [`project-docs-architecture`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-architecture/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-architecture to document this repository's current architecture from code evidence. Separate current and target states, propose the minimum useful diagrams or ADRs, and wait for my confirmation before editing.
+Use $agent-docs-maintainer:project-docs-architecture to inspect the current implementation and propose an architecture overview with useful diagrams before editing.
 ```
 
-### Refine Agent Guidance
-
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md)
+**Refine agent guidance** — [`project-docs-guidance`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-guidance/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-guidance to review this repository's AGENTS.md and CLAUDE.md. Find duplicated facts, missing routes, and high-risk boundaries, then propose a thin guidance structure before editing.
+Use $agent-docs-maintainer:project-docs-guidance to review AGENTS.md and CLAUDE.md. Propose clear reading routes and necessary project boundaries before editing.
 ```
 
-### Review or Improve Code Comments
-
-Plugin: `agent-dev-standards` · Skill: [`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md)
+**Maintain current progress** — [`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md):
 
 ```text
-Use $agent-dev-standards:code-comment-standard to review comments in these files. Identify missing processing steps, unclear data meaning, and unsupported claims. Explain the reading gaps and show focused rewrites without editing files.
+Use $agent-docs-maintainer:project-docs-progress to continue the current authorized TODO task and update only checkboxes and necessary blockers.
 ```
 
-Invoke this skill explicitly. For an edit, ask the skill to apply the improvements within the requested scope while preserving code behavior. The skill includes [before-and-after examples with explanations](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md). Everyday commenting preferences belong in your global or project instructions; this skill provides a focused review and editing workflow.
+Progress may run automatically in Codex for existing tasks and project plan/spec file requests; explicitly invoke the other six documentation skills. Detailed writing rules and file-saving conventions belong in the plugin's [usage guide](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md).
 
-### Create or Review pyproject.toml
+### Agent Task Resume
 
-Plugin: `agent-dev-standards` · Skill: [`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md)
+**Resume authorized work after quota recovery** — [`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md):
 
 ```text
-Use pyproject-standard to review this Python project's pyproject.toml. Identify evidence-backed changes, show me the proposed configuration, and ask before editing.
+Use $agent-task-resume:quota-resume to schedule continuation of this authorized task after its five-hour quota recovers. Track actual execution, avoid duplicate submissions, and stop when complete or when my input is needed.
 ```
 
-In Codex, `project-docs-progress` can run automatically for existing project tasks and requests to create, save, or link project plan/spec files. Explicitly invoke the other six documentation skills. Bootstrap and refactor must read the same document-specific rules as the focused skills and apply them within the requested scope. Small edits do not create a documentation system; completed tasks normally need only a checkbox. See the [usage guide](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md).
+Invoke it explicitly. Installing the plugin does not start a background task. Execution guidance and authorization limits are maintained in the [plugin repository](https://github.com/Laxpud/agent-task-resume).
 
-### Keep Current Progress Minimal
+### Agent Dev Standards
 
-Plugin: `agent-docs-maintainer` · Skill: [`project-docs-progress`](https://github.com/Laxpud/agent-docs-maintainer/blob/main/skills/project-docs-progress/SKILL.md)
+**Review code comments** — [`code-comment-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md):
 
 ```text
-Use $agent-docs-maintainer:project-docs-progress to continue the current authorized TODO task; update only checkboxes and necessary blockers.
+Use $agent-dev-standards:code-comment-standard to review comments in these files. Explain unclear processing steps and data meaning, then show focused rewrites without editing.
 ```
 
-A request such as “write a plan.md” uses `docs/plans/plan-YYYY-MM-DD-HH-mm.md` by default; spec files use `docs/specs/spec-YYYY-MM-DD-HH-mm.md`. Explicit filenames or paths and established project conventions take precedence. The timestamp uses your configured timezone, or local environment time if none is configured; automatically named files use suffixes such as `-2` or `-3` on collision. A conflicting explicit destination is not silently renamed or overwritten. Existing files keep their names. A chat-only plan stays in chat, and saving a file does not create TODO/roadmap files or start implementation.
+Invoke this skill explicitly for a focused review or edit. See its [comment examples](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/references/comment-examples.md); everyday commenting preferences belong in your global or project instructions.
 
-### Resume Work After Quota Recovery
-
-Plugin: `agent-task-resume` · Skill: [`quota-resume`](https://github.com/Laxpud/agent-task-resume/blob/main/skills/quota-resume/SKILL.md)
+**Review Python project metadata** — [`pyproject-standard`](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md):
 
 ```text
-Use $agent-task-resume:quota-resume to create a schedule that resumes this authorized task after its five-hour quota recovers. Track actual execution, prevent duplicate submissions, and stop when the task is complete or needs my input.
+Use $agent-dev-standards:pyproject-standard to review this project's pyproject.toml. Show evidence-backed configuration changes before editing.
 ```
-
-This skill must be invoked explicitly. It guides the agent in creating or repairing a schedule; installing the plugin does not start a background task. It checks five-hour and weekly limits, reuses the service that owns a chat or restores the original thread when no owner exists, and permits existing reset credits only within explicit user authorization and a usage cap. It accounts for queue startup and automatic approval waits when tracking execution. The included execution guidance covers Codex, with a Linux systemd path when appropriate. Loading the skill in another client does not establish support for that client's quota or scheduling APIs. Availability checks and queued messages alone do not prove that work resumed successfully.
 
 ## Troubleshooting
 
-- **A command says “not found.”** Check whether it belongs in the system terminal or the agent input area. Installer commands, `codex plugin marketplace add`, `codex`, and `claude` go in the terminal. `/plugins`, `/plugin ...`, and task prompts go inside the agent.
-- **The plugin is missing from the list.** Confirm the marketplace-add command completed, then check that the required plugin is installed and enabled.
-- **The agent does not use the skill.** Start a new task or session after installation and name the skill explicitly in the prompt.
-- **Client installation or sign-in fails.** Follow the current [Codex CLI](https://learn.chatgpt.com/docs/codex/cli) or [Claude Code](https://code.claude.com/docs/en/installation) official guide rather than trying commands from an unofficial source.
+- **Command not found:** check where you entered it. `codex ...` and `claude ...` belong in the system terminal; `/plugins`, `/plugin ...` and task prompts belong inside the client.
+- **Plugin missing:** confirm the marketplace was added and the plugin is installed and enabled. Refresh the marketplace if you are using an older snapshot.
+- **Skill not used:** start a new session after installation and name the plugin and skill explicitly.
+- **Installation or sign-in fails:** use the linked official client guide. Marketplace metadata checks do not verify your account or client installation.
 
-## Current Scope
+## More Documentation
 
-Vibekits currently supports the Codex and Claude Code plugin marketplaces:
+- [Documentation index](docs/index.md): user and maintainer reading paths; maintainer guides are in Chinese.
+- [Market architecture](docs/tech/architecture.md) and [maintenance guide](docs/maintenance.md): implementation, snapshot updates, validation and rollback.
+- [Current work](TODO.md) and [roadmap](docs/roadmap.md): current tasks, future distribution and client verification.
 
-- **[Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)** (`agent-docs-maintainer`) contains seven documentation skills;
-- **[Agent Task Resume](https://github.com/Laxpud/agent-task-resume)** (`agent-task-resume`) contains one explicitly invoked quota-recovery scheduling skill;
-- **[Agent Dev Standards](https://github.com/Laxpud/agent-dev-standards)** (`agent-dev-standards`) contains the code-comment and `pyproject.toml` skills.
+Marketplace publication does not automatically update daily plugin installations. Plugin content, examples, designs and reviews remain in each independent repository.
 
-Each plugin is installed and versioned independently, so installing, disabling, updating, or removing one does not require changing its siblings.
+## Contributing
 
-## Roadmap
+Share a missing use case or [open an issue](https://github.com/Laxpud/my-awesome-vibekits/issues). Contributions to the marketplace belong here; skill content belongs in the corresponding plugin repository.
 
-Direct installation through `npx skills` is planned, but it is not a supported or verified installation path yet. The required discovery, install, update, removal, and cross-client checks are tracked in the [roadmap](TODO.md#未来发展方向跨-harness-兼容与分发).
-
-For feature requests or usage feedback, [open an issue](https://github.com/Laxpud/my-awesome-vibekits/issues).
-
-## For Maintainers and Contributors
-
-If the project does not yet cover your needs, share your use case or help maintain it by contributing code or documentation.
-
-To maintain the marketplace, clone this repository. Contribute plugin content in its independent repository linked above:
+For marketplace development, clone this repository and start with the [architecture overview](docs/tech/architecture.md), [catalog](plugin-catalog.json) and [maintenance guide](docs/maintenance.md):
 
 ```bash
 git clone https://github.com/Laxpud/my-awesome-vibekits.git
 ```
-
-Start with the [technical documentation index](docs/index.md), [plugin catalog](plugin-catalog.json), and [active roadmap](TODO.md). Marketplace updates, snapshot synchronization, validation, and rollback details live in the linked maintainer documentation. Plugin sources, examples, design notes, and reviews are maintained in their independent repositories.
