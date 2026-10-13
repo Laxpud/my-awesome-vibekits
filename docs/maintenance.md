@@ -25,7 +25,7 @@ python3 scripts/sync_plugin_metadata.py --write
 
 ### 2. 同步公开入口
 
-核对外部来源、版本、完整技能清单和展示快照是否符合这次发布；名称、能力、描述或定位变化时，同步双语 README 的插件选择、技能入口及最小提示词。两端来源应指向同一仓库和 `ref`，插件网站链接指向独立仓库。
+核对外部来源、版本、完整技能清单和展示快照是否符合这次发布；名称、能力、描述或定位变化时，同步双语 README 的插件介绍、技能表与独立仓库入口。具体用法和示例在独立仓库维护。两端来源应指向同一仓库和 `ref`，插件网站链接指向独立仓库。
 
 插件使用说明、设计与审查继续链接到对应独立仓库。当前市场不保留旧插件兼容包或别名，不恢复本地技能副本。
 
@@ -86,7 +86,7 @@ python3 scripts/check_codex_install.py --plugin agent-docs-maintainer --plugin a
 | `task-continuation` | `agent-task-resume` |
 | `code-quality`、`python-project` | `agent-dev-standards` |
 
-先安装并确认新插件可用，再禁用或卸载对应旧插件，避免重复技能。Skill ID 保持不变，显式调用时使用新插件前缀；可复制示例见双语 README。具体刷新与管理操作参照 [Codex 官方插件说明](https://learn.chatgpt.com/docs/plugins)和 [Claude Code 官方插件管理说明](https://code.claude.com/docs/en/discover-plugins)。
+先安装并确认新插件可用，再禁用或卸载对应旧插件，避免重复技能。Skill ID 保持不变，显式调用时使用新插件前缀；具体调用方式与示例见对应独立仓库的技能说明。具体刷新与管理操作参照 [Codex 官方插件说明](https://learn.chatgpt.com/docs/plugins)和 [Claude Code 官方插件管理说明](https://code.claude.com/docs/en/discover-plugins)。
 
 本市场交付检查聚焦插件来源、收录快照、包内技能入口及安装更新说明。客户端负责执行刷新、安装、更新和已安装插件管理；启停、本地降级、客户端安装隔离和失败恢复不作为本市场交付门槛。日常配置修改只在当前任务明确授权的范围内执行。
 
