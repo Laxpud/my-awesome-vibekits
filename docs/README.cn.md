@@ -9,34 +9,38 @@
 <h1>Vibekits</h1>
 
 <p><strong>面向 AI 工程工作流的个人插件市场</strong><br />
-<sub>项目文档 · 代码注释 · Python 项目 · 任务续跑</sub></p>
+<sub>项目文档 · 代码注释 · Python 项目 · 任务续跑 · STAR-CCM+</sub></p>
 
 <p>
   <a href="#在-codex-或-claude-code-中安装"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex-dark&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@FFFFFF)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/Codex_CLI?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:codex&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@111111)" alt="Codex CLI" /></picture></a>
   &nbsp;
   <a href="#在-codex-或-claude-code-中安装"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@D97757)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/Claude_Code?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=logos:claude-code&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@D97757)" alt="Claude Code" /></picture></a>
   &nbsp;
+  <a href="#install-in-dsh"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/DSH?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=simple-icons:deepseek&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@000000)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/DSH?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=simple-icons:deepseek&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@000000)" alt="DeepSeek Harness (DSH)" /></picture></a>
+  &nbsp;
   <a href="../LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@58446D)%2Cbg-(@2B223A)%2Ctext-(@E5D8FA)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@CFADFF)" /><img height="32" src="https://badgewind.agmmnn.workers.dev/MIT_License?font=inter&amp;textShadow=false&amp;badgeStyle=h-(32px)%2Crounded-full%2Cborder%2Cborder-solid%2Cborder-(@D7C7ED)%2Cbg-(@F3EDFC)%2Ctext-(@59416F)&amp;leftStyle=h-full%2Cbg-transparent%2Crounded-full%2Cpx-3%2Cpy-0%2Ctext-(12px)%2Cleading-(16px)%2Cfont-medium&amp;icon=material-symbols:balance&amp;iconStyle=w-(15px)%2Ch-(15px)%2Cmr-(5px)%2C-translate-y-(0.75px)%2Ctext-(@7548A3)" alt="许可证：MIT" /></picture></a>
 </p>
 
 <p><sub>
   <a href="#快速开始">快速开始</a> ·
-  <a href="#插件与技能">浏览技能</a> ·
+  <a href="#插件列表">插件列表</a> ·
   <a href="index.md">文档</a> ·
   <a href="https://github.com/Laxpud/my-awesome-vibekits/issues">反馈问题</a>
 </sub></p>
 
 </div>
 
-Vibekits 是面向 Codex 与 Claude Code 的插件市场，收录可复用的工程工作流。
+Vibekits 是面向 Codex、Claude Code 与 DeepSeek Harness（DSH）的插件市场，收录可复用的工程工作流。各客户端的收录范围见[插件列表](#插件列表)。
 
 ## 环境准备
 
-你需要已安装并登录的 Codex 或 Claude Code，以及访问 GitHub 的网络。在希望处理的项目中打开客户端即可，使用市场无需先克隆 Vibekits。
+安装你选择的 Codex、Claude Code 或 DSH，并完成相应的登录或模型提供方配置。你还需要访问 GitHub 的网络。在希望处理的项目中打开客户端即可，使用市场无需先克隆 Vibekits。
+
+StarBridge 另需 `python3`、`uv` 等运行环境；算例操作还需要 Linux、适配的 STAR-CCM+ 安装和许可证。完整要求见其[分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。
 
 ## 快速开始
 
-下面以 `agent-docs-maintainer` 演示安装，选择一个客户端即可。[插件与技能](#插件与技能)中的其他插件也通过同一个市场安装。
+按所用客户端选择下面的安装入口。Codex 与 Claude Code 以 `agent-docs-maintainer` 演示安装；DSH 当前收录 StarBridge。各客户端的具体条目见[插件列表](#插件列表)。
 
 ### 在 Codex 或 Claude Code 中安装
 
@@ -64,11 +68,34 @@ claude
 
 在 `laxpud-vibekits` 中找到并安装 `agent-docs-maintainer`。安装并启用后，为同一项目启动新会话以加载技能；Claude Code 可以输入 `/reload-plugins`。具体客户端管理操作见 [Codex 官方插件指南](https://learn.chatgpt.com/docs/plugins) 和 [Claude Code 官方插件指南](https://code.claude.com/docs/en/discover-plugins)。
 
+市场更新后，先刷新或升级市场，再安装或更新所需插件并启动新会话。
+
+<a id="install-in-dsh"></a>
+
+### 在 DeepSeek Harness（DSH）中安装
+
+启用实验性的 **Custom plugin indexes**，然后在 **Discover** 中添加以下索引：
+
+```text
+https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json
+```
+
+找到 StarBridge，安装 `@laxpud/dsh-starbridge`。它是本市场 DSH 索引当前唯一收录的插件，声明支持官方 DSH `0.2.1-rc.2`。运行环境配置和更新方式见 [StarBridge 分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。
+
 **独立安装 Skill：**通过插件市场安装会获取整个插件包。若只想直接安装选定的技能，请从下方插件仓库查看其提供的安装说明与客户端支持范围。使用 `npx skills` 等工具时，安装、更新和移除操作见[官方说明](https://github.com/vercel-labs/skills)；具体支持情况以独立仓库为准。
 
-## 插件与技能
+## 插件列表
 
-插件标题链接到对应仓库，技能名称链接到其操作说明；标题旁的插件 ID 用于在 `laxpud-vibekits` 中查找插件。
+插件标题链接到对应仓库，技能名称链接到其操作说明；标题旁的插件 ID 用于在 Codex 与 Claude Code 的 `laxpud-vibekits` 市场中查找插件，DSH 包名见上方安装说明。
+
+| 插件 | Codex | Claude Code | DSH |
+| --- | --- | --- | --- |
+| Agent Docs Maintainer | 已收录 | 已收录 | — |
+| Agent Task Resume | 已收录 | 已收录 | — |
+| Agent Dev Standards | 已收录 | 已收录 | — |
+| StarBridge | 已收录 | 已收录 | 已收录 |
+
+“已收录”表示提供对应分发入口，运行条件和工作流支持范围以各插件仓库为准。
 
 ### [Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)（`agent-docs-maintainer`）
 
@@ -100,6 +127,14 @@ claude
 | --- | --- |
 | [code-comment-standard](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/code-comment-standard/SKILL.md) | 审查和改进代码注释，交代处理过程与数据含义。 |
 | [pyproject-standard](https://github.com/Laxpud/agent-dev-standards/blob/main/skills/pyproject-standard/SKILL.md) | 审查 Python 项目元数据及 uv/hatchling 配置。 |
+
+### [StarBridge](https://github.com/Laxpud/StarBridge)（`starbridge`）
+
+通过本地 MCP 工具检查 STAR-CCM+ 算例、读取对象与设置，并执行受控修改。插件同时提供算例审查技能；运行环境与安装说明见其[分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。
+
+| Skill | 一句话介绍 |
+| --- | --- |
+| [starbridge-case-audit](https://github.com/Laxpud/StarBridge/blob/main/skills/starbridge-case-audit/SKILL.md) | 按审查流程检查 STAR-CCM+ 算例，并记录发现与读取限制。 |
 
 ## 参与贡献
 

@@ -14,6 +14,10 @@
 
 ## 当前工作
 
+### 双语 README 更新
+
+- [x] 按 2026-11-03 用户确认的方案同步双语 README：章节改为“插件列表 / Plugin List”，补齐 StarBridge、DSH 安装入口及黑色 DeepSeek 图标、平台收录概览和更新提示。既有本地检查、5 项测试及四个外部插件包检查通过，双语章节与导航锚点已核对。
+
 ### StarBridge 三端分发
 
 按 2026-11-03 用户授权，与本地 StarBridge 仓库配套实现；本轮已获提交、推送和发布后 DSH 安装验证授权；不发布 npm／PyPI 包。实现顺序与安装范围见 [StarBridge 计划](https://github.com/Laxpud/StarBridge/blob/main/docs/plans/plan-2026-11-03-14-23.md)。本地对应 StarBridge 的同名计划文件；远端链接随本轮推送更新。
