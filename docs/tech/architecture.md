@@ -4,9 +4,9 @@
 
 ## 系统上下文
 
-Vibekits 是 Codex 与 Claude Code 的插件市场。它保存外部来源和展示快照，插件客户端从对应独立仓库取得实际安装包。
+Vibekits 是 Codex、Claude Code 与 DSH 的插件市场。它保存外部来源和展示快照，插件客户端从对应独立仓库取得实际安装包。
 
-本市场负责来源与收录快照更新、两端 marketplace 生成、包内技能入口核对和安装更新说明。客户端负责执行刷新、安装、更新及已安装插件管理；客户端的启停、本地版本恢复、安装隔离和失败恢复不作为市场交付门槛。核对市场声明的来源、版本与技能清单仍属于本仓库的维护责任。
+本市场负责来源与收录快照更新、三端目录生成、包内技能入口核对和安装更新说明。客户端负责执行刷新、安装、更新及已安装插件管理；客户端的启停、本地版本恢复、安装隔离和失败恢复不作为市场交付门槛。核对市场声明的来源、版本与技能清单仍属于本仓库的维护责任。
 
 ```mermaid
 flowchart LR
@@ -21,7 +21,7 @@ flowchart LR
 
 ## 数据来源与生成过程
 
-独立仓库决定插件身份、版本和内容；[`plugin-catalog.json`](../../plugin-catalog.json)保存本市场核对后的收录快照及平台策略。两份 marketplace 都是生成物，不直接编辑。
+独立仓库决定插件身份、版本和内容；[`plugin-catalog.json`](../../plugin-catalog.json)保存本市场核对后的收录快照及平台策略。两份 marketplace 和 DSH 索引都是生成物，不直接编辑。
 
 ```mermaid
 flowchart LR
@@ -55,7 +55,7 @@ flowchart LR
 
 同一个 GitHub 来源在 Codex 中生成 `source: "url"`、仓库 URL 和可选 `ref`，在 Claude Code 中生成 `source: "github"`、`repo` 和可选 `ref`。两端都从独立仓库根目录获取插件。
 
-Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安装前展示快照。当前三个插件均已开启；名称、简介、详细介绍、推荐提示词、发布者和分类以独立仓库实际 manifest 为准。`homepage`、`repository` 与 `interface.websiteURL` 应指向插件自己的仓库。
+Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安装前展示快照。当前四个插件均已开启；名称、简介、详细介绍、推荐提示词、发布者和分类以独立仓库实际 manifest 为准。`homepage`、`repository` 与 `interface.websiteURL` 应指向插件自己的仓库。
 
 市场展示不携带 `skills` 等包内路径，不复制包内图标或截图文件。安装前技能列表与包内资源是否显示取决于客户端实际加载，不能借用旧本地插件补齐。新增展示字段时先核对 [`CODEX_INTERFACE_METADATA_FIELDS`](../../scripts/plugin_catalog.py)，平台专属配置只进入对应适配层。
 
@@ -80,7 +80,7 @@ Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安�
 | `--remote` | 从聚合市场远端 checkout 执行同一安装契约检查；是否读取外部包仍由 `--check-external` 决定。 | 尚未推送的本地文档、客户端安装。 |
 | 真实客户端验证 | 在指定客户端、版本与配置中观察到的展示、安装、加载或生命周期结果。 | 其他客户端或未经操作的生命周期环节。 |
 
-安装检查会逐插件报告问题，并要求两份 README 包含聚合市场添加命令、独立一行的 `/plugins` 和被选插件 ID。完整技能集合由回填时枚举；外部安装检查只核对 catalog 中声明的入口，不把它描述成完整目录差异检查。
+安装检查会逐插件报告问题，并核对两份 README 已有的聚合市场添加命令与独立一行的 `/plugins`；插件 ID 集合由 catalog 与生成目录核对，不要求向 README 新增条目。完整技能集合由回填时枚举；外部安装检查只核对 catalog 中声明的入口，不把它描述成完整目录差异检查。
 
 本地 Markdown 链接脚本只检查行内 Markdown 文件链接的目标存在性，跳过外部 URL 和页内锚点；HTML 链接、引用式链接及锚点需要另外核对。
 
@@ -99,3 +99,11 @@ Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安�
 维护脚本使用 Python 标准库，没有第三方 Python 依赖；Git 用于查找仓库文件和克隆远端，外部检查另需网络。CI 的运行版本不等于已声明的最低环境要求。执行这些检查不需要调用模型或复制凭据；真实客户端操作另需对应客户端及其可用账户。
 
 [返回文档索引](../index.md) · [维护指南](../maintenance.md)
+
+## DSH 索引与未发布版本
+
+`platforms.dsh` 可选，包含 npm 包身份 `name`、兼容范围 `engines` 及 `versions` 数组。未提供该字段的插件不进入 DSH 市场。`versions: []` 表示本地已准备的 bundle 尚未发布；不生成虚假的可安装版本。
+
+每个发布版本记录 `version`、Unix 秒单位的 `publishTimestamp` 和 Git `source`（`type: git`、同独立仓库 HTTPS `url`、完整 40 位 `commit`，可选仓库内 `path`）。生成器输出 [dsh/index.json](../../dsh/index.json)；DSH 原生支持其他来源，但本 catalog 当前只实现同仓库 Git 来源。发布时必须使用实际发布提交与时间，不以当前日期或浮动分支代替。
+
+本地修改通过安装检查的 `--local-plugin ID=/absolute/path` 显式选取；该参数须配合 `--check-external`，不能与 `--remote` 同用，输出标注 LOCAL。检查仍核对双端 manifest、Skill 和 DSH bundle 身份／版本／patch，但不把本地检查描述成远端安装成功。

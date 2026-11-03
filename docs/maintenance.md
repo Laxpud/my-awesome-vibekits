@@ -25,7 +25,7 @@ python3 scripts/sync_plugin_metadata.py --write
 
 ### 2. 同步公开入口
 
-核对外部来源、版本、完整技能清单和展示快照是否符合这次发布；名称、能力、描述或定位变化时，同步双语 README 的插件介绍、技能表与独立仓库入口。具体用法和示例在独立仓库维护。两端来源应指向同一仓库和 `ref`，插件网站链接指向独立仓库。
+核对外部来源、版本、完整技能清单和展示快照是否符合这次发布；仅在变化与 README 已有内容冲突时同步修正已有表述；不得擅自新增内容，任何删除均须先征得用户同意。具体用法和示例在独立仓库维护。两端来源应指向同一仓库和 `ref`，插件网站链接指向独立仓库。
 
 插件使用说明、设计与审查继续链接到对应独立仓库。当前市场不保留旧插件兼容包或别名，不恢复本地技能副本。
 
@@ -63,7 +63,7 @@ python3 scripts/check_codex_install.py --remote --all --check-external
 
 先在独立仓库建立可分发插件，再按 [catalog 契约](tech/architecture.md#catalog-契约)添加唯一 ID、GitHub 来源、收录字段、完整技能清单和双端平台配置。需要 Codex 安装前详情时启用 `platforms.codex.marketplaceMetadata: true`，然后预览实际 manifest 回填，避免手工编写第二套展示文案。
 
-生成两份市场，补齐双语 README 的选择和首次使用入口，执行上述本地与外部包检查，核对本市场声明的来源、版本与技能入口。客户端展示和安装结果用于补充确认分发入口可用，不追加客户端完整生命周期验证门槛。
+生成三端目录，核对 catalog 中的插件选择和安装来源，执行上述本地与外部包检查，核对本市场声明的来源、版本与技能入口。客户端展示和安装结果用于补充确认分发入口可用，不追加客户端完整生命周期验证门槛。
 
 ## 选择检查目标
 
@@ -102,3 +102,18 @@ python3 scripts/check_codex_install.py --plugin agent-docs-maintainer --plugin a
 - **需要回退插件内容或已安装版本：** 插件内容在独立仓库处理；恢复旧内容后发布更高版本按正常收录更新维护。已安装版本的恢复由客户端处理，本市场不实现本地降级；恢复市场快照不会自动恢复客户端已安装内容。
 
 [返回文档索引](index.md) · [架构总览](tech/architecture.md)
+
+## 三端收录与发布前本地检查
+
+StarBridge 的未提交实现可通过本地覆盖验收；其他插件仍按 catalog 的远端来源检查：
+
+```bash
+python3 scripts/sync_plugin_metadata.py
+python3 scripts/check_codex_install.py --all --check-external --local-plugin starbridge=/absolute/path/to/StarBridge
+```
+
+本地覆盖只影响验证输入，不改 catalog 来源，不写日常客户端配置。发布前不使用 `--fetch-external --plugin starbridge --write` 从旧远端覆盖新的本地快照。默认的 `--all --check-external` 仍检查实际远端，未发布时可能报告 StarBridge 缺少 manifest；应如实记录该边界。
+
+DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。当前只有 StarBridge 声明 DSH 适配，不为旧插件自动作出兼容承诺。
+
+获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。将 `dsh/index.json` 托管到返回 JSON 的静态 HTTPS 地址，再在 DSH 的实验性 Custom plugin indexes 中添加该地址。本轮经用户授权推送 Git 仓库并验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包。

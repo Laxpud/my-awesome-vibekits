@@ -14,4 +14,17 @@
 
 ## 当前工作
 
-当前无进行中的里程碑。独立 Skill 分发已[完成归档](docs/archive/milestone-2026-10-13-12-45-standalone-skill-entry.md)；后续候选方向见[路线图](docs/roadmap.md#backlog)，尚未授权启动。
+### StarBridge 三端分发
+
+按 2026-11-03 用户授权，与本地 StarBridge 仓库配套实现；本轮已获提交、推送和发布后 DSH 安装验证授权；不发布 npm／PyPI 包。实现顺序与安装范围见 [StarBridge 计划](https://github.com/Laxpud/StarBridge/blob/main/docs/plans/plan-2026-11-03-14-23.md)。本地对应 StarBridge 的同名计划文件；远端链接随本轮推送更新。
+
+- [x] 扩展统一 catalog，支持可选 DSH bundle 来源和版本；生成第三份 DSH 索引，保留其他插件的双端收录。
+- [x] 收录 StarBridge 的 MCP 与 Skill 插件；未发布 DSH 版本保留为草稿，不虚构 Git commit 或发布日期。
+- [x] 支持通过明确的本地源码覆盖验证未提交的外部插件，默认外部检查仍读取远端。
+- [x] 完成现有市场检查和配套三端隔离安装验证，同步架构与维护说明，保留 README 内容边界；注明尚未验证的发布后安装路径。
+
+既有独立 Skill 分发记录见[归档](docs/archive/milestone-2026-10-13-12-45-standalone-skill-entry.md)。
+
+本地实现与安装验证完成；Git 推送与发布后 DSH 安装验证进行中，不启用 Pages。实际安装结果见 StarBridge 分发说明。
+
+- [ ] 推送两仓库，取得真实插件 commit，发布 DSH 索引并验证远端 Git 安装、MCP 与 Skill。

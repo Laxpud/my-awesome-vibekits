@@ -1,16 +1,16 @@
 # 项目文档
 
-Vibekits 维护外部插件的 Codex 与 Claude Code 聚合市场。按你要完成的事情选择入口；每类信息只在下表所列位置维护。
+Vibekits 维护外部插件的 Codex、Claude Code 与 DSH 聚合市场。按你要完成的事情选择入口；每类信息只在下表所列位置维护。
 
 ## 使用插件
 
-从 [README](../README.md) 或[中文 README](README.cn.md)了解用途、完成安装并浏览插件与技能目录。十个技能均提供一句话介绍和操作说明链接，具体用法与示例在对应独立仓库维护。
+从 [README](../README.md) 或[中文 README](README.cn.md)了解用途、完成安装并浏览插件与技能目录。各技能均提供一句话介绍和操作说明链接，具体用法与示例在对应独立仓库维护。
 
 技能的详细操作、模板、写作规则与执行资料见下方独立插件资料。旧安装迁移见[维护指南的迁移对应表](maintenance.md#客户端更新与旧安装迁移)。
 
 ## 维护市场
 
-先读[架构总览](tech/architecture.md)理解独立仓库、catalog 和两端 marketplace 的关系，再按[维护指南](maintenance.md)更新收录、验证或回退。修改插件内容时转到对应独立仓库。
+先读[架构总览](tech/architecture.md)理解独立仓库、catalog 和三端目录 的关系，再按[维护指南](maintenance.md)更新收录、验证或回退。修改插件内容时转到对应独立仓库。
 
 | 维护位置 | 唯一负责的内容 |
 | --- | --- |
@@ -28,6 +28,7 @@ Vibekits 维护外部插件的 Codex 与 Claude Code 聚合市场。按你要完
 | 插件 | 内容维护入口 |
 | --- | --- |
 | Agent Docs Maintainer | [仓库](https://github.com/Laxpud/agent-docs-maintainer)、[使用说明](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/usage.md)、[技术资料与历史设计、审查](https://github.com/Laxpud/agent-docs-maintainer/blob/main/docs/index.md)。 |
+| StarBridge | [仓库与三端插件](https://github.com/Laxpud/StarBridge)、[分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。 |
 | Agent Task Resume | [仓库、技能与执行资料](https://github.com/Laxpud/agent-task-resume)。 |
 | Agent Dev Standards | [仓库](https://github.com/Laxpud/agent-dev-standards)、[原始例库与历史审查](https://github.com/Laxpud/agent-dev-standards/blob/main/docs/index.md)。 |
 

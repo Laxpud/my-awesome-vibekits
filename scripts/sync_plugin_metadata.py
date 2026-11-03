@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从外部插件收录快照生成两端 marketplace，或显式拉取独立仓库元数据。"""
+"""从外部插件收录快照生成三端 marketplace，或显式拉取独立仓库元数据。"""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ if __package__ in (None, ""):
 
 from scripts.plugin_catalog import (
     CATALOG_PATH,
+    DSH_INDEX_PATH,
     CLAUDE_MARKETPLACE_PATH,
     CODEX_MARKETPLACE_PATH,
     CODEX_INTERFACE_METADATA_FIELDS,
@@ -128,10 +129,29 @@ def claude_marketplace(catalog: PluginCatalog) -> dict[str, Any]:
     }
 
 
+def dsh_index(catalog: PluginCatalog) -> dict[str, Any]:
+    """生成 DSH 原生索引；未发布草稿不进入可安装版本列表。"""
+    entries = []
+    for plugin in catalog.plugins:
+        adapter = plugin.dsh
+        if not adapter or not adapter["versions"]:
+            continue
+        entries.append({
+            "name": adapter["name"], "title": plugin.codex["displayName"],
+            "description": plugin.description, "author": catalog.publisher["name"],
+            "homepage": f"https://github.com/{plugin.github['repo']}",
+            "repository": {"url": f"https://github.com/{plugin.github['repo']}"},
+            "versions": [{**release, "engines": {"dsh": adapter["engines"]}}
+                         for release in adapter["versions"]],
+        })
+    return {"format": 1, "title": catalog.marketplace["displayName"], "plugins": entries}
+
+
 def generated_files(catalog: PluginCatalog) -> dict[Path, str]:
-    """仅生成两份共享市场；选择插件不会裁掉兄弟条目。"""
+    """仅生成三份共享目录；选择插件不会裁掉兄弟条目。"""
 
     return {
+        DSH_INDEX_PATH: _json(dsh_index(catalog)),
         CODEX_MARKETPLACE_PATH: _json(codex_marketplace(catalog)),
         CLAUDE_MARKETPLACE_PATH: _json(claude_marketplace(catalog)),
     }
@@ -141,7 +161,7 @@ def check_generated(
     root: Path,
     catalog: PluginCatalog,
 ) -> list[str]:
-    """核对两端市场与完整 catalog 是否一致，返回可操作的漂移诊断。"""
+    """核对三端市场与完整 catalog 是否一致，返回可操作的漂移诊断。"""
     errors: list[str] = []
     for relative_path, expected in generated_files(catalog).items():
         path = root / relative_path
@@ -159,7 +179,7 @@ def write_generated(
     root: Path,
     catalog: PluginCatalog,
 ) -> list[Path]:
-    """只重写发生变化的两端市场，返回本轮实际变更路径。"""
+    """只重写发生变化的三端市场，返回本轮实际变更路径。"""
     changed: list[Path] = []
     for relative_path, content in generated_files(catalog).items():
         path = root / relative_path

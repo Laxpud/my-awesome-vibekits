@@ -257,6 +257,82 @@
         "repository": "https://github.com/Laxpud/agent-dev-standards",
         "license": "MIT"
       }
+    },
+    {
+      "id": "starbridge",
+      "version": "0.1.0",
+      "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+      "category": "Productivity",
+      "keywords": [
+        "STAR-CCM+",
+        "CFD",
+        "MCP",
+        "simulation"
+      ],
+      "skills": [
+        {
+          "id": "starbridge-case-audit",
+          "path": "skills/starbridge-case-audit"
+        }
+      ],
+      "platforms": {
+        "codex": {
+          "installation": "AVAILABLE",
+          "authentication": "ON_INSTALL",
+          "marketplaceMetadata": true,
+          "displayName": "StarBridge",
+          "shortDescription": "STAR-CCM+ tools and case audit",
+          "longDescription": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+          "developerName": "Laxpud",
+          "category": "Productivity",
+          "capabilities": [
+            "MCP",
+            "Skills"
+          ],
+          "websiteURL": "https://github.com/Laxpud/StarBridge",
+          "defaultPrompt": [
+            "Use $starbridge:starbridge-case-audit to inspect this STAR-CCM+ case."
+          ]
+        },
+        "claude": {
+          "category": "development",
+          "tags": [
+            "CFD",
+            "MCP"
+          ],
+          "author": {
+            "name": "Laxpud"
+          }
+        },
+        "dsh": {
+          "name": "@laxpud/dsh-starbridge",
+          "engines": "0.2.1-rc.2",
+          "versions": [
+            {
+              "version": "0.1.0",
+              "publishTimestamp": 1793698308,
+              "source": {
+                "type": "git",
+                "url": "https://github.com/Laxpud/StarBridge",
+                "commit": "c5f878173e0e32a0a807f799874d0c1b823af612"
+              }
+            }
+          ]
+        }
+      },
+      "source": {
+        "type": "github",
+        "repo": "Laxpud/StarBridge",
+        "ref": "main"
+      },
+      "manifestMetadata": {
+        "author": {
+          "name": "Laxpud"
+        },
+        "homepage": "https://github.com/Laxpud/StarBridge",
+        "repository": "https://github.com/Laxpud/StarBridge",
+        "license": "MIT"
+      }
     }
   ]
 }

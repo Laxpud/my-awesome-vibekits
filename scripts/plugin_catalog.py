@@ -15,6 +15,7 @@ from typing import Any, Iterable
 
 CATALOG_PATH = Path("plugin-catalog.json")
 CODEX_MARKETPLACE_PATH = Path(".agents/plugins/marketplace.json")
+DSH_INDEX_PATH = Path("dsh/index.json")
 CLAUDE_MARKETPLACE_PATH = Path(".claude-plugin/marketplace.json")
 SEMVER_PATTERN = re.compile(
     r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
@@ -85,6 +86,7 @@ class PluginSpec:
     claude: dict[str, Any]
     github: dict[str, str]
     manifest_metadata: dict[str, Any] | None = None
+    dsh: dict[str, Any] | None = None
 
     @property
     def source(self) -> dict[str, str]:
@@ -285,7 +287,37 @@ def parse_catalog(raw: Any) -> PluginCatalog:
             for author_field, author_value in author.items():
                 _string(author_value, f"{field}.platforms.claude.author.{author_field}")
 
-        # 3. 保存可独立生成两端 marketplace 的收录快照，不访问插件源码。
+        # DSH 只输出明确的发布版本；空 versions 表示已开发但尚未发布的 bundle。
+        dsh = None
+        if "dsh" in platforms:
+            dsh = _mapping(platforms["dsh"], f"{field}.platforms.dsh")
+            package_name = _string(dsh.get("name"), f"{field}.platforms.dsh.name")
+            if not re.fullmatch(r"(?:@[a-z0-9._-]+/)?[a-z0-9._-]+", package_name):
+                raise CatalogError(f"{field}.platforms.dsh.name: invalid npm package name")
+            _string(dsh.get("engines"), f"{field}.platforms.dsh.engines")
+            versions = dsh.get("versions")
+            if not isinstance(versions, list):
+                raise CatalogError(f"{field}.platforms.dsh.versions: expected an array")
+            seen_versions = set()
+            for release in versions:
+                release = _mapping(release, f"{field}.platforms.dsh.versions[]")
+                version_text = _string(release.get("version"), "dsh.version")
+                if not SEMVER_PATTERN.fullmatch(version_text) or version_text in seen_versions:
+                    raise CatalogError("dsh.version: invalid or duplicate SemVer")
+                seen_versions.add(version_text)
+                stamp = release.get("publishTimestamp")
+                if type(stamp) is not int or stamp <= 0:
+                    raise CatalogError("dsh.publishTimestamp: expected positive Unix seconds")
+                source_data = _mapping(release.get("source"), "dsh.source")
+                # 当前仅生成本 catalog 的同仓库 Git 来源，避免维护第二套包身份。
+                if source_data.get("type") != "git" or source_data.get("url") != f"https://github.com/{repo}":
+                    raise CatalogError("dsh.source: expected the catalog repository Git URL")
+                if not re.fullmatch(r"[0-9a-f]{40}", str(source_data.get("commit", ""))):
+                    raise CatalogError("dsh.source.commit: expected a full Git SHA")
+                if "path" in source_data:
+                    _safe_relative(_string(source_data["path"], "dsh.source.path"), "dsh.source.path")
+
+        # 3. 保存可独立生成三端目录的收录快照，不访问插件源码。
         plugins.append(
             PluginSpec(
                 plugin_id,
@@ -298,6 +330,7 @@ def parse_catalog(raw: Any) -> PluginCatalog:
                 claude,
                 github,
                 manifest_metadata,
+                dsh,
             )
         )
 

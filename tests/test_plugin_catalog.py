@@ -17,8 +17,8 @@ FIXTURES = Path(__file__).parent / "fixtures"
 class CatalogTests(unittest.TestCase):
     """沿用既有 catalog 检查，验证迁移后的市场契约。"""
 
-    def test_production_catalog_contains_three_external_plugins(self) -> None:
-        """市场只保存外部来源与十技能快照，不再携带可被发现的旧包。"""
+    def test_production_catalog_contains_external_plugins(self) -> None:
+        """市场只保存外部来源与技能快照，不再携带可被发现的旧包。"""
         catalog = load_catalog(REPOSITORY_ROOT)
         expected_skills = {
             "agent-docs-maintainer": (
@@ -32,10 +32,11 @@ class CatalogTests(unittest.TestCase):
             ),
             "agent-task-resume": ("quota-resume",),
             "agent-dev-standards": ("code-comment-standard", "pyproject-standard"),
+            "starbridge": ("starbridge-case-audit",),
         }
         self.assertEqual(list(expected_skills), [plugin.id for plugin in catalog.plugins])
         for plugin in catalog.plugins:
-            self.assertEqual(f"Laxpud/{plugin.id}", plugin.github["repo"])
+            self.assertEqual("Laxpud/StarBridge" if plugin.id == "starbridge" else f"Laxpud/{plugin.id}", plugin.github["repo"])
             self.assertEqual("main", plugin.github["ref"])
             self.assertEqual(expected_skills[plugin.id], tuple(skill.id for skill in plugin.skills))
             self.assertTrue(plugin.codex["marketplaceMetadata"])
@@ -72,14 +73,14 @@ class CatalogTests(unittest.TestCase):
                 load_catalog(root)
 
     def test_generation_is_idempotent_and_detects_manual_drift(self) -> None:
-        """生成只写两份市场，并能发现绕过 catalog 的手动修改。"""
+        """生成只写三份目录，并能发现绕过 catalog 的手动修改。"""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             shutil.copyfile(REPOSITORY_ROOT / "plugin-catalog.json", root / "plugin-catalog.json")
             catalog = load_catalog(root)
             first = write_generated(root, catalog)
             self.assertEqual(
-                {Path(".agents/plugins/marketplace.json"), Path(".claude-plugin/marketplace.json")},
+                {Path(".agents/plugins/marketplace.json"), Path(".claude-plugin/marketplace.json"), Path("dsh/index.json")},
                 set(first),
             )
             self.assertEqual([], write_generated(root, catalog))

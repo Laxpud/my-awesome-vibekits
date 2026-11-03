@@ -82,6 +82,7 @@ def _validate_plugin(
     entry: dict[str, Any],
     marketplace_path: Path,
     check_external: bool = False,
+    local_root: Path | None = None,
 ) -> str:
     """校验外部来源与策略；显式联网时再读取双端 manifest 和完整技能入口。"""
 
@@ -110,6 +111,9 @@ def _validate_plugin(
     slug = plugin.github["repo"]
     if not check_external:
         return f"{slug} (external source configured; payload not fetched)"
+    if local_root is not None:
+        _validate_payload(local_root.resolve(), plugin, prefix, slug)
+        return f"{slug} (LOCAL override: {local_root}; not a remote release check)"
     with tempfile.TemporaryDirectory(prefix="codex-external-plugin-") as directory:
         plugin_root = Path(directory) / "plugin"
         clone_remote(source["url"], plugin.github.get("ref"), plugin_root)
@@ -151,6 +155,20 @@ def _validate_payload(
     if claude_slug != slug:
         raise SmokeTestError(f"{prefix}: Claude manifest.repository does not match source repository")
 
+    if plugin.dsh is not None:
+        # DSH 包与 Python／双端插件同版本；仅检查交付声明，不执行外部代码。
+        package = load_json(plugin_root / "package.json")
+        if package.get("name") != plugin.dsh["name"] or package.get("version") != plugin.version:
+            raise SmokeTestError(f"{prefix}: DSH package identity/version differs from catalog")
+        if package.get("engines", {}).get("dsh") != plugin.dsh["engines"]:
+            raise SmokeTestError(f"{prefix}: DSH engines differ from catalog")
+        patch = package.get("dsh", {}).get("bundle", {}).get("patch")
+        if not isinstance(patch, str):
+            raise SmokeTestError(f"{prefix}: missing DSH bundle patch")
+        target = (plugin_root / patch).resolve()
+        if not target.is_relative_to(plugin_root.resolve()) or not target.is_file():
+            raise SmokeTestError(f"{prefix}: invalid DSH bundle patch path")
+
     missing_skills = [
         skill for skill in plugin.required_skills if not (plugin_root / skill).is_file()
     ]
@@ -164,11 +182,16 @@ def _validate_payload(
 
 
 def validate_repository(
-    root: Path, plugin_ids: list[str] | None = None, *, check_external: bool = False
+    root: Path, plugin_ids: list[str] | None = None, *, check_external: bool = False,
+    local_plugins: dict[str, Path] | None = None
 ) -> list[str]:
     """检查市场引用和 README；按需下载外部包，不写客户端安装配置。"""
     catalog = load_catalog(root)
     selected = catalog.select(plugin_ids)
+    local_plugins = local_plugins or {}
+    unknown = set(local_plugins) - {plugin.id for plugin in selected}
+    if unknown or (local_plugins and not check_external):
+        raise SmokeTestError("local overrides require --check-external and selected plugin IDs")
     marketplace_path = CODEX_MARKETPLACE_PATH
     marketplace = load_json(root / marketplace_path)
     if marketplace.get("name") != catalog.marketplace_id:
@@ -189,12 +212,11 @@ def validate_repository(
     checks: list[str] = []
     for plugin in selected:
         manifest_path = _validate_plugin(
-            plugin, entries[plugin.id], marketplace_path, check_external
+            plugin, entries[plugin.id], marketplace_path, check_external, local_plugins.get(plugin.id)
         )
         checks.append(f"{plugin.id}: marketplace resolves to {manifest_path}")
 
     install_command = f"codex plugin marketplace add {slug}"
-    selected_ids = {plugin.id for plugin in selected}
     for readme_path in README_PATHS:
         try:
             content = (root / readme_path).read_text(encoding="utf-8")
@@ -206,12 +228,9 @@ def validate_repository(
             )
         if not re.search(r"(?m)^/plugins\s*$", content):
             raise SmokeTestError(f"{readme_path}: must document /plugins")
-        for plugin_id in selected_ids:
-            if f"`{plugin_id}`" not in content:
-                raise SmokeTestError(
-                    f"{readme_path}: must name selectable plugin `{plugin_id}`"
-                )
-    checks.append("English and Chinese README files document all selected plugins")
+    # README 只检查已有的通用安装入口；插件集合由 catalog 和市场文件核对，
+    # 不以新增收录为理由强制扩写 README。
+    checks.append("English and Chinese README files retain the marketplace installation entry")
     return checks
 
 
@@ -249,8 +268,12 @@ def parse_args() -> argparse.Namespace:
         "--check-external", action="store_true",
         help="clone external plugin sources and check both manifests and every skill",
     )
+    parser.add_argument("--local-plugin", action="append", default=[], metavar="ID=PATH",
+                        help="check an explicitly selected local payload instead of cloning it")
     parser.add_argument("--ref")
     args = parser.parse_args()
+    if args.local_plugin and (args.remote or not args.check_external):
+        parser.error("--local-plugin requires --check-external and cannot accompany --remote")
     if args.ref and not args.remote:
         parser.error("--ref requires --remote")
     return args
@@ -266,7 +289,14 @@ def main() -> int:
             temporary = tempfile.TemporaryDirectory(prefix="codex-install-smoke-")
             target = Path(temporary.name) / "repository"
             clone_remote(repository_url(root), args.ref, target)
-        checks = validate_repository(target, args.plugins, check_external=args.check_external)
+        overrides = {}
+        for value in args.local_plugin:
+            key, separator, path = value.partition("=")
+            if not separator or not path or key in overrides:
+                raise SmokeTestError("--local-plugin requires unique ID=PATH entries")
+            overrides[key] = Path(path)
+        checks = validate_repository(target, args.plugins, check_external=args.check_external,
+                                     local_plugins=overrides)
         mode = "remote GitHub checkout" if args.remote else "local checkout"
         print(f"PASS: Codex install smoke test ({mode})")
         for check in checks:

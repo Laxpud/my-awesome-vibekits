@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "title": "Laxpud Vibekits",
+  "plugins": [
+    {
+      "name": "@laxpud/dsh-starbridge",
+      "title": "StarBridge",
+      "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+      "author": "Laxpud",
+      "homepage": "https://github.com/Laxpud/StarBridge",
+      "repository": {
+        "url": "https://github.com/Laxpud/StarBridge"
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1793698308,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/StarBridge",
+            "commit": "c5f878173e0e32a0a807f799874d0c1b823af612"
+          },
+          "engines": {
+            "dsh": "0.2.1-rc.2"
+          }
+        }
+      ]
+    }
+  ]
+}

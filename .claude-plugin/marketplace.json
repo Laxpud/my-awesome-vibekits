@@ -68,6 +68,24 @@
         "hatchling",
         "pyproject"
       ]
+    },
+    {
+      "name": "starbridge",
+      "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Laxpud"
+      },
+      "source": {
+        "source": "github",
+        "repo": "Laxpud/StarBridge",
+        "ref": "main"
+      },
+      "category": "development",
+      "tags": [
+        "CFD",
+        "MCP"
+      ]
     }
   ]
 }
