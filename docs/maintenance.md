@@ -116,4 +116,4 @@ python3 scripts/check_codex_install.py --all --check-external --local-plugin sta
 
 DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。当前只有 StarBridge 声明 DSH 适配，不为旧插件自动作出兼容承诺。
 
-获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。将 `dsh/index.json` 托管到返回 JSON 的静态 HTTPS 地址，再在 DSH 的实验性 Custom plugin indexes 中添加该地址。本轮经用户授权推送 Git 仓库并验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包。
+获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。当前索引地址为 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json，可在 DSH 的实验性 Custom plugin indexes 中添加该地址。本轮经用户授权推送 Git 仓库并验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包。

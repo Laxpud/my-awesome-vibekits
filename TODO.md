@@ -25,6 +25,6 @@
 
 既有独立 Skill 分发记录见[归档](docs/archive/milestone-2026-10-13-12-45-standalone-skill-entry.md)。
 
-本地实现与安装验证完成；Git 推送与发布后 DSH 安装验证进行中，不启用 Pages。实际安装结果见 StarBridge 分发说明。
+本地实现与安装验证完成；Git 推送与发布后 DSH 安装验证已完成，不启用 Pages。实际安装结果见 StarBridge 分发说明。
 
-- [ ] 推送两仓库，取得真实插件 commit，发布 DSH 索引并验证远端 Git 安装、MCP 与 Skill。
+- [x] 推送两仓库，取得真实插件 commit，发布 DSH 索引并验证远端 Git 安装、MCP 与 Skill。
