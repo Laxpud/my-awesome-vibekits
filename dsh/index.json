@@ -3,6 +3,78 @@
   "title": "Laxpud Vibekits",
   "plugins": [
     {
+      "name": "@laxpud/agent-docs-maintainer",
+      "title": "Agent Docs Maintainer",
+      "description": "Minimal project progress and plan/spec storage, with shared document rules for explicit README, planning, architecture, guidance, and organization workflows.",
+      "author": "Laxpud",
+      "homepage": "https://github.com/Laxpud/agent-docs-maintainer",
+      "repository": {
+        "url": "https://github.com/Laxpud/agent-docs-maintainer"
+      },
+      "versions": [
+        {
+          "version": "2.0.0",
+          "publishTimestamp": 1793786526,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/agent-docs-maintainer",
+            "commit": "f8690ba45f6dcbb6a801f3ce1d11b5885dc3d557"
+          },
+          "engines": {
+            "dsh": ">=0.2.1-rc.2 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@laxpud/agent-task-resume",
+      "title": "Agent Task Resume",
+      "description": "Explicitly invoked guidance for resuming authorized work after short-term or weekly quota recovery, with execution tracking and permission-bound reset credits.",
+      "author": "Laxpud",
+      "homepage": "https://github.com/Laxpud/agent-task-resume",
+      "repository": {
+        "url": "https://github.com/Laxpud/agent-task-resume"
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1793786500,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/agent-task-resume",
+            "commit": "27b8cd98b8676d3a6b607361c8b236ca932d68a2"
+          },
+          "engines": {
+            "dsh": ">=0.2.1-rc.2 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@laxpud/agent-dev-standards",
+      "title": "Agent Dev Standards",
+      "description": "Development standards and practices for AI coding agents, tailored to personal preferences.",
+      "author": "Laxpud",
+      "homepage": "https://github.com/Laxpud/agent-dev-standards",
+      "repository": {
+        "url": "https://github.com/Laxpud/agent-dev-standards"
+      },
+      "versions": [
+        {
+          "version": "1.2.0",
+          "publishTimestamp": 1793786515,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/agent-dev-standards",
+            "commit": "826bcd6d6ee0104675b0784b40b0c9a9ceaa70d2"
+          },
+          "engines": {
+            "dsh": ">=0.2.1-rc.2 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
       "name": "@laxpud/dsh-starbridge",
       "title": "StarBridge",
       "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",

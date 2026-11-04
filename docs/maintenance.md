@@ -114,7 +114,7 @@ python3 scripts/check_codex_install.py --all --check-external --local-plugin sta
 
 本地覆盖只影响验证输入，不改 catalog 来源，不写日常客户端配置。发布前不使用 `--fetch-external --plugin starbridge --write` 从旧远端覆盖新的本地快照。默认的 `--all --check-external` 仍检查实际远端，未发布时可能报告 StarBridge 缺少 manifest；应如实记录该边界。
 
-DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。StarBridge 已发布 DSH 版本；`agent-dev-standards`、`agent-docs-maintainer`、`agent-task-resume` 的 DSH 适配按各自本地包登记为草稿，发布前 `versions` 保持空数组，不进入可安装索引。这三个插件的未发布包可按相同机制检查：
+DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。StarBridge 与三个 Agent 插件的 DSH 索引使用各自仓库的真实 Git commit。后续未发布改动仍可按相同机制使用本地覆盖检查：
 
 ```bash
 python3 scripts/check_codex_install.py --all --check-external \

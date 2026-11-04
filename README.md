@@ -40,7 +40,7 @@ StarBridge has additional runtime requirements, including `python3` and `uv`; si
 
 ## Quick Start
 
-Choose the installation section for your client. The Codex and Claude Code example uses `agent-docs-maintainer`; the published DSH index currently lists StarBridge, while the three Agent plugins are registered as unpublished DSH drafts. See the [Plugin List](#plugin-list) for each client's entries.
+Choose the installation section for your client. The Codex and Claude Code example uses `agent-docs-maintainer`; DSH lists the three Agent plugins and StarBridge. See the [Plugin List](#plugin-list) for each client's entries.
 
 ### Install in Codex or Claude Code
 
@@ -80,7 +80,7 @@ Enable the experimental **Custom plugin indexes** feature, then add the followin
 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json
 ```
 
-Find StarBridge and install `@laxpud/dsh-starbridge`. It is currently the only published, installable plugin in this market's DSH index, and declares support for official DSH `0.2.1-rc.2`. See the [StarBridge distribution guide](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md) for runtime setup and update instructions.
+Find the plugin you need and install `@laxpud/agent-docs-maintainer`, `@laxpud/agent-task-resume`, `@laxpud/agent-dev-standards`, or `@laxpud/dsh-starbridge`. StarBridge declares support for official DSH `0.2.1-rc.2`. See the [StarBridge distribution guide](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md) for runtime setup and update instructions.
 
 **Individual skills:** Marketplace installation gets a plugin bundle. If you prefer to install selected skills directly, consult the plugin repository links below for available installation instructions and supported clients. For tools such as `npx skills`, follow the [official installation, update and removal instructions](https://github.com/vercel-labs/skills); support is defined by each independent repository.
 
@@ -90,12 +90,12 @@ Each plugin heading links to its repository; each skill links to its own instruc
 
 | Plugin | Codex | Claude Code | DSH |
 | --- | --- | --- | --- |
-| Agent Docs Maintainer | Listed | Listed | Draft / unpublished |
-| Agent Task Resume | Listed | Listed | Draft / unpublished |
-| Agent Dev Standards | Listed | Listed | Draft / unpublished |
+| Agent Docs Maintainer | Listed | Listed | Listed |
+| Agent Task Resume | Listed | Listed | Listed |
+| Agent Dev Standards | Listed | Listed | Listed |
 | StarBridge | Listed | Listed | Listed |
 
-“Listed” identifies a distribution entry; “Draft / unpublished” records a local DSH adaptation in the catalog but provides no installable version until the independent repository is published and its real Git commit is recorded. Runtime requirements and supported workflows are documented in each plugin repository.
+“Listed” identifies a distribution entry; runtime requirements and supported workflows are documented in each plugin repository.
 
 ### [Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer) (`agent-docs-maintainer`)
 
