@@ -17,7 +17,7 @@
 ### 三个 Agent 插件的 DSH 收录
 
 - [x] 为 `agent-dev-standards`、`agent-docs-maintainer`、`agent-task-resume` 登记 DSH 包身份与兼容范围，同步双语 README，完成既有本地检查及本地覆盖的外部包检查，不修改日常安装。
-- [ ] 按 2026-11-04 用户授权提交、推送三个独立插件和市场，回填真实版本、Git commit 和发布时间，生成可安装 DSH 索引并验证远端包；不安装插件或发布 npm／PyPI 包。插件本地提交完成，GitHub 推送返回 Internal Server Error／fatal error in commit_refs；待服务恢复后推送并完成索引发布。
+- [x] 按 2026-11-04 用户授权提交、推送三个独立插件和市场，回填真实版本、Git commit 和实际推送成功时间，生成可安装 DSH 索引并验证远端包；既有 5 项测试、四个插件纯远端包检查与分支提交核对通过，未安装插件或发布 npm／PyPI 包。
 
 ### 双语 README 更新
 
