@@ -14,6 +14,11 @@
 
 ## 当前工作
 
+### 三个 Agent 插件的 DSH 收录
+
+- [x] 为 `agent-dev-standards`、`agent-docs-maintainer`、`agent-task-resume` 登记 DSH 包身份与兼容范围，同步双语 README，完成既有本地检查及本地覆盖的外部包检查，不修改日常安装。
+- [ ] 按 2026-11-04 用户授权提交、推送三个独立插件和市场，回填真实版本、Git commit 和发布时间，生成可安装 DSH 索引并验证远端包；不安装插件或发布 npm／PyPI 包。插件本地提交完成，GitHub 推送返回 Internal Server Error／fatal error in commit_refs；待服务恢复后推送并完成索引发布。
+
 ### 双语 README 更新
 
 - [x] 按 2026-11-03 用户确认的方案同步双语 README：章节改为“插件列表 / Plugin List”，补齐 StarBridge、DSH 安装入口及黑色 DeepSeek 图标、平台收录概览和更新提示。既有本地检查、5 项测试及四个外部插件包检查通过，双语章节与导航锚点已核对。

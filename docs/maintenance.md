@@ -114,6 +114,15 @@ python3 scripts/check_codex_install.py --all --check-external --local-plugin sta
 
 本地覆盖只影响验证输入，不改 catalog 来源，不写日常客户端配置。发布前不使用 `--fetch-external --plugin starbridge --write` 从旧远端覆盖新的本地快照。默认的 `--all --check-external` 仍检查实际远端，未发布时可能报告 StarBridge 缺少 manifest；应如实记录该边界。
 
-DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。当前只有 StarBridge 声明 DSH 适配，不为旧插件自动作出兼容承诺。
+DSH bundle 在 StarBridge 根目录通过 `npm pack --ignore-scripts` 生成，用 `dsh plugin --profile <isolated-profile> add /absolute/path/to/package.tgz` 安装。实际 MCP 和 Skill 验证在 StarBridge 维护，市场脚本不启动模型。StarBridge 已发布 DSH 版本；`agent-dev-standards`、`agent-docs-maintainer`、`agent-task-resume` 的 DSH 适配按各自本地包登记为草稿，发布前 `versions` 保持空数组，不进入可安装索引。这三个插件的未发布包可按相同机制检查：
 
-获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。当前索引地址为 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json，可在 DSH 的实验性 Custom plugin indexes 中添加该地址。本轮经用户授权推送 Git 仓库并验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包。
+```bash
+python3 scripts/check_codex_install.py --all --check-external \
+  --local-plugin agent-dev-standards=/absolute/path/to/agent-dev-standards \
+  --local-plugin agent-docs-maintainer=/absolute/path/to/agent-docs-maintainer \
+  --local-plugin agent-task-resume=/absolute/path/to/agent-task-resume
+```
+
+该命令对三个 Agent 插件使用本地覆盖，对 StarBridge 仍检查远端；不把本地结果描述成已发布或安装成功。
+
+获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。当前索引地址为 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json，可在 DSH 的实验性 Custom plugin indexes 中添加该地址。StarBridge 的既有发布已验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包；后续提交、推送或发布仍需用户明确授权。

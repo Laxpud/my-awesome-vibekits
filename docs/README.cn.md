@@ -40,7 +40,7 @@ StarBridge 另需 `python3`、`uv` 等运行环境；算例操作还需要 Linux
 
 ## 快速开始
 
-按所用客户端选择下面的安装入口。Codex 与 Claude Code 以 `agent-docs-maintainer` 演示安装；DSH 当前收录 StarBridge。各客户端的具体条目见[插件列表](#插件列表)。
+按所用客户端选择下面的安装入口。Codex 与 Claude Code 以 `agent-docs-maintainer` 演示安装；已发布的 DSH 索引当前收录 StarBridge，三个 Agent 插件已登记为待发布 DSH 草稿。各客户端的具体条目见[插件列表](#插件列表)。
 
 ### 在 Codex 或 Claude Code 中安装
 
@@ -80,7 +80,7 @@ claude
 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json
 ```
 
-找到 StarBridge，安装 `@laxpud/dsh-starbridge`。它是本市场 DSH 索引当前唯一收录的插件，声明支持官方 DSH `0.2.1-rc.2`。运行环境配置和更新方式见 [StarBridge 分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。
+找到 StarBridge，安装 `@laxpud/dsh-starbridge`。它是本市场 DSH 索引当前唯一已发布、可安装的插件，声明支持官方 DSH `0.2.1-rc.2`。运行环境配置和更新方式见 [StarBridge 分发说明](https://github.com/Laxpud/StarBridge/blob/main/docs/distribution.md)。
 
 **独立安装 Skill：**通过插件市场安装会获取整个插件包。若只想直接安装选定的技能，请从下方插件仓库查看其提供的安装说明与客户端支持范围。使用 `npx skills` 等工具时，安装、更新和移除操作见[官方说明](https://github.com/vercel-labs/skills)；具体支持情况以独立仓库为准。
 
@@ -90,12 +90,12 @@ https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json
 
 | 插件 | Codex | Claude Code | DSH |
 | --- | --- | --- | --- |
-| Agent Docs Maintainer | 已收录 | 已收录 | — |
-| Agent Task Resume | 已收录 | 已收录 | — |
-| Agent Dev Standards | 已收录 | 已收录 | — |
+| Agent Docs Maintainer | 已收录 | 已收录 | 草稿／待发布 |
+| Agent Task Resume | 已收录 | 已收录 | 草稿／待发布 |
+| Agent Dev Standards | 已收录 | 已收录 | 草稿／待发布 |
 | StarBridge | 已收录 | 已收录 | 已收录 |
 
-“已收录”表示提供对应分发入口，运行条件和工作流支持范围以各插件仓库为准。
+“已收录”表示提供对应分发入口；“草稿／待发布”表示 catalog 已登记本地 DSH 适配，独立仓库发布并记录真实 Git commit 前不提供可安装版本。运行条件和工作流支持范围以各插件仓库为准。
 
 ### [Agent Docs Maintainer](https://github.com/Laxpud/agent-docs-maintainer)（`agent-docs-maintainer`）
 

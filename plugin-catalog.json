@@ -103,6 +103,11 @@
           "author": {
             "name": "Laxpud"
           }
+        },
+        "dsh": {
+          "name": "@laxpud/agent-docs-maintainer",
+          "engines": ">=0.2.1-rc.2 <0.3.0",
+          "versions": []
         }
       },
       "source": {
@@ -166,6 +171,11 @@
           "author": {
             "name": "Laxpud"
           }
+        },
+        "dsh": {
+          "name": "@laxpud/agent-task-resume",
+          "engines": ">=0.2.1-rc.2 <0.3.0",
+          "versions": []
         }
       },
       "source": {
@@ -241,6 +251,11 @@
           "author": {
             "name": "Laxpud"
           }
+        },
+        "dsh": {
+          "name": "@laxpud/agent-dev-standards",
+          "engines": ">=0.2.1-rc.2 <0.3.0",
+          "versions": []
         }
       },
       "source": {
