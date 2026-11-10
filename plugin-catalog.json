@@ -106,10 +106,10 @@
         },
         "dsh": {
           "name": "@laxpud/agent-docs-maintainer",
-          "engines": ">=0.2.1-rc.2 <0.3.0",
           "versions": [
             {
               "version": "2.0.0",
+              "engines": ">=0.2.1-rc.2 <0.3.0",
               "publishTimestamp": 1793786526,
               "source": {
                 "type": "git",
@@ -184,10 +184,10 @@
         },
         "dsh": {
           "name": "@laxpud/agent-task-resume",
-          "engines": ">=0.2.1-rc.2 <0.3.0",
           "versions": [
             {
               "version": "0.1.0",
+              "engines": ">=0.2.1-rc.2 <0.3.0",
               "publishTimestamp": 1793786500,
               "source": {
                 "type": "git",
@@ -274,10 +274,10 @@
         },
         "dsh": {
           "name": "@laxpud/agent-dev-standards",
-          "engines": ">=0.2.1-rc.2 <0.3.0",
           "versions": [
             {
               "version": "1.2.0",
+              "engines": ">=0.2.1-rc.2 <0.3.0",
               "publishTimestamp": 1793786515,
               "source": {
                 "type": "git",
@@ -305,8 +305,8 @@
     },
     {
       "id": "starbridge",
-      "version": "0.1.0",
-      "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+      "version": "0.1.1",
+      "description": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
       "category": "Productivity",
       "keywords": [
         "STAR-CCM+",
@@ -316,8 +316,8 @@
       ],
       "skills": [
         {
-          "id": "starbridge-case-audit",
-          "path": "skills/starbridge-case-audit"
+          "id": "starbridge-install-test",
+          "path": "skills/starbridge-install-test"
         }
       ],
       "platforms": {
@@ -326,8 +326,8 @@
           "authentication": "ON_INSTALL",
           "marketplaceMetadata": true,
           "displayName": "StarBridge",
-          "shortDescription": "STAR-CCM+ tools and case audit",
-          "longDescription": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
+          "shortDescription": "STAR-CCM+ MCP and Skill test",
+          "longDescription": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
           "developerName": "Laxpud",
           "category": "Productivity",
           "capabilities": [
@@ -336,7 +336,7 @@
           ],
           "websiteURL": "https://github.com/Laxpud/StarBridge",
           "defaultPrompt": [
-            "Use $starbridge:starbridge-case-audit to inspect this STAR-CCM+ case."
+            "Use $starbridge:starbridge-install-test to check whether the bundled test skill is loaded."
           ]
         },
         "claude": {
@@ -351,18 +351,35 @@
         },
         "dsh": {
           "name": "@laxpud/dsh-starbridge",
-          "engines": "0.2.1-rc.2",
           "versions": [
             {
               "version": "0.1.0",
+              "engines": "0.2.1-rc.2",
               "publishTimestamp": 1793698308,
               "source": {
                 "type": "git",
                 "url": "https://github.com/Laxpud/StarBridge",
                 "commit": "5d59f7df32e1dd4e76f408ae6a1f3a581cfe6c75"
               }
+            },
+            {
+              "version": "0.1.1",
+              "source": {
+                "type": "git",
+                "url": "https://github.com/Laxpud/StarBridge",
+                "commit": "683b6ecca6f1f030f6908381b916afe5d63b5b71"
+              },
+              "engines": "*",
+              "publishTimestamp": 1794289725,
+              "publishEvidence": "DSH session session-fa486890-0bfa-4c3d-950e-0c78a0f36c06 event 356: successful git push observed at 2026-11-10T05:48:45.225Z"
             }
-          ]
+          ],
+          "metadata": {
+            "description": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
+            "repository": {
+              "url": "https://github.com/Laxpud/StarBridge"
+            }
+          }
         }
       },
       "source": {

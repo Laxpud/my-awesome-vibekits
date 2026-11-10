@@ -136,13 +136,19 @@ def dsh_index(catalog: PluginCatalog) -> dict[str, Any]:
         adapter = plugin.dsh
         if not adapter or not adapter["versions"]:
             continue
-        entries.append({
-            "name": adapter["name"], "title": plugin.codex["displayName"],
+        # 已同步的展示快照以 DSH 包为准；旧 catalog 未回填时保留原展示方式。
+        metadata = adapter.get("metadata", {
             "description": plugin.description, "author": catalog.publisher["name"],
             "homepage": f"https://github.com/{plugin.github['repo']}",
             "repository": {"url": f"https://github.com/{plugin.github['repo']}"},
-            "versions": [{**release, "engines": {"dsh": adapter["engines"]}}
-                         for release in adapter["versions"]],
+        })
+        entries.append({
+            "name": adapter["name"], "title": plugin.codex["displayName"], **metadata,
+            # 发布证据只保存在 catalog，不能透传成 DSH 索引的未知字段。
+            "versions": [{
+                "version": release["version"], "publishTimestamp": release["publishTimestamp"],
+                "source": release["source"], "engines": {"dsh": release["engines"]},
+            } for release in adapter["versions"]],
         })
     return {"format": 1, "title": catalog.marketplace["displayName"], "plugins": entries}
 
@@ -192,13 +198,16 @@ def write_generated(
     return changed
 
 
-def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: bool) -> None:
-    """预览外部快照及市场差异；显式写入时先准备全部文件，再替换生成物。"""
+def sync_external_metadata(
+    root: Path, plugins: tuple[PluginSpec, ...], write: bool, release_info: Path | None = None,
+) -> bool:
+    """预览并可选写入外部快照；返回是否无待补事项，任何待补均禁止整次写入。"""
 
     from scripts.external_plugin_metadata import fetch_external_metadata
 
     # 1. 全部远端拉取成功并通过完整 catalog 校验后，才准备本地文件变更。
-    data = fetch_external_metadata(root, plugins)
+    preview = fetch_external_metadata(root, plugins, release_info)
+    data = preview.data
     catalog = parse_catalog(data)
     planned = {CATALOG_PATH: _json(data), **generated_files(catalog)}
     changes = {}
@@ -211,9 +220,16 @@ def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: b
                 (original or "").splitlines(keepends=True), content.splitlines(keepends=True),
                 fromfile=f"a/{relative_path.as_posix()}", tofile=f"b/{relative_path.as_posix()}",
             )), end="")
+    if preview.pending:
+        for issue in preview.pending:
+            print(f"PENDING: {issue}")
+        print(f"PREVIEW INCOMPLETE: {len(changes)} candidate file diff(s); no files written")
+        if write:
+            raise MetadataError("unresolved DSH release metadata; no files written")
+        return False
     if not write:
         print(f"PREVIEW: {len(changes)} file(s) would change; rerun with --write to apply this selection")
-        return
+        return True
 
     # 2. 同目录临时文件验证所有目标可写；权限失败时还没有替换 catalog 或市场。
     staged: dict[Path, Path] = {}
@@ -249,6 +265,7 @@ def sync_external_metadata(root: Path, plugins: tuple[PluginSpec, ...], write: b
     for relative_path in changes:
         print(f"UPDATED: {relative_path.as_posix()}")
     print("PASS: external metadata and marketplaces are synchronized")
+    return True
 
 
 def parse_args() -> argparse.Namespace:
@@ -270,7 +287,14 @@ def parse_args() -> argparse.Namespace:
         "--root", type=Path, default=Path(__file__).resolve().parents[1],
         help="repository root",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--release-info", type=Path, metavar="JSON",
+        help="verified publication times and evidence keyed by plugin/version/commit; requires --fetch-external",
+    )
+    args = parser.parse_args()
+    if args.release_info and not args.fetch_external:
+        parser.error("--release-info requires --fetch-external")
+    return args
 
 
 def main() -> int:
@@ -283,10 +307,10 @@ def main() -> int:
             from scripts.external_plugin_metadata import ExternalMetadataError
 
             try:
-                sync_external_metadata(root, selected, args.write)
+                ready = sync_external_metadata(root, selected, args.write, args.release_info)
             except ExternalMetadataError as error:
                 raise MetadataError(str(error)) from error
-            return 0
+            return 0 if ready else 2
         if args.write:
             for path in write_generated(root, catalog):
                 print(f"UPDATED: {path.as_posix()}")

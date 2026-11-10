@@ -61,6 +61,91 @@ def repository_slug(repository_url: str) -> str:
     return "/".join(parts)
 
 
+def git_output(root: Path, *arguments: str) -> str:
+    """在临时 checkout 中执行 Git 并返回输出；失败转换为维护脚本诊断。"""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), *arguments], check=True,
+            capture_output=True, text=True, timeout=120,
+        )
+    except FileNotFoundError as error:
+        raise SmokeTestError("git is required for remote source checks") from error
+    except subprocess.CalledProcessError as error:
+        raise SmokeTestError(f"git {arguments[0]} failed: {error.stderr.strip()}") from error
+    except subprocess.TimeoutExpired as error:
+        raise SmokeTestError(f"git {arguments[0]} timed out after 120 seconds") from error
+    return result.stdout.strip()
+
+
+def validate_dsh_package(
+    package_root: Path, name: str, version: str, expected_engine: str | None = None,
+) -> dict[str, Any]:
+    """读取 DSH 包声明并核对身份、版本、范围与 patch，不执行包内代码。
+
+    expected_engine 只用于固定发布记录；分支或本地开发快照只检查声明完整性，
+    不把未发布的兼容变更误当成历史版本应有的范围。
+    """
+    package_file = package_root / "package.json"
+    if not package_file.resolve().is_relative_to(package_root.resolve()):
+        raise SmokeTestError("DSH package.json escapes package root")
+    package = load_json(package_file)
+    if package.get("name") != name or package.get("version") != version:
+        raise SmokeTestError(f"DSH package identity/version differs: expected {name}@{version}")
+    engines = package.get("engines")
+    if not isinstance(engines, dict):
+        raise SmokeTestError("DSH package.engines: expected an object")
+    require_string(engines.get("dsh"), "DSH package.engines.dsh")
+    if expected_engine is not None and engines["dsh"] != expected_engine:
+        raise SmokeTestError("DSH package engines differ from release record")
+    dsh = package.get("dsh")
+    bundle = dsh.get("bundle") if isinstance(dsh, dict) else None
+    patch = bundle.get("patch") if isinstance(bundle, dict) else None
+    patch = require_string(patch, "DSH package.dsh.bundle.patch")
+    target = (package_root / patch).resolve()
+    if not target.is_relative_to(package_root.resolve()) or not target.is_file():
+        raise SmokeTestError("DSH bundle patch is missing or escapes package root")
+    return package
+
+
+def validate_dsh_releases(plugin: PluginSpec, checkout: Path) -> None:
+    """逐条核对固定 commit 中的 DSH 包，完成后恢复临时 checkout 的原 HEAD。
+
+    调用者只能传入可丢弃的远端 clone，不能传日常源码或本地覆盖目录。
+    历史包按各自 source.path 定位，不使用分支最新包替代，也不核对当前技能清单。
+    """
+    if plugin.dsh is None or not plugin.dsh["versions"]:
+        return
+    original = git_output(checkout, "rev-parse", "HEAD")
+    try:
+        for release in plugin.dsh["versions"]:
+            source = release["source"]
+            commit = source["commit"]
+            try:
+                # 浅克隆可能不含历史对象；显式拉取 SHA 后再次验证，不能退回 main。
+                if git_output(checkout, "rev-parse", "HEAD") != commit:
+                    git_output(checkout, "fetch", "--depth", "1", source["url"], commit)
+                    git_output(checkout, "checkout", "--detach", commit)
+                if git_output(checkout, "rev-parse", "HEAD") != commit:
+                    raise SmokeTestError("DSH checkout does not match release commit")
+                package_root = (checkout / source.get("path", "")).resolve()
+                if not package_root.is_relative_to(checkout.resolve()):
+                    raise SmokeTestError("DSH source.path escapes checkout")
+                validate_dsh_package(
+                    package_root, plugin.dsh["name"], release["version"], release["engines"],
+                )
+                # 本市场双端 manifest 位于仓库根目录；历史版本仍须与历史 DSH 包一致。
+                for manifest_path in (".codex-plugin/plugin.json", ".claude-plugin/plugin.json"):
+                    manifest = load_json(checkout / manifest_path)
+                    if manifest.get("name") != plugin.id or manifest.get("version") != release["version"]:
+                        raise SmokeTestError(f"{manifest_path}: identity/version differs from DSH release")
+                print(f"VERIFIED: {plugin.id}@{release['version']} commit={commit} engines={release['engines']}")
+            except SmokeTestError as error:
+                raise SmokeTestError(f"{plugin.id}@{release['version']} ({commit}): {error}") from error
+    finally:
+        if git_output(checkout, "rev-parse", "HEAD") != original:
+            git_output(checkout, "checkout", "--detach", original)
+
+
 def _entries(marketplace: dict[str, Any], path: Path) -> dict[str, dict[str, Any]]:
     raw_entries = marketplace.get("plugins")
     if not isinstance(raw_entries, list):
@@ -118,7 +203,8 @@ def _validate_plugin(
         plugin_root = Path(directory) / "plugin"
         clone_remote(source["url"], plugin.github.get("ref"), plugin_root)
         _validate_payload(plugin_root, plugin, prefix, slug)
-    return f"{slug} (external manifests and all skills verified)"
+        validate_dsh_releases(plugin, plugin_root)
+    return f"{slug} (external manifests, all skills and pinned DSH releases verified)"
 
 
 def _validate_payload(
@@ -156,18 +242,8 @@ def _validate_payload(
         raise SmokeTestError(f"{prefix}: Claude manifest.repository does not match source repository")
 
     if plugin.dsh is not None:
-        # DSH 包与 Python／双端插件同版本；仅检查交付声明，不执行外部代码。
-        package = load_json(plugin_root / "package.json")
-        if package.get("name") != plugin.dsh["name"] or package.get("version") != plugin.version:
-            raise SmokeTestError(f"{prefix}: DSH package identity/version differs from catalog")
-        if package.get("engines", {}).get("dsh") != plugin.dsh["engines"]:
-            raise SmokeTestError(f"{prefix}: DSH engines differ from catalog")
-        patch = package.get("dsh", {}).get("bundle", {}).get("patch")
-        if not isinstance(patch, str):
-            raise SmokeTestError(f"{prefix}: missing DSH bundle patch")
-        target = (plugin_root / patch).resolve()
-        if not target.is_relative_to(plugin_root.resolve()) or not target.is_file():
-            raise SmokeTestError(f"{prefix}: invalid DSH bundle patch path")
+        # 这里只核对当前分支／本地覆盖的包；历史范围在各自固定提交中独立核对。
+        validate_dsh_package(plugin_root, plugin.dsh["name"], plugin.version)
 
     missing_skills = [
         skill for skill in plugin.required_skills if not (plugin_root / skill).is_file()

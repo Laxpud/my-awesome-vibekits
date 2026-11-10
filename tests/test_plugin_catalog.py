@@ -32,7 +32,7 @@ class CatalogTests(unittest.TestCase):
             ),
             "agent-task-resume": ("quota-resume",),
             "agent-dev-standards": ("code-comment-standard", "pyproject-standard"),
-            "starbridge": ("starbridge-case-audit",),
+            "starbridge": ("starbridge-install-test",),
         }
         self.assertEqual(list(expected_skills), [plugin.id for plugin in catalog.plugins])
         for plugin in catalog.plugins:

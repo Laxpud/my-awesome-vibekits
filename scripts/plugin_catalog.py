@@ -6,6 +6,7 @@ catalog 是本市场的来源与收录元数据入口；外部插件的发布以
 
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 import re
 from dataclasses import dataclass
@@ -290,11 +291,26 @@ def parse_catalog(raw: Any) -> PluginCatalog:
         # DSH 只输出明确的发布版本；空 versions 表示已开发但尚未发布的 bundle。
         dsh = None
         if "dsh" in platforms:
-            dsh = _mapping(platforms["dsh"], f"{field}.platforms.dsh")
+            # 旧 catalog 的插件级范围只用于迁移缺少 engines 的历史记录。
+            # 在副本中展开，既不污染输入，也不让后续新范围覆盖旧版本。
+            dsh = deepcopy(_mapping(platforms["dsh"], f"{field}.platforms.dsh"))
             package_name = _string(dsh.get("name"), f"{field}.platforms.dsh.name")
             if not re.fullmatch(r"(?:@[a-z0-9._-]+/)?[a-z0-9._-]+", package_name):
                 raise CatalogError(f"{field}.platforms.dsh.name: invalid npm package name")
-            _string(dsh.get("engines"), f"{field}.platforms.dsh.engines")
+            if "engines" in dsh:
+                _string(dsh["engines"], f"{field}.platforms.dsh.engines")
+            legacy_engine = dsh.pop("engines", None)
+            if "metadata" in dsh:
+                metadata = _mapping(dsh["metadata"], f"{field}.platforms.dsh.metadata")
+                if set(metadata) - {"description", "author", "homepage", "repository"}:
+                    raise CatalogError("dsh.metadata: unsupported display field")
+                for key, value in metadata.items():
+                    if key == "repository":
+                        repository = _mapping(value, "dsh.metadata.repository")
+                        if set(repository) != {"url"} or repository["url"] != f"https://github.com/{repo}":
+                            raise CatalogError("dsh.metadata.repository: expected the catalog repository URL")
+                    else:
+                        _string(value, f"dsh.metadata.{key}")
             versions = dsh.get("versions")
             if not isinstance(versions, list):
                 raise CatalogError(f"{field}.platforms.dsh.versions: expected an array")
@@ -305,6 +321,11 @@ def parse_catalog(raw: Any) -> PluginCatalog:
                 if not SEMVER_PATTERN.fullmatch(version_text) or version_text in seen_versions:
                     raise CatalogError("dsh.version: invalid or duplicate SemVer")
                 seen_versions.add(version_text)
+                if "engines" not in release and legacy_engine is not None:
+                    release["engines"] = legacy_engine
+                _string(release.get("engines"), "dsh.versions[].engines")
+                if "publishEvidence" in release:
+                    _string(release["publishEvidence"], "dsh.publishEvidence")
                 stamp = release.get("publishTimestamp")
                 if type(stamp) is not int or stamp <= 0:
                     raise CatalogError("dsh.publishTimestamp: expected positive Unix seconds")

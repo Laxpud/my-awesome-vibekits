@@ -64,11 +64,13 @@ Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安�
 1. 按 catalog 的 `repo/ref` 克隆选中的独立仓库到临时目录，在同一 checkout 中读取双端 manifest 和 `skills/*/SKILL.md`，不执行插件脚本。
 2. 核对双端名称、版本、描述和仓库地址；回填还要求 Codex 的 `skills` 为 `"./skills/"`，Claude Code 的 `skills` 为 `["./skills/"]`。
 3. 更新版本、描述、关键词、完整技能清单、发布者和展示字段。已有技能保留顺序，新技能按名称追加；本市场的来源、安装与认证策略、展示开关、Claude 分类和标签保持原值。
-4. 校验完整候选 catalog，包含未选中的兄弟插件。默认只输出 catalog 与两份 marketplace 的差异；`--write` 才准备并替换文件。
+4. 对已登记 `platforms.dsh` 的插件，读取同一 checkout 根目录的 `package.json` 和 `HEAD` 完整 SHA，核对包名、双端版本、非空兼容声明与 bundle patch。包的 `description`、`author`、`homepage`、`repository` 进入 DSH 独立展示快照；版本、commit 与兼容范围形成同一条发布候选，不读取本地未推送源码。
+5. 新版本只有获得与插件／版本／commit 精确绑定的发布时间及证据后才追加到 `versions`；已有版本不改来源、范围或时间。同版本换来源、时间冲突或新版本缺少时间列为待补，禁止整次写入。同步还逐条读取已登记固定 commit 的包声明，核对历史身份、版本和兼容范围，不用分支最新内容替代历史。
+6. 校验完整候选 catalog，包含未选中的兄弟插件。默认输出摘要及 catalog、两份 marketplace 和 DSH 索引的差异；只有无待补项且传入 `--write` 才准备并替换文件。
 
 远端拉取失败或候选校验失败时不写文件。外部回填的写入会先准备同目录临时文件，替换过程中发生 `OSError` 时尝试恢复已替换文件，并清理临时文件；这不是跨文件的原子事务。
 
-不传 `--fetch-external` 时只离线检查或生成两份 marketplace；即使选择单个插件，生成结果仍包含完整市场。所有同步命令都不修改独立仓库、不安装插件、不提交或推送。
+不传 `--fetch-external` 时只离线检查或生成两份 marketplace 和 DSH 索引，不拉取上游兼容声明；即使选择单个插件，生成结果仍包含完整市场。所有同步命令都不修改独立仓库、不安装插件、不提交或推送。
 
 ## 检查能够证明什么
 
@@ -76,7 +78,7 @@ Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安�
 | --- | --- | --- |
 | 元数据生成一致性 | catalog 可解析，两端 marketplace 与当前生成规则一致。 | 外部仓库当前内容、客户端展示。 |
 | 本地安装契约 | Codex 市场身份与完整条目集合、来源、策略、分类，以及双语 README 的安装入口正确。 | 实际包内文件、真实安装。 |
-| `--check-external` | 临时读取外部双端 manifest 的身份、版本、描述、仓库地址，核对 Codex `skills` 路径和 catalog 承诺的全部技能入口。 | 额外技能是否未收录、完整 manifest schema、技能行为、客户端生命周期。 |
+| `--check-external` | 临时读取外部双端 manifest 的身份、版本、描述、仓库地址，核对 Codex `skills` 路径和 catalog 承诺的全部技能入口；逐条 checkout DSH 发布 SHA，核对包身份、版本、兼容范围和 patch，以及该提交的双端版本。 | 发布时间证据真实性、额外技能是否未收录、完整 manifest schema、技能行为、客户端生命周期；使用本地覆盖的插件不检查历史 SHA。 |
 | `--remote` | 从聚合市场远端 checkout 执行同一安装契约检查；是否读取外部包仍由 `--check-external` 决定。 | 尚未推送的本地文档、客户端安装。 |
 | 真实客户端验证 | 在指定客户端、版本与配置中观察到的展示、安装、加载或生命周期结果。 | 其他客户端或未经操作的生命周期环节。 |
 
@@ -102,8 +104,20 @@ Codex 的 `platforms.codex.marketplaceMetadata: true` 让市场条目附带安�
 
 ## DSH 索引与未发布版本
 
-`platforms.dsh` 可选，包含 npm 包身份 `name`、兼容范围 `engines` 及 `versions` 数组。未提供该字段的插件不进入 DSH 市场。`versions: []` 表示本地已准备的 bundle 尚未发布；不生成虚假的可安装版本。
+`platforms.dsh` 可选，包含 npm 包身份 `name`、可选展示快照 `metadata` 及 `versions` 数组。未提供该字段的插件不进入 DSH 市场。`versions: []` 表示尚无可分发记录；缺少发布时间的新候选只出现在预览提示中，不生成虚假的可安装版本。
 
-每个发布版本记录 `version`、Unix 秒单位的 `publishTimestamp` 和 Git `source`（`type: git`、同独立仓库 HTTPS `url`、完整 40 位 `commit`，可选仓库内 `path`）。生成器输出 [dsh/index.json](../../dsh/index.json)；DSH 原生支持其他来源，但本 catalog 当前只实现同仓库 Git 来源。发布时必须使用实际发布提交与时间，不以当前日期或浮动分支代替。
+每个发布版本分别记录：
 
-本地修改通过安装检查的 `--local-plugin ID=/absolute/path` 显式选取；该参数须配合 `--check-external`，不能与 `--remote` 同用，输出标注 LOCAL。检查仍核对双端 manifest、Skill 和 DSH bundle 身份／版本／patch，但不把本地检查描述成远端安装成功。
+- `version`：与该提交的 DSH 包和双端 manifest 一致的版本，数组内不得重复。
+- `engines`：该提交包内的 `engines.dsh` 字符串，生成索引时转换成 `engines: {"dsh": ...}`，不验证实际运行兼容性或完整 SemVer 范围语法。
+- `source`：`type: git`、同独立仓库 HTTPS `url`、完整 40 位 `commit`，可选仓库内 `path`。现有子目录记录可被固定提交检查读取；自动生成的新候选使用根包，不推测新的子目录来源。
+- `publishTimestamp`：真实发布时间，Unix 秒正整数；不从 commit 时间或当前时间推算。
+- `publishEvidence`：新记录通过 `--release-info` 提供的发布证据引用，只保存在 catalog。既有记录可缺省，不伪造历史证据；脚本核对输入绑定及格式，证据真实性由维护者确认。
+
+为读取旧快照，parser 仍接受旧插件级 `engines`，仅在历史记录缺少该字段时将旧值复制到记录副本；单条记录已有值时优先保留。外部回填选中插件时输出逐版本结构，并核对其固定提交，不用最新包范围批量覆盖历史。本仓库现有记录已按原值迁移；版本、commit 与原时间未改变，生成索引仍使用原来的 DSH 格式。
+
+`metadata` 只保存包声明中实际存在的 `description`、`author`、`homepage`、`repository`。作者对象取 `name`；仓库 URL 归一化并核对仍为登记仓库。同步后缺失字段不会再由市场发布者或 Codex 文案补齐；未回填过 `metadata` 的旧快照暂时沿用原展示值。标题仍取 Codex 的显示名称，不新增包内图标、截图或依赖清单。
+
+生成器输出 [dsh/index.json](../../dsh/index.json)；DSH 原生支持其他来源，但本 catalog 当前只实现同仓库 Git 来源。默认预览不写文件；待补预览返回 `2`，写入时发现待补返回 `1` 并拒绝所有文件变更，具体补充时间的格式见[维护指南](../maintenance.md#为新版本补充发布时间)。
+
+本地修改通过安装检查的 `--local-plugin ID=/absolute/path` 显式选取；该参数须配合 `--check-external`，不能与 `--remote` 同用，输出标注 LOCAL。检查核对双端 manifest、Skill 和当前 DSH bundle 身份／版本／范围声明／patch，不 checkout 本地目录或验证该插件的历史记录，也不把本地检查描述成远端安装成功。

@@ -8,7 +8,7 @@
 
 ### 1. 预览并回填收录快照
 
-以下以 `agent-docs-maintainer` 为例。第一条只预览；确认差异属于目标更新后，第二条写入 catalog 和两份 marketplace：
+以下以 `agent-docs-maintainer` 为例。第一条只预览；确认差异属于目标更新后，第二条写入 catalog、两份 marketplace 和 DSH 索引：
 
 ```bash
 python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-maintainer
@@ -20,6 +20,47 @@ python3 scripts/sync_plugin_metadata.py --fetch-external --plugin agent-docs-mai
 ```bash
 python3 scripts/sync_plugin_metadata.py --write
 ```
+
+已登记 DSH 的插件会从所选远端 `repo/ref` 的同一 checkout 读取 `package.json` 和完整 Git SHA，成套准备包版本、commit、`engines.dsh` 及包的展示字段。包名须与市场登记一致，包版本须与同一 checkout 的双端 manifest 一致，兼容范围须为非空字符串；缺失声明不会默认放宽为 `*`。未登记 DSH 的插件不要求提供该文件，也不会自动加入 DSH 市场。本地尚未推送的声明不会进入远端快照。
+
+预览先列出版本、commit、兼容范围、技能增删与字段变化，再输出 JSON diff。已有发布记录按以下规则保留：
+
+- **同版本、同来源、同兼容范围：** 保留原记录及发布时间，允许更新插件级展示快照。
+- **新版本：** 追加独立记录，各历史版本保留自己的兼容范围和时间；没有可靠发布时间时，只展示候选，不加入可安装索引。
+- **同版本换 commit／来源路径：** 输出 `PENDING` 冲突，禁止覆盖历史记录。先在独立仓库发布新版本，不通过修改旧记录绕过冲突。
+- **固定提交与旧记录的版本／范围不符：** 外部检查失败，先核对已有收录事实，不自动用最新分支修正历史。
+
+只要选中插件存在待补事项，整次 `--write` 都会在写文件前拒绝，避免只更新双端版本或展示、却遗漏 DSH 发布记录。预览仍可查看候选差异，但不能把它当作已可发布的快照。
+
+#### 为新版本补充发布时间
+
+新版本的时间从维护者已核实的发布事件取得，例如实际推送成功记录或与该 commit 对应的正式发布记录；不把提交时间、tag 创建时间或本机当前时间当成发布时间。脚本不自动查询 GitHub／npm 的发布时间；没有输入时明确提示待补。
+
+通过 `--release-info /absolute/path/to/release-info.json` 提供 JSON，结构如下。占位值仅用于说明，必须替换为实际插件 ID、版本、40 位 SHA、Unix 秒整数和可追溯的证据地址或记录引用，不能原样执行：
+
+```json
+{
+  "releases": [
+    {
+      "plugin": "<plugin-id>",
+      "version": "<published-version>",
+      "commit": "<full-40-character-sha>",
+      "publishTimestamp": "<replace-with-verified-Unix-seconds-integer>",
+      "publishEvidence": "<publication-record-URL-or-reference>"
+    }
+  ]
+}
+```
+
+```bash
+python3 scripts/sync_plugin_metadata.py --fetch-external --plugin starbridge \
+  --release-info /absolute/path/to/release-info.json
+# 确认预览完整且差异符合预期后，重复相同命令并添加 --write。
+```
+
+证据由维护者核实；脚本只检查格式、非未来的正整数时间，以及插件／版本／commit 与本次候选的精确绑定，不声称已独立核实证据内容。重复记录、未选中或已过时 commit 的输入会报错。`publishEvidence` 保存在 catalog，不输出为 DSH 索引字段；已存在记录不会因新输入而改写时间或证据。旧记录未保存证据的，不虚构补齐。
+
+同步命令退出码：`0` 表示检查通过或预览可应用，`2` 表示预览存在待补／冲突；元数据校验失败或 `--write` 遇到待补时返回 `1`，在写入前拒绝。命令行参数用法错误由 argparse 返回 `2`；写入阶段的文件系统错误与恢复边界见下面的生成过程。
 
 默认离线检查与显式外部回填的区别、保留字段及失败恢复方式见[生成过程](tech/architecture.md#数据来源与生成过程)。不要手改生成物。
 
@@ -123,6 +164,6 @@ python3 scripts/check_codex_install.py --all --check-external \
   --local-plugin agent-task-resume=/absolute/path/to/agent-task-resume
 ```
 
-该命令对三个 Agent 插件使用本地覆盖，对 StarBridge 仍检查远端；不把本地结果描述成已发布或安装成功。
+该命令对三个 Agent 插件使用本地覆盖，对 StarBridge 仍检查远端；不把本地结果描述成已发布或安装成功。本地覆盖只检查当前目录的包声明，不 checkout 或核对该插件的历史固定提交；正式发布前仍须运行不带覆盖的外部检查。
 
-获得发布授权后，先发布独立插件，再为 `platforms.dsh.versions` 填入真实版本、发布时间和 Git commit，重新生成三端目录并检查。当前索引地址为 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json，可在 DSH 的实验性 Custom plugin indexes 中添加该地址。StarBridge 的既有发布已验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包；后续提交、推送或发布仍需用户明确授权。
+获得发布授权后，先发布独立插件，再按上面的预览流程生成 DSH 新版本记录，提供绑定该 commit 的可靠发布时间及证据，确认没有待补项后写入三端目录并检查。当前索引地址为 https://raw.githubusercontent.com/Laxpud/my-awesome-vibekits/main/dsh/index.json，可在 DSH 的实验性 Custom plugin indexes 中添加该地址。StarBridge 的既有发布已验证 Git 来源安装，使用 GitHub Raw 提供索引，不启用 Pages 或发布 npm／PyPI 包；后续提交、推送或发布仍需用户明确授权。

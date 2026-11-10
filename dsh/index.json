@@ -77,9 +77,7 @@
     {
       "name": "@laxpud/dsh-starbridge",
       "title": "StarBridge",
-      "description": "Inspect STAR-CCM+ cases and make controlled changes through local MCP tools and a shared audit skill.",
-      "author": "Laxpud",
-      "homepage": "https://github.com/Laxpud/StarBridge",
+      "description": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
       "repository": {
         "url": "https://github.com/Laxpud/StarBridge"
       },
@@ -94,6 +92,18 @@
           },
           "engines": {
             "dsh": "0.2.1-rc.2"
+          }
+        },
+        {
+          "version": "0.1.1",
+          "publishTimestamp": 1794289725,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/StarBridge",
+            "commit": "683b6ecca6f1f030f6908381b916afe5d63b5b71"
+          },
+          "engines": {
+            "dsh": "*"
           }
         }
       ]
