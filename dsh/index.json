@@ -105,6 +105,18 @@
           "engines": {
             "dsh": "*"
           }
+        },
+        {
+          "version": "0.1.2",
+          "publishTimestamp": 1794294640,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Laxpud/StarBridge",
+            "commit": "66f8c97dbc5f5167cf78c036d85593720ff3c78a"
+          },
+          "engines": {
+            "dsh": "*"
+          }
         }
       ]
     }
