@@ -165,7 +165,7 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Productivity",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
       "author": {
         "name": "Laxpud"

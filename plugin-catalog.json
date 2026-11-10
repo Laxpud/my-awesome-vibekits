@@ -305,7 +305,7 @@
     },
     {
       "id": "starbridge",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Operate STAR-CCM+ through local MCP; includes a minimal skill-loading check.",
       "category": "Productivity",
       "keywords": [
@@ -372,6 +372,17 @@
               "engines": "*",
               "publishTimestamp": 1794289725,
               "publishEvidence": "DSH session session-fa486890-0bfa-4c3d-950e-0c78a0f36c06 event 356: successful git push observed at 2026-11-10T05:48:45.225Z"
+            },
+            {
+              "version": "0.1.2",
+              "source": {
+                "type": "git",
+                "url": "https://github.com/Laxpud/StarBridge",
+                "commit": "66f8c97dbc5f5167cf78c036d85593720ff3c78a"
+              },
+              "engines": "*",
+              "publishTimestamp": 1794294640,
+              "publishEvidence": "https://github.com/Laxpud/StarBridge/releases/tag/v0.1.2"
             }
           ],
           "metadata": {
